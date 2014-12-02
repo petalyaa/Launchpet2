@@ -8,7 +8,7 @@
         <item>Deep Purple</item>
         <item>Indigo</item>
         <item>Blue</item>
-        <!-- <item>Light Blue</item>
+        <item>Light Blue</item>
         <item>Cyan</item>
         <item>Teal</item>
         <item>Green</item>
@@ -20,7 +20,7 @@
         <item>Deep Orange</item>
         <item>Brown</item>
         <item>Grey</item>
-        <item>Glue Grey</item> -->
+        <item>Blue Grey</item>
     </string-array>
     
     <string-array name="pref_theme_list_value">
@@ -30,7 +30,7 @@
         <item>deep_purple</item>
         <item>indigo</item>
         <item>blue</item>
-        <!-- <item>light_blue</item>
+        <item>light_blue</item>
         <item>cyan</item>
         <item>teal</item>
         <item>green</item>
@@ -42,7 +42,7 @@
         <item>deep_orange</item>
         <item>brown</item>
         <item>grey</item>
-        <item>blue_grey</item> -->
+        <item>blue_grey</item>
     </string-array>
     
      <integer-array name="gplus_colors">
@@ -128,6 +128,175 @@
 		<item>#1976D2</item>
 		<item>#1565C0</item>
 		<item>#0D47A1</item>
+    </string-array>
+    
+    <string-array name="theme_light_blue">
+        <item>#E1F5FE</item>
+		<item>#B3E5FC</item>
+		<item>#81D4FA</item>
+		<item>#4FC3F7</item>
+		<item>#29B6F6</item>
+		<item>#03A9F4</item>
+		<item>#039BE5</item>
+		<item>#0288D1</item>
+		<item>#0277BD</item>
+		<item>#01579B</item>
+    </string-array>
+    
+    <string-array name="theme_cyan">
+        <item>#E0F7FA</item>
+		<item>#B2EBF2</item>
+		<item>#80DEEA</item>
+		<item>#4DD0E1</item>
+		<item>#26C6DA</item>
+		<item>#00BCD4</item>
+		<item>#00ACC1</item>
+		<item>#0097A7</item>
+		<item>#00838F</item>
+		<item>#006064</item>
+    </string-array>
+    
+    <string-array name="theme_teal">
+        <item>#E0F2F1</item>
+		<item>#B2DFDB</item>
+		<item>#80CBC4</item>
+		<item>#4DB6AC</item>
+		<item>#26A69A</item>
+		<item>#009688</item>
+		<item>#00897B</item>
+		<item>#00796B</item>
+		<item>#00695C</item>
+		<item>#004D40</item>
+    </string-array>
+    
+    <string-array name="theme_green">
+        <item>#E8F5E9</item>
+		<item>#C8E6C9</item>
+		<item>#A5D6A7</item>
+		<item>#81C784</item>
+		<item>#66BB6A</item>
+		<item>#4CAF50</item>
+		<item>#43A047</item>
+		<item>#388E3C</item>
+		<item>#2E7D32</item>
+		<item>#1B5E20</item>
+    </string-array>
+    
+    <string-array name="theme_light_green">
+        <item>#F1F8E9</item>
+		<item>#DCEDC8</item>
+		<item>#C5E1A5</item>
+		<item>#AED581</item>
+		<item>#9CCC65</item>
+		<item>#8BC34A</item>
+		<item>#7CB342</item>
+		<item>#689F38</item>
+		<item>#558B2F</item>
+		<item>#33691E</item>
+    </string-array>
+    
+    <string-array name="theme_lime">
+        <item>#F9FBE7</item>
+		<item>#F0F4C3</item>
+		<item>#E6EE9C</item>
+		<item>#DCE775</item>
+		<item>#D4E157</item>
+		<item>#CDDC39</item>
+		<item>#C0CA33</item>
+		<item>#AFB42B</item>
+		<item>#9E9D24</item>
+		<item>#827717</item>
+    </string-array>
+    
+    <string-array name="theme_yellow">
+        <item>#FFFDE7</item>
+		<item>#FFF9C4</item>
+		<item>#FFF59D</item>
+		<item>#FFF176</item>
+		<item>#FFEE58</item>
+		<item>#FFEB3B</item>
+		<item>#FDD835</item>
+		<item>#FBC02D</item>
+		<item>#F9A825</item>
+		<item>#F57F17</item>
+    </string-array>
+    
+    <string-array name="theme_amber">
+        <item>#FFF8E1</item>
+		<item>#FFECB3</item>
+		<item>#FFE082</item>
+		<item>#FFD54F</item>
+		<item>#FFCA28</item>
+		<item>#FFC107</item>
+		<item>#FFB300</item>
+		<item>#FFA000</item>
+		<item>#FF8F00</item>
+		<item>#FF6F00</item>
+    </string-array>
+    
+    <string-array name="theme_orange">
+        <item>#FFF3E0</item>
+		<item>#FFE0B2</item>
+		<item>#FFCC80</item>
+		<item>#FFB74D</item>
+		<item>#FFA726</item>
+		<item>#FF9800</item>
+		<item>#FB8C00</item>
+		<item>#F57C00</item>
+		<item>#EF6C00</item>
+		<item>#E65100</item>
+    </string-array>
+    
+    <string-array name="theme_deep_orange">
+        <item>#FBE9E7</item>
+		<item>#FFCCBC</item>
+		<item>#FFAB91</item>
+		<item>#FF8A65</item>
+		<item>#FF7043</item>
+		<item>#FF5722</item>
+		<item>#F4511E</item>
+		<item>#E64A19</item>
+		<item>#D84315</item>
+		<item>#BF360C</item>
+    </string-array>
+    
+    <string-array name="theme_brown">
+        <item>#EFEBE9</item>
+		<item>#D7CCC8</item>
+		<item>#BCAAA4</item>
+		<item>#A1887F</item>
+		<item>#8D6E63</item>
+		<item>#795548</item>
+		<item>#6D4C41</item>
+		<item>#5D4037</item>
+		<item>#4E342E</item>
+		<item>#3E2723</item>
+    </string-array>
+    
+    <string-array name="theme_grey">
+        <item>#FAFAFA</item>
+		<item>#F5F5F5</item>
+		<item>#EEEEEE</item>
+		<item>#E0E0E0</item>
+		<item>#BDBDBD</item>
+		<item>#9E9E9E</item>
+		<item>#757575</item>
+		<item>#616161</item>
+		<item>#424242</item>
+		<item>#212121</item>
+    </string-array>
+    
+    <string-array name="theme_blue_grey">
+        <item>#ECEFF1</item>
+		<item>#CFD8DC</item>
+		<item>#B0BEC5</item>
+		<item>#90A4AE</item>
+		<item>#78909C</item>
+		<item>#607D8B</item>
+		<item>#546E7A</item>
+		<item>#455A64</item>
+		<item>#37474F</item>
+		<item>#263238</item>
     </string-array>
     
 </resources>
