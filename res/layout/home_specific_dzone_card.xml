@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@drawable/card_shadow"
+    android:elevation="@dimen/generic_elevation_height"
+    android:layout_height="wrap_content" >
+
+    <ImageView
+        android:id="@+id/card_dzone_image"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_alignParentTop="true"
+        android:layout_margin="5dp"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@string/app_drawer_content_description"
+        android:src="@drawable/dzone_image_empty" />
+
+    <LinearLayout
+        android:id="@+id/card_dzone_title_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:orientation="horizontal"
+        android:padding="7dp"
+        android:elevation="@dimen/generic_elevation_height"
+        android:gravity="center_vertical"
+        tools:ignore="UseCompoundDrawables"
+        android:layout_below="@+id/card_dzone_image" >
+        
+        <ImageView
+	        android:id="@+id/card_dzone_title_icon_image"
+	        android:layout_width="20dp"
+	        android:layout_height="20dp"
+	        android:contentDescription="@string/app_drawer_content_description"
+	        android:src="@drawable/dzone_icon" />
+
+        <TextView
+            android:id="@+id/card_dzone_title_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+			android:shadowColor="@android:color/white"    
+			android:alpha=".6"
+			android:shadowDx="1"
+			android:shadowDy="1"
+			android:paddingStart="5dp"
+			android:paddingEnd="0dp"
+			android:textSize="18sp"
+			android:textStyle="bold"
+			android:fontFamily="sans-serif-condensed"
+			android:shadowRadius="1"      
+            android:textColor="@android:color/black"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+        
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_height="40dp"
+	    android:background="@color/text_card_footer"
+        android:layout_below="@+id/card_dzone_title_holder"
+        android:layout_centerHorizontal="true" >
+        
+        <ImageView
+		    android:id="@+id/card_dzone_footer_vote_up_icon"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentStart="true"
+		    android:layout_centerVertical="true"
+		    android:alpha=".7"
+		    android:contentDescription="@string/app_drawer_content_description"
+		    android:src="@drawable/ic_action_keyboard_arrow_up" />
+        
+        <TextView
+		    android:id="@+id/card_dzone_footer_vote_up_label"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_centerVertical="true"
+		    android:textColor="@android:color/black"
+		    android:alpha=".5"
+		    android:layout_toEndOf="@+id/card_dzone_footer_vote_up_icon"
+		    android:text=""
+		    android:textAppearance="?android:attr/textAppearanceSmall" />
+        
+        <ImageView
+		    android:id="@+id/card_dzone_footer_vote_down_icon"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_centerVertical="true"
+		    android:layout_marginStart="10dp"
+		    android:alpha=".7"
+		    android:contentDescription="@string/app_drawer_content_description"
+		    android:layout_toEndOf="@+id/card_dzone_footer_vote_up_label"
+		    android:src="@drawable/ic_action_keyboard_arrow_down" />
+        
+        <TextView
+		    android:id="@+id/card_dzone_footer_vote_down_label"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_centerVertical="true"
+		    android:textColor="@android:color/black"
+		    android:alpha=".5"
+		    android:layout_toEndOf="@+id/card_dzone_footer_vote_down_icon"
+		    android:text=""
+		    android:textAppearance="?android:attr/textAppearanceSmall" />
+        
+        <TextView
+		    android:id="@+id/card_dzone_footer_comments_label"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_centerVertical="true"
+		    android:layout_alignParentEnd="true"
+		    android:textColor="@android:color/black"
+		    android:paddingStart="5dp"
+		    android:paddingEnd="5dp"
+		    android:alpha=".5"
+		    android:text=""
+		    android:textAppearance="?android:attr/textAppearanceSmall" />
+        
+        <ImageView
+		    android:id="@+id/card_dzone_footer_comments_icon"
+		    android:layout_width="20dp"
+		    android:layout_height="20dp"
+		    android:contentDescription="@string/app_drawer_content_description"
+		    android:layout_centerVertical="true"
+		    android:alpha=".7"
+		    android:layout_toStartOf="@+id/card_dzone_footer_comments_label"
+		    android:src="@drawable/ic_action_mode_comment" />
+		
+		<TextView
+		    android:id="@+id/card_dzone_footer_view_label"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_centerVertical="true"
+		    android:layout_toStartOf="@+id/card_dzone_footer_comments_icon"
+		    android:layout_marginEnd="10dp"
+		    android:textColor="@android:color/black"
+		    android:alpha=".5"
+		    android:paddingStart="5dp"
+		    android:paddingEnd="5dp"
+		    android:text=""
+		    android:textAppearance="?android:attr/textAppearanceSmall" />
+		
+		<ImageView
+		    android:id="@+id/card_dzone_footer_view_icon"
+		    android:layout_width="20dp"
+		    android:layout_height="20dp"
+		    android:alpha=".7"
+		    android:contentDescription="@string/app_drawer_content_description"
+		    android:layout_centerVertical="true"
+		    android:layout_toStartOf="@+id/card_dzone_footer_view_label"
+		    android:src="@drawable/ic_action_remove_red_eye" />
+        
+    </RelativeLayout>
+
+</RelativeLayout>

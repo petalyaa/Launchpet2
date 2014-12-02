@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/card_shadow"
+    android:elevation="@dimen/generic_elevation_height"
+    android:layout_height="wrap_content" >
+
+    <ImageView
+        android:id="@+id/card_image_image"
+        android:contentDescription="@string/app_drawer_content_description"
+        android:layout_width="400dp"
+        android:layout_height="250dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/placeholder" />
+    
+    <LinearLayout
+        android:id="@+id/card_image_title_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:orientation="horizontal"
+        android:padding="15dp"
+        android:elevation="@dimen/generic_elevation_height"
+        android:background="#F44336"
+        android:gravity="center_vertical"
+        tools:ignore="UseCompoundDrawables"
+        android:layout_below="@+id/card_image_image" >
+        
+        <ImageView
+	        android:id="@+id/card_image_icon_image"
+	        android:layout_width="20dp"
+	        android:layout_height="20dp"
+	        android:contentDescription="@string/app_drawer_content_description"
+	        android:src="@drawable/rss" />
+        
+        <TextView
+            android:id="@+id/card_image_title_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+			android:shadowColor="@android:color/black"    
+			android:alpha=".9"
+			android:shadowDx="1"
+			android:shadowDy="1"
+			android:paddingStart="5dp"
+			android:paddingEnd="0dp"
+			android:textSize="18sp"
+			android:textStyle="bold"
+			android:fontFamily="sans-serif-condensed"
+			android:shadowRadius="1"      
+            android:textColor="@android:color/white"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+        
+	</LinearLayout>
+	
+</RelativeLayout>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Launchpet2</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="tab_tag_home">home</string>
+    <string name="tab_tag_fav">fav</string>
+    <string name="tab_tag_apps">apps</string>
+    <string name="tab_label_home">Home</string>
+    <string name="tab_label_fav">Favorite</string>
+    <string name="tab_label_apps">Applications</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_favorite">FavoriteActivity</string>
+    <string name="title_activity_applications">ApplicationsActivity</string>
+    <string name="profile_image">Profile Image</string>
+    <string name="date_label">Date</string>
+    <string name="app_drawer_content_description">App Drawer</string>
+    <string name="app_list_icon">App List Icon</string>
+    <string name="app_drawer_name">Application Name</string>
+    <string name="search_button_content_desc">Search Button</string>
+    <string name="app_search">Search Apps…</string>
+    <string name="loading_msg">Preparing your news. Please wait…</string>
+    <string name="read_more">Read more &gt;</string>
+    <string name="settings_label">Settings</string>
+    <string name="settings_item_personalize">Personalize</string>
+    <string name="settings_item_feed_source">Feed Source</string>
+    <string name="settings_item_social_network">Social Network</string>
+    <string name="settings_item_app_drawer">App Drawer</string>
+    <string name="settings_item_sync_setting">Sync Setting</string>
+    <string name="settings_item_backup_restore">Backup &amp; Restore</string>
+    <string name="settings_item_advanced">Advanced</string>
+    <string name="button_ok">OK</string>
+    <string name="button_close">Close</string>
+    <string name="pref_header_color">Color</string>
+    <string name="pref_header_general">General</string>
+    <string name="pref_personalize_general_theme">Theme</string>
+    <string name="pref_personalize_general_display_name">Display name</string>
+    <string name="pref_personalize_general_profile_image_select">Profile icon</string>
+    <string name="pref_personalize_general_banner_image_select">Banner image</string>
+    <string name="pref_personalize_general_date_format">Date format</string>
+    <string name="pref_personalize_general_display_date">Display date</string>
+    <string name="pref_personalize_color_override_default">Override theme color</string>
+    <string name="pref_personalize_color_navbar_color">Navigation bar</string>
+    <string name="pref_personalize_color_statusbar_color">Statusbar</string>
+    <string name="pref_personalize_color_toolbar_color">Toolbar</string>
+    <string name="pref_personalize_color_date_text_color">Date text</string>
+    <string name="pref_personalize_color_background_color">Background color</string>
+    <string name="pref_personalize_general_display_date_on_sum">Date will be display in header</string>
+    <string name="pref_personalize_general_display_date_off_sum">Date will not be display in header</string>
+    <string name="pref_personalize_color_override_default_on_sum">Default color will be override</string>
+    <string name="pref_personalize_color_override_default_off_sum">Use default theme color</string>
+    <string name="define_FloatingActionButton"></string>
+    <!-- Author section -->
+    <string name="library_FloatingActionButton_author">Oleksandr Melnykov</string>
+    <string name="library_FloatingActionButton_authorWebsite">https://github.com/makovkastar/FloatingActionButton</string>
+    <!-- Library section -->
+    <string name="library_FloatingActionButton_libraryName">FloatingActionButton</string>
+    <string name="library_FloatingActionButton_libraryDescription">Android Google+ like floating action button which reacts on the list view scrolling events. Becomes visible when the list view is scrolled up and invisible when scrolled down.</string>
+    <string name="library_FloatingActionButton_libraryWebsite">https://github.com/makovkastar/FloatingActionButton</string>
+    <string name="library_FloatingActionButton_libraryVersion">1.0.0</string>
+    <!-- OpenSource section -->
+    <string name="library_FloatingActionButton_isOpenSource">true</string>
+    <string name="library_FloatingActionButton_repositoryLink">https://github.com/makovkastar/FloatingActionButton</string>
+    <!-- License section -->
+    <string name="library_FloatingActionButton_licenseId">mit</string>
+    <!-- Custom variables section -->
+
+    <string name="title_activity_feed_source_setting">FeedSourceSettingActivity</string>
+    <string name="pick_source">Pick Your Source</string>
+    <string name="pick_source_favorite">Favorite</string>
+    <string name="pick_source_manual">Manual</string>
+    <string name="enter_feed_url">Enter Feed URL</string>
+    <string name="pick_your_source">Pick your source</string>
+    <string name="delete_feed_source">Delete</string>
+    <string name="error_invalid_rss_feed_url">Invalid RSS Feed Url</string>
+    <string name="error_feed_already_exist">RSS feed already exist</string>
+    <string name="feed_added_success">Successfully add your feed</string>
+    <string name="application_add_favorite">Add as favorite</string>
+    <string name="application_details">App detail</string>
+    <string name="application_uninstall">Uninstall</string>
+    <string name="error_already_in_favorite">Application already in favorite</string>
+    <string name="error_no_favorite_application_define">No favorite application define. To add, simply open application drawer and long press any application.</string>
+    <string name="remove_from_favorite">Remove from favorite</string>
+    <string name="title_activity_read_feed">ReadFeedActivity</string>
+    <string name="title_activity_feed_image_view_slides">FeedImageViewSlides</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+
+</resources>

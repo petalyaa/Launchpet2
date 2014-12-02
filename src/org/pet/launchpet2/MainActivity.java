@@ -1,0 +1,1164 @@
+package org.pet.launchpet2;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.pet.launchpet2.adapter.ApplicationListAdapter;
+import org.pet.launchpet2.adapter.SettingListAdapter;
+import org.pet.launchpet2.animation.FadeAnimation;
+import org.pet.launchpet2.layout.NowCardLayout;
+import org.pet.launchpet2.listener.BrowserLinkOpenListener;
+import org.pet.launchpet2.listener.HideViewAnimationListener;
+import org.pet.launchpet2.listener.OnCardTouchListener;
+import org.pet.launchpet2.listener.ShowViewAnimationListener;
+import org.pet.launchpet2.model.FeedData;
+import org.pet.launchpet2.model.HomeNewsItem;
+import org.pet.launchpet2.model.LauncherApplication;
+import org.pet.launchpet2.model.LauncherSettingItem;
+import org.pet.launchpet2.model.RSSFeedSource;
+import org.pet.launchpet2.model.FeedData.FeedSource;
+import org.pet.launchpet2.model.HomeNewsItem.NewsType;
+import org.pet.launchpet2.populator.DzoneCardPopulator;
+import org.pet.launchpet2.populator.ImageCardPopulator;
+import org.pet.launchpet2.populator.Populator;
+import org.pet.launchpet2.populator.TextCardPopulator;
+import org.pet.launchpet2.settings.item.AdvancedMenuItem;
+import org.pet.launchpet2.settings.item.AppDrawerMenuItem;
+import org.pet.launchpet2.settings.item.BackupRestoreMenuItem;
+import org.pet.launchpet2.settings.item.FeedSourceMenuItem;
+import org.pet.launchpet2.settings.item.PersonalizeMenuItem;
+import org.pet.launchpet2.settings.item.SocialNetworkMenuItem;
+import org.pet.launchpet2.settings.item.SyncSettingMenuItem;
+import org.pet.launchpet2.util.BitmapUtil;
+import org.pet.launchpet2.util.CommonUtil;
+import org.pet.launchpet2.util.ConfigurationUtil;
+import org.pet.launchpet2.util.StringUtil;
+import org.pet.launchpet2.util.XMLParser;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnCloseListener;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnClosedListener;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenListener;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenedListener;
+
+import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Environment;
+import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
+import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu.Builder;
+import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
+
+@SuppressLint("InflateParams")
+public class MainActivity extends FragmentActivity implements ObservableScrollView.Callbacks, FloatingActionMenu.MenuStateChangeListener {
+
+	private static final String RSS_FEED_JSON_KEY = "rss";
+
+	private static final String HEADER_DATE_FORMAT = "dd MMM yyyy";
+
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat(HEADER_DATE_FORMAT, Locale.getDefault());
+
+	private static final int SELECT_PHOTO = 100;
+
+	private static final int TOOLBAR_ADJUSTER = 600;
+
+	private static final int ACCEPTABLE_PROFILE_IMAGE_SIZE = 200;
+
+	private static final int PROFILE_IMAGE_BORDER_SIZE = 2;
+
+	private static final float BANNER_SPEED = 1.5f;
+
+	private RelativeLayout mStickyView;
+
+	private View mPlaceholderView;
+
+	private ObservableScrollView mObservableScrollView;
+
+	private RelativeLayout topHeaderImage;
+
+	private TextView dateHeaderLabel;
+
+	private ImageView mPrimaryProfileImage;
+
+	private ListView mAppListView;
+
+	private LinearLayout mMainContent;
+
+	private LayoutInflater inflater;
+
+	private NowCardLayout nowCardLayout;
+
+	private View applicationView;
+
+	private View settingsView;
+
+	private View homeView;
+
+	private ListView mSettingListView;
+
+	private SlidingMenu slidingMenu;
+
+	private ImageView mRefreshButton;
+
+	private ImageView mScrollTopButton;
+
+	private RelativeLayout mSecondaryProfileImageHolder;
+	
+	private FloatingActionMenu mFloatingActionMenu;
+
+	private ImageView mSecondaryProfileImage;
+
+	private Animation mAnimSecondaryProfileShow;
+
+	private Animation mAnimSecondaryProfileHide;
+
+	private Animation mAnimPrimaryProfileShow;
+
+	private Animation mAnimPrimaryProfileHide;
+
+	private Animation mAnimRefreshBtnHide;
+
+	private Animation mAnimRefreshBtnShow;
+
+	private ImageButton mFloatingFavButton;
+
+	private SmoothProgressBar mLoadingProgressbar;
+
+	private Builder mBottomMenu;
+
+	private static List<LauncherApplication> launcherAppsList = new ArrayList<LauncherApplication>();
+
+	private boolean isSecondaryProfileImageVisible = false;
+
+	@SuppressLint({ "InflateParams", "ClickableViewAccessibility" })
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_PACKAGE_ADDED);
+        filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+        filter.addDataScheme("package");
+        BroadcastReceiver receiver = new ApplicationBroadcastReceiver();
+        registerReceiver(receiver, filter);
+
+		mObservableScrollView = (ObservableScrollView) findViewById(R.id.scroll_view);
+		mObservableScrollView.setCallbacks(this);
+
+		mStickyView = (RelativeLayout) findViewById(R.id.top_toolbar);
+		mPlaceholderView = findViewById(R.id.placeholder);
+		topHeaderImage = (RelativeLayout) findViewById(R.id.top_header_image);
+		dateHeaderLabel = (TextView) findViewById(R.id.date_header_label);
+		mPrimaryProfileImage = (ImageView) findViewById(R.id.profile_image);
+		mMainContent = (LinearLayout) findViewById(R.id.main_content);
+		mRefreshButton = (ImageView) findViewById(R.id.top_toolbar_refresh_button);
+		mScrollTopButton = (ImageView) findViewById(R.id.top_toolbar_scroll_top_button);
+		mSecondaryProfileImageHolder = (RelativeLayout) findViewById(R.id.floating_profile_image_holder);
+		mSecondaryProfileImage = (ImageView) findViewById(R.id.secondary_profile_image);
+		//        mFloatingFavBtn = (FloatingActionButton) findViewById(R.id.floating_fav_button);
+		//        mFloatingFavMenuHolder = (RelativeLayout) findViewById(R.id.floating_fav_menu_view);
+		mLoadingProgressbar = (SmoothProgressBar) findViewById(R.id.toolbar_loading_progressbar);
+		mFloatingFavButton = (ImageButton) findViewById(R.id.floating_favorite_button);
+
+		mScrollTopButton.setVisibility(View.INVISIBLE);
+		mLoadingProgressbar.setVisibility(View.INVISIBLE);
+
+		mAnimSecondaryProfileShow = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_left_to_right);
+		mAnimSecondaryProfileHide = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_right_to_left);
+		mAnimPrimaryProfileShow = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_left_to_right);
+		mAnimPrimaryProfileHide = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_right_to_left);
+		mAnimRefreshBtnShow = FadeAnimation.getFadeInAnimation(this);
+		mAnimRefreshBtnHide = FadeAnimation.getFadeOutAnimation(this);
+
+		mSecondaryProfileImageHolder.setVisibility(View.INVISIBLE);
+		inflater = LayoutInflater.from(getApplicationContext());
+		applicationView = inflater.inflate(R.layout.activity_applications, null);
+		settingsView = inflater.inflate(R.layout.activity_settings, null);
+		homeView = inflater.inflate(R.layout.activity_home, null);
+		nowCardLayout = (NowCardLayout) homeView.findViewById(R.id.now_card_layout);
+		
+		populateSettings();
+		populateHomeCard();
+		reloadFavorite();
+
+		mMainContent.removeAllViews();
+		mMainContent.addView(homeView);
+		mAppListView = (ListView) applicationView.findViewById(R.id.application_list_view);
+		slidingMenu = new SlidingMenu(this);
+		slidingMenu.setMode(SlidingMenu.LEFT_RIGHT);
+		slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+		slidingMenu.setShadowWidth(20);
+		slidingMenu.setShadowDrawable(R.drawable.slide_drawer_shadow_left);
+		slidingMenu.setSecondaryShadowDrawable(R.drawable.slide_drawer_shadow_right);
+		slidingMenu.setBehindOffsetRes(R.dimen.behind_menu_offset);
+		slidingMenu.setFadeDegree(0.35f);
+		slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+		slidingMenu.setMenu(settingsView);
+		slidingMenu.setSecondaryMenu(applicationView);
+		slidingMenu.setOnCloseListener(new OnSlidingCloseListener());
+		slidingMenu.setOnOpenListener(new OnSlidingOpenListener());
+		slidingMenu.setOnClosedListener(new OnSlidingClosedListener());
+		slidingMenu.setOnOpenedListener(new OnSlidingOpenedListener());
+
+		Date currentDate = new Date();
+		dateHeaderLabel.setText(dateFormat.format(currentDate));
+		new FetchApplicationListTask().execute();
+
+		mObservableScrollView.getViewTreeObserver().addOnGlobalLayoutListener(
+				new ViewTreeObserver.OnGlobalLayoutListener() {
+					@Override
+					public void onGlobalLayout() {
+						onScrollChanged(mObservableScrollView.getScrollY());
+					}
+				});
+
+		mRefreshButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				populateHomeCard();
+			}
+		});
+
+		mScrollTopButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				scrollToTop();
+			}
+		});
+
+		mAnimSecondaryProfileHide.setAnimationListener(new AnimationListener() {
+
+			@Override
+			public void onAnimationStart(Animation animation) {
+				mPrimaryProfileImage.startAnimation(mAnimPrimaryProfileShow);
+			}
+
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+
+			}
+
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				mSecondaryProfileImageHolder.setVisibility(View.INVISIBLE);
+			}
+		});
+
+		mAnimSecondaryProfileShow.setAnimationListener(new AnimationListener() {
+
+			@Override
+			public void onAnimationStart(Animation animation) {
+				mPrimaryProfileImage.startAnimation(mAnimPrimaryProfileHide);
+			}
+
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+
+			}
+
+			@Override
+			public void onAnimationEnd(Animation arg0) {
+				mSecondaryProfileImageHolder.setVisibility(View.VISIBLE);
+			}
+		});
+
+		initUserPreference();
+
+		mAnimPrimaryProfileHide.setAnimationListener(new HideViewAnimationListener(mPrimaryProfileImage));
+		mAnimPrimaryProfileShow.setAnimationListener(new ShowViewAnimationListener(mPrimaryProfileImage));
+		mAnimRefreshBtnHide.setAnimationListener(new HideViewAnimationListener(mRefreshButton));
+		mAnimRefreshBtnShow.setAnimationListener(new ShowViewAnimationListener(mRefreshButton));
+
+		//        mFloatingFavBtn.setOnClickListener(new OnFavButtonClick());
+		//        mFloatingFavBtn.setOnTouchListener(new OnFavButtonTouch());
+	}
+
+	private void initUserPreference() {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		reloadAllBitmap();
+		reloadColors(prefs);
+
+		boolean isDateDisplay = prefs.getBoolean("personalize_general_display_date", true);
+		if(isDateDisplay) {
+			String dateFormat = prefs.getString("personalize_general_date_format", HEADER_DATE_FORMAT);
+			Date date = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.getDefault());
+			dateHeaderLabel.setText(sdf.format(date));
+			dateHeaderLabel.setVisibility(View.VISIBLE);
+		} else {
+			dateHeaderLabel.setVisibility(View.INVISIBLE);
+		}
+
+		if(isRequireFeedUpdate())
+			populateHomeCard();
+
+	}
+
+	private void scrollToTop() {
+		mObservableScrollView.fullScroll(ScrollView.FOCUS_UP);
+	}
+
+	//	private void hideFavMenu() {
+	//		isFavMenuVisible = false;
+	//		mFloatingFavMenuHolder.setVisibility(View.INVISIBLE);
+	//	}
+	//	
+	//	private void showFavMenu() {
+	//		if(getFavoriteApplicationList().size() <= 0) {
+	//			Toast.makeText(getApplicationContext(), getString(R.string.error_no_favorite_application_define), Toast.LENGTH_LONG).show();
+	//		} else {
+	//			isFavMenuVisible = true;
+	//			mFloatingFavMenuHolder.setVisibility(View.VISIBLE);
+	//		}
+	//	}
+
+	@Override
+	public void onBackPressed() {
+		if(slidingMenu.isMenuShowing())
+			slidingMenu.toggle();
+	}
+
+
+	private void populateSettings() {
+		final List<LauncherSettingItem> launcherSettingItems = new ArrayList<LauncherSettingItem>();
+		launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_palette, getString(R.string.settings_item_personalize), new PersonalizeMenuItem(getApplicationContext())));
+		launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_input, getString(R.string.settings_item_feed_source), new FeedSourceMenuItem(getApplicationContext())));
+		//launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_account_child, getString(R.string.settings_item_social_network), new SocialNetworkMenuItem()));
+		//launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_apps, getString(R.string.settings_item_app_drawer), new AppDrawerMenuItem()));
+		//launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_sync, getString(R.string.settings_item_sync_setting), new SyncSettingMenuItem()));
+		//launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_settings_backup_restore, getString(R.string.settings_item_backup_restore), new BackupRestoreMenuItem()));
+		//launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_adb, getString(R.string.settings_item_advanced), new AdvancedMenuItem()));
+		mSettingListView = (ListView) settingsView.findViewById(R.id.settings_list_view);
+		final SettingListAdapter adapter = new SettingListAdapter(getApplicationContext(), launcherSettingItems);
+		mSettingListView.setAdapter(adapter);
+		mSettingListView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				LauncherSettingItem item = launcherSettingItems.get(position);
+				item.getAction().performClick();
+			}
+		});
+	}
+
+	private void showNewsFeedLoading() {
+		mLoadingProgressbar.setVisibility(View.VISIBLE);
+		if(mRefreshButton.getVisibility() == View.VISIBLE)
+			mRefreshButton.startAnimation(mAnimRefreshBtnHide);
+	}
+
+	private void hideNewsFeedLoading() {
+		mLoadingProgressbar.setVisibility(View.INVISIBLE);
+		if(mRefreshButton.getVisibility() != View.VISIBLE)
+			mRefreshButton.startAnimation(mAnimRefreshBtnShow);
+	}
+
+	private String getExistingSourceFromSharedPreference() {
+		String sourceJson = null;
+		SharedPreferences pref = this.getSharedPreferences("feed_settings", Context.MODE_PRIVATE);
+		sourceJson = pref.getString("feed_source", "");
+		SharedPreferences.Editor editor = pref.edit();
+		editor.putString("feed_source", sourceJson);
+		editor.putBoolean("feed_update", false);
+		editor.commit();
+		return sourceJson;
+	}
+
+	private boolean isRequireFeedUpdate() {
+		SharedPreferences pref = this.getSharedPreferences("feed_settings", Context.MODE_PRIVATE);
+		return pref.getBoolean("feed_update", true);
+	}
+
+	private List<RSSFeedSource> getExistingFeedSource() {
+		List<RSSFeedSource> list = new ArrayList<RSSFeedSource>();
+		String jsonStr = getExistingSourceFromSharedPreference();
+		if(!StringUtil.isNullEmptyString(jsonStr)) {
+			try {
+				JSONArray jsonArray = new JSONArray(jsonStr);
+				for(int i = 0; i < jsonArray.length(); i++) {
+					JSONObject favJsonObj = jsonArray.getJSONObject(i);
+					String name = favJsonObj.getString("name");
+					String feedUrl = favJsonObj.getString("feedUrl");
+					String webUrl = favJsonObj.getString("webUrl");
+					boolean isFavorite = favJsonObj.getBoolean("isFavorite");
+					long dateAdded = favJsonObj.getLong("dateAdded");
+					RSSFeedSource source = new RSSFeedSource();
+					source.setName(name);
+					source.setUrl(webUrl);
+					source.setFeedUrl(feedUrl);
+					source.setFavorite(isFavorite);
+					source.setDateAdded(dateAdded);
+					list.add(source);
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		Collections.sort(list);
+		return list;
+	}
+
+	@SuppressLint("InflateParams")
+	private void populateHomeCard() {
+		JSONArray rssList = new JSONArray();
+		List<RSSFeedSource> sourceList = getExistingFeedSource();
+		if(sourceList != null && sourceList.size() > 0) {
+			for(RSSFeedSource source : sourceList) {
+				rssList.put(source.getFeedUrl());
+			}
+		}
+		JSONObject jsonObj = new JSONObject();
+		try {
+			jsonObj.put(RSS_FEED_JSON_KEY, rssList);
+			FetchNewsTask task = new FetchNewsTask();
+			task.execute(jsonObj.toString());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) { 
+		super.onActivityResult(requestCode, resultCode, imageReturnedIntent); 
+
+		switch(requestCode) { 
+		case SELECT_PHOTO:
+			if(resultCode == RESULT_OK){  
+				Uri selectedImage = null;
+				Bitmap image = null;
+				try {
+					selectedImage = imageReturnedIntent.getData();
+					image = BitmapUtil.decodeUriAndResize(selectedImage, getContentResolver(), ACCEPTABLE_PROFILE_IMAGE_SIZE);
+					mPrimaryProfileImage.setImageBitmap(BitmapUtil.getCircularBitmapWithWhiteBorder(image, PROFILE_IMAGE_BORDER_SIZE, Color.WHITE));
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	@Override
+	public void onScrollChanged(int scrollY) {
+		float translationY = mStickyView.getTranslationY();
+		int stickyViewTop = mStickyView.getTop();
+		if(Math.max(mPlaceholderView.getTop(), scrollY) >= stickyViewTop) {
+			translationY = +(scrollY - stickyViewTop);
+		} else {
+			translationY = -(scrollY / TOOLBAR_ADJUSTER);
+		}
+
+		mStickyView.setTranslationY(translationY);
+		mSecondaryProfileImageHolder.setTranslationY(translationY);
+		mSecondaryProfileImageHolder.setTranslationZ(16f);
+		if(translationY > 0) { // This indicate toolbar already reach top
+			if(!isSecondaryProfileImageVisible)
+				mSecondaryProfileImageHolder.startAnimation(mAnimSecondaryProfileShow);
+			isSecondaryProfileImageVisible = true;
+			mScrollTopButton.setVisibility(View.VISIBLE);
+		} else {
+			if(isSecondaryProfileImageVisible)
+				mSecondaryProfileImageHolder.startAnimation(mAnimSecondaryProfileHide);
+			isSecondaryProfileImageVisible = false;
+			mScrollTopButton.setVisibility(View.INVISIBLE);
+		}
+		float bannerYTranslation = scrollY / BANNER_SPEED;
+		topHeaderImage.setTranslationY(bannerYTranslation);
+	}
+
+	@Override
+	public void onScrollDown() {
+		//showFavButton();
+	}
+
+	@Override
+	public void onScrollUp() {
+		//hideFavButton();
+	}
+
+	@Override
+	public boolean onDownMotionEvent() {
+		if(mFloatingActionMenu != null && mFloatingActionMenu.isOpen())
+			mFloatingActionMenu.close(true);
+		return true;
+	}
+
+	@Override
+	public boolean onCancelMotionEvent() {
+		return true;
+		//		return !isFavMenuVisible;
+	}
+
+	@Override
+	public boolean onUpMotionEvent() {
+		return true;
+		//		return !isFavMenuVisible;
+	}
+
+	@Override
+	public boolean onActionMoveEvent() {
+		return true;
+		//		return !isFavMenuVisible && !isFavButtonTouch;
+	}
+	
+	private class OnSlidingClosedListener implements OnClosedListener {
+
+		@Override
+		public void onClosed() {
+			initUserPreference();
+		}
+		
+	}
+	
+	private class OnSlidingOpenedListener implements OnOpenedListener {
+
+		@Override
+		public void onOpened() {
+			
+		}
+		
+	}
+	
+
+
+	private class OnSlidingCloseListener implements OnCloseListener {
+
+		@Override
+		public void onClose() {
+			
+		}
+
+	}
+	
+	private class OnSlidingOpenListener implements OnOpenListener {
+
+		@Override
+		public void onOpen() {
+			if(isMenuOpen) {
+				if(mFloatingActionMenu != null && mFloatingActionMenu.isOpen())
+					mFloatingActionMenu.close(true);
+			}
+		}
+		
+	}
+
+	private void reloadColors(SharedPreferences prefs) {
+
+		boolean isNeedOverride = prefs.getBoolean("personalize_color_override_default", false);
+		if(isNeedOverride) {
+			int navbarColor = prefs.getInt("personalize_color_navbar_color", Color.TRANSPARENT);
+			int dateTextColor = prefs.getInt("personalize_color_date_text_color", 0);
+			int statusbarColor = prefs.getInt("personalize_color_statusbar_color", Color.TRANSPARENT);
+			int toolbarColor = prefs.getInt("personalize_color_toolbar_color", Color.BLACK);
+			int backgroundColor = prefs.getInt("personalize_color_background_color", Color.WHITE);
+			getWindow().setNavigationBarColor(navbarColor);
+			getWindow().setStatusBarColor(statusbarColor);
+			mStickyView.setBackgroundColor(toolbarColor);
+			dateHeaderLabel.setTextColor(dateTextColor);
+			mMainContent.setBackgroundColor(backgroundColor);
+		} else {
+			String themeSelected = prefs.getString("personalize_general_theme", null);
+			if(!StringUtil.isNullEmptyString(themeSelected)) {
+				int arrayResId = getArrayResId(getApplicationContext(), "theme_" + themeSelected);
+				if(arrayResId > 0) {
+					String[] mTestArray = getResources().getStringArray(arrayResId);
+					int statusbarColor = Color.parseColor(mTestArray[9]);
+					int toolbarColor = Color.parseColor(mTestArray[8]);
+					int backgroundColor = Color.parseColor(mTestArray[0]);
+					int dateTextColor = Color.parseColor(mTestArray[0]);
+					getWindow().setStatusBarColor(statusbarColor);
+					getWindow().setNavigationBarColor(Color.BLACK);
+					mStickyView.setBackgroundColor(toolbarColor);
+					mObservableScrollView.setBackgroundColor(backgroundColor);
+					mMainContent.setBackgroundColor(backgroundColor);
+					dateHeaderLabel.setTextColor(dateTextColor);
+				}
+			}
+		}
+	}
+
+	public static int getArrayResId(Context context, String name) {
+		return context.getResources().getIdentifier(name, "array", context.getPackageName());
+	}
+
+	private void reloadAllBitmap() {
+		Bitmap icon = null;
+		Bitmap bannerImage = null;
+		String root = Environment.getExternalStorageDirectory().toString();
+		File myDir = new File(root + "/" + ConfigurationUtil.APPLICATION_SD_DIRECTORY + "/" + ConfigurationUtil.SUBDIRECTORY_MEDIA); 
+		if(!myDir.exists())
+			return;
+		File profileImageFile = new File(myDir, ConfigurationUtil.FILENAME_PROFILE_IMAGE);
+		File bannerImageFile = new File(myDir, ConfigurationUtil.FILENAME_BANNER_IMAGE);
+		if(profileImageFile.exists())
+			icon = BitmapUtil.getBitmapFromFile(profileImageFile); 
+		if(bannerImageFile.exists())
+			bannerImage = BitmapUtil.getBitmapFromFile(bannerImageFile);
+		if(bannerImage != null) {
+			BitmapDrawable d = new BitmapDrawable(getResources(), bannerImage);
+			topHeaderImage.setBackground(d);
+		}
+		if(icon == null)
+			icon = BitmapFactory.decodeResource(getResources(), R.drawable.launcher);
+		Bitmap finalProfileImage = BitmapUtil.getCircularBitmapWithWhiteBorder(icon, PROFILE_IMAGE_BORDER_SIZE, Color.WHITE);
+		mPrimaryProfileImage.setImageBitmap(finalProfileImage);
+		mSecondaryProfileImage.setImageBitmap(finalProfileImage);
+	}
+
+	private class FetchApplicationListTask extends AsyncTask<LauncherApplication, Void, List<LauncherApplication>> {
+
+		@Override
+		protected List<LauncherApplication> doInBackground(LauncherApplication... params) {
+			launcherAppsList.clear();
+			PackageManager pm = getPackageManager();
+			Intent i = new Intent(Intent.ACTION_MAIN, null);
+			i.addCategory(Intent.CATEGORY_LAUNCHER);
+			//get a list of installed apps.
+			List<ResolveInfo> availableActivities = pm.queryIntentActivities(i, 0);
+			for(ResolveInfo ri:availableActivities){
+				LauncherApplication app = new LauncherApplication();
+				app.setPackageName(ri.activityInfo.packageName);
+				app.setName(ri.loadLabel(pm).toString());
+				app.setIcon(ri.activityInfo.loadIcon(pm));
+				launcherAppsList.add(app);
+			}
+			Collections.sort(launcherAppsList);
+			return launcherAppsList;
+		}
+
+		@Override
+		protected void onPostExecute(List<LauncherApplication> homeNewsItemList) {
+			final ApplicationListAdapter adapter = new ApplicationListAdapter(launcherAppsList, getApplicationContext());
+			mAppListView.setAdapter(adapter);
+			mAppListView.setOnItemClickListener(new OnItemClickListener() {
+
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+					position = adapter.getRealPosition(position);
+					LauncherApplication app = launcherAppsList.get(position);
+					Intent LaunchIntent = getPackageManager().getLaunchIntentForPackage(app.getPackageName());
+					startActivity(LaunchIntent);
+				}
+			});
+
+			mAppListView.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+				@Override
+				public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+					position = adapter.getRealPosition(position);
+					final LauncherApplication app = launcherAppsList.get(position);
+					AlertDialog.Builder builderSingle = new AlertDialog.Builder(MainActivity.this);
+					final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.select_dialog_singlechoice);
+					arrayAdapter.add(getString(R.string.application_add_favorite));
+					arrayAdapter.add(getString(R.string.application_details));
+					arrayAdapter.add(getString(R.string.application_uninstall));
+					builderSingle.setNegativeButton(getString(R.string.button_close), null);
+					builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							switch(which) {
+							case 0 :
+								addApplicationAsFavorite(app);
+								break;
+							case 1 : 
+								try {
+									Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+									intent.setData(Uri.parse("package:" + app.getPackageName()));
+									startActivity(intent);
+								} catch ( ActivityNotFoundException e ) {
+									Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS);
+									startActivity(intent);
+								}
+								break;
+							case 2 :
+								Intent intent = new Intent(Intent.ACTION_DELETE);
+								intent.setData(Uri.parse("package:" + app.getPackageName()));
+								startActivity(intent);
+								break;
+							}
+						}
+					});
+					builderSingle.show();
+					return true;
+				}
+			});
+			final ImageView closeIcon = (ImageView) applicationView.findViewById(R.id.application_close_icon);
+			final ImageView appSearch = (ImageView) applicationView.findViewById(R.id.application_search_icon);
+			final EditText searchCriteria = (EditText) applicationView.findViewById(R.id.search_text);
+			final InputMethodManager inputMethodManager = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+			appSearch.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					appSearch.setVisibility(View.GONE);
+					closeIcon.setVisibility(View.VISIBLE);
+					closeIcon.bringToFront();
+					searchCriteria.setVisibility(View.VISIBLE);
+					searchCriteria.setFocusableInTouchMode(true);
+					searchCriteria.requestFocus();
+					inputMethodManager.showSoftInput(searchCriteria, InputMethodManager.SHOW_IMPLICIT);
+				}
+			});
+			closeIcon.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					appSearch.setVisibility(View.VISIBLE);
+					closeIcon.setVisibility(View.INVISIBLE);
+					searchCriteria.setVisibility(View.INVISIBLE);
+					searchCriteria.setText("");
+				}
+			});
+			searchCriteria.addTextChangedListener(new TextWatcher() {
+
+				@Override
+				public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+				}
+
+				@Override
+				public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+				}
+
+				@Override
+				public void afterTextChanged(Editable s) {
+					String searchFor = s.toString();
+					for(int i = 0; i < launcherAppsList.size(); i++) {
+						LauncherApplication app = launcherAppsList.get(i);
+						String appName = app.getName().toLowerCase(Locale.getDefault());
+						if(appName.contains(searchFor)) {
+							//							Log.v("Launchpet2", "Showing : " + appName);
+							adapter.show(i);
+						} else {
+							//							Log.v("Launchpet2", "Hiding : " + appName);
+							adapter.hide(i);
+						}
+					}
+				}
+			});
+		}
+
+	}
+
+	private List<LauncherApplication> getFavoriteApplicationList() {
+		List<LauncherApplication> appList = new ArrayList<LauncherApplication>();
+		SharedPreferences pref = getSharedPreferences(ConfigurationUtil.SHARED_PREFERENCE_KEY_APPLICATION_SETTING, MODE_PRIVATE);
+		String jsonStr = pref.getString(ConfigurationUtil.SHARED_PREFERENCE_KEY_FAVORITE, "");
+		if(!StringUtil.isNullEmptyString(jsonStr)) {
+			try {
+				JSONArray jsonArr = new JSONArray(jsonStr);
+				if(jsonArr != null && jsonArr.length() > 0) {
+					for(int i = 0; i < jsonArr.length(); i++) {
+						JSONObject jsonObj = jsonArr.getJSONObject(i);
+						LauncherApplication app = new LauncherApplication();
+						app.setName(jsonObj.getString("name"));
+						app.setPackageName(jsonObj.getString("packageName"));
+						app.setIconResId(jsonObj.getInt("iconResId"));
+						appList.add(app);
+					}
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return appList;
+	}
+
+	private void addApplicationAsFavorite(LauncherApplication app) {
+		List<LauncherApplication> existingFavAppList = getFavoriteApplicationList();
+		if(existingFavAppList != null && existingFavAppList.size() > 0) {
+			for(LauncherApplication existingApp : existingFavAppList) {
+				String existingPackageName = existingApp.getPackageName();
+				if(app.getPackageName().equals(existingPackageName)) {
+					Toast.makeText(getApplicationContext(), getString(R.string.error_already_in_favorite), Toast.LENGTH_SHORT).show();
+					return;
+				}
+			}
+		}
+		if(existingFavAppList == null)
+			existingFavAppList = new ArrayList<LauncherApplication>();
+		existingFavAppList.add(app);
+		writeFavoriteApplicationList(existingFavAppList);
+		reloadFavorite();
+	}
+	
+	public void writeFavoriteApplicationList(List<LauncherApplication> favAppList) {
+		JSONArray jsonArray = new JSONArray();
+		for(LauncherApplication appList : favAppList) {
+			JSONObject jsonObj = new JSONObject();
+			try {
+				jsonObj.put("name", appList.getName());
+				jsonObj.put("packageName", appList.getPackageName());
+				jsonObj.put("iconResId", appList.getIconResId());
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			jsonArray.put(jsonObj);
+		}
+		String jsonStr = jsonArray.toString();
+		SharedPreferences pref = getSharedPreferences(ConfigurationUtil.SHARED_PREFERENCE_KEY_APPLICATION_SETTING, MODE_PRIVATE);
+		SharedPreferences.Editor editor = pref.edit();
+		editor.putString(ConfigurationUtil.SHARED_PREFERENCE_KEY_FAVORITE, jsonStr);
+		editor.commit();
+	}
+
+	private void reloadFavorite() {
+		List<LauncherApplication> appList = getFavoriteApplicationList();
+		if(appList != null && appList.size() > 0) {
+			SubActionButton.Builder rLSubBuilder = new SubActionButton.Builder(this);
+			rLSubBuilder.setTheme(FloatingActionButton.THEME_DARK);
+			mBottomMenu = new FloatingActionMenu.Builder(this);
+			for(LauncherApplication app : appList) {
+				ImageView imageView = new ImageView(this);
+				try {
+					Drawable icon = getPackageManager().getApplicationIcon(app.getPackageName());
+					imageView.setImageDrawable(icon);
+				} catch (NameNotFoundException e) {
+					e.printStackTrace();
+				}
+				mBottomMenu.addSubActionView(rLSubBuilder.setContentView(imageView).build(), 150, 150);
+				imageView.setOnClickListener(new OnFavoriteMenuItemClick(app));
+				imageView.setOnLongClickListener(new OnFavoriteMenuItemLongClick(app));
+			}
+			mBottomMenu.setRadius(400);
+			mBottomMenu.attachTo(mFloatingFavButton);
+			mBottomMenu.setStartAngle(170);
+			mBottomMenu.setEndAngle(275);
+			mBottomMenu.setStateChangeListener(this);
+			mFloatingActionMenu = mBottomMenu.build();
+		}
+	}
+
+	private class FetchNewsTask extends AsyncTask<String, Void, List<HomeNewsItem>> {
+
+		@SuppressLint("InflateParams")
+		@Override
+		protected List<HomeNewsItem> doInBackground(String... arg0) {
+			JSONArray rssFeedUrlArray = null;
+			try {
+				JSONObject jsonObj = new JSONObject(arg0[0]);
+				rssFeedUrlArray = jsonObj.getJSONArray(RSS_FEED_JSON_KEY);
+			} catch (JSONException e1) {
+				e1.printStackTrace();
+			}
+
+			List<FeedData> feedDataList = new ArrayList<FeedData>();
+			if(rssFeedUrlArray != null) {
+				for(int i = 0; i < rssFeedUrlArray.length(); i++) {
+					InputStream stream = null;
+					try {
+						String feedUrl = rssFeedUrlArray.getString(i);
+						URL url = new URL(feedUrl);
+						HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+						conn.setReadTimeout(10000 /* milliseconds */);
+						conn.setConnectTimeout(15000 /* milliseconds */);
+						conn.setRequestMethod("GET");
+						conn.setDoInput(true);
+						// Starts the query
+						conn.connect();
+						stream = conn.getInputStream();
+						XmlPullParserFactory xmlFactoryObject = XmlPullParserFactory.newInstance();
+						XmlPullParser myparser = xmlFactoryObject.newPullParser();
+						myparser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+						myparser.setInput(stream, null);
+						XMLParser parser = new XMLParser();
+						feedDataList.addAll(parser.parseXMLAndStoreIt(myparser));
+					} catch (JSONException e) {
+						e.printStackTrace();
+					} catch (XmlPullParserException e) {
+						e.printStackTrace();
+					} catch (MalformedURLException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					} finally {
+						try {
+							if(stream != null)
+								stream.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+			List<HomeNewsItem> homeNewsItemList = new ArrayList<HomeNewsItem>(feedDataList.size());
+			// Feed data
+			SimpleDateFormat rssDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.getDefault());
+			for(FeedData rssFeedData : feedDataList) {
+				NewsType type = NewsType.TEXT;
+				HomeNewsItem item = new HomeNewsItem();
+				item.setContent(rssFeedData.getDescription());
+				try {
+					item.setDate(rssDateFormat.parse(rssFeedData.getPubDate()));
+				} catch (ParseException e) {
+					item.setDate(new Date());
+				}
+
+				String iconUrl = null;
+				String thumbnailUrl = null;
+
+				// Hardcoded icon for dzone
+				FeedSource source = rssFeedData.getSource();
+				if(FeedSource.DZONE == source) {
+					iconUrl = rssFeedData.get("dz:userimage");
+					thumbnailUrl = rssFeedData.get("dz:thumbnail");
+					type = NewsType.DZONE;
+				} else {
+					String content = rssFeedData.getDescription();
+					Document doc = Jsoup.parse(content);
+					Elements imgs = doc.getElementsByTag("img");
+					List<String> imageSrcUrlList = new ArrayList<String>();
+					for (Element el : imgs) {
+						String src = el.absUrl("src");
+						if(thumbnailUrl == null)
+							thumbnailUrl = src;
+						imageSrcUrlList.add(src);
+						type = NewsType.IMAGE;
+						item.setImageUrlList(imageSrcUrlList);
+					}
+
+				}
+				item.setIconUrl(iconUrl);
+				item.setImageUrl(thumbnailUrl);
+				item.setTitle(rssFeedData.getTitle());
+				item.setType(type);
+				item.putAll(rssFeedData);
+				homeNewsItemList.add(item);
+			}
+			Collections.sort(homeNewsItemList);
+			CommonUtil.serializeHomeNewsObjectList(homeNewsItemList);
+			return homeNewsItemList;
+		}
+
+		@Override
+		protected void onPreExecute() {
+			List<HomeNewsItem> homeNewsItemList = CommonUtil.deserializeHomeNewsObject();
+			if(homeNewsItemList != null && homeNewsItemList.size() > 0) {
+				for(HomeNewsItem item : homeNewsItemList) {
+					addNewsToView(item);
+				}
+			}
+			showNewsFeedLoading();
+		}
+
+		@SuppressLint("InflateParams")
+		@Override
+		protected void onPostExecute(List<HomeNewsItem> homeNewsItemList) {
+			nowCardLayout.removeAllViews();
+			if(homeNewsItemList != null && homeNewsItemList.size() > 0) {
+				for(HomeNewsItem item : homeNewsItemList) {
+					addNewsToView(item);
+				}
+			}
+			hideNewsFeedLoading();
+		}
+
+	}
+
+	private void addNewsToView(HomeNewsItem item) {
+		NewsType type = item.getType();
+		View card = null;
+		Bitmap imageNewsBmp = item.getImage();
+		Populator populator = null;
+		if(type == NewsType.IMAGE && (imageNewsBmp == null && StringUtil.isNullEmptyString(item.getImageUrl()))) // If type is image but the image is null, we change the type to text
+			type = NewsType.TEXT;
+
+		if(type == NewsType.TEXT)
+			populator = new TextCardPopulator(item);
+		else if (type == NewsType.IMAGE)
+			populator = new ImageCardPopulator(item);
+		else if (type == NewsType.DZONE)
+			populator = new DzoneCardPopulator(item, new BrowserLinkOpenListener(getApplicationContext()));
+		else
+			return;
+		card = populator.populateView(inflater);
+		if(card != null) {
+			card.setOnClickListener(new OnCardClickListener(item));
+			card.setOnTouchListener(new OnCardTouchListener(card, mFloatingActionMenu));
+			View spacerView = inflater.inflate(R.layout.spacer, null);
+			nowCardLayout.addView(card);
+			nowCardLayout.addView(spacerView);
+		}
+	}
+	
+	private boolean isMenuOpen = false;
+
+	@Override
+	public void onMenuOpened(FloatingActionMenu menu) {
+		Log.v("Launchpet2", "Menu opened...");
+		isMenuOpen = true;
+	}
+
+	@Override
+	public void onMenuClosed(FloatingActionMenu menu) {
+		Log.v("Launchpet2", "Menu closed...");
+		isMenuOpen = false;
+	}
+	
+	public class OnFavoriteMenuItemClick implements OnClickListener {
+		
+		private LauncherApplication favApp;
+		
+		public OnFavoriteMenuItemClick(LauncherApplication favApp) {
+			this.favApp = favApp;
+		}
+
+		@Override
+		public void onClick(View v) {
+			if(mFloatingActionMenu != null)
+				mFloatingActionMenu.close(true);
+			String packageName = favApp.getPackageName();
+			Intent LaunchIntent = getPackageManager().getLaunchIntentForPackage(packageName);
+			startActivity(LaunchIntent);
+		}
+		
+	}
+	
+	public class OnFavoriteMenuItemLongClick implements OnLongClickListener {
+
+		private LauncherApplication favApp;
+		
+		public OnFavoriteMenuItemLongClick(LauncherApplication favApp) {
+			this.favApp = favApp;
+		}
+		
+		@Override
+		public boolean onLongClick(View arg0) {
+			if(mFloatingActionMenu != null)
+				mFloatingActionMenu.close(true);
+			AlertDialog.Builder builderSingle = new AlertDialog.Builder(MainActivity.this);
+			final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.select_dialog_singlechoice);
+			arrayAdapter.add(getString(R.string.remove_from_favorite));
+			builderSingle.setNegativeButton(getString(R.string.button_close), null);
+			builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					switch(which) {
+					case 0 :
+						List<LauncherApplication> existingFavorite = getFavoriteApplicationList();
+						Iterator<LauncherApplication> existingFavoriteIter = existingFavorite.iterator();
+						while(existingFavoriteIter.hasNext()) {
+							LauncherApplication app = existingFavoriteIter.next();
+							String packageName = app.getPackageName();
+							String thisPackageName = favApp.getPackageName();
+							if(packageName.equalsIgnoreCase(thisPackageName))
+								existingFavoriteIter.remove();
+						}
+						writeFavoriteApplicationList(existingFavorite);
+						reloadFavorite();
+						break;
+					}
+				}
+			});
+			builderSingle.show();
+			return true;
+		}
+		
+	}
+	
+	private class OnCardClickListener implements OnClickListener {
+
+		private HomeNewsItem item;
+		
+		public OnCardClickListener(HomeNewsItem item) {
+			this.item = item;
+		}
+
+		@Override
+		public void onClick(View v) {
+			if(mFloatingActionMenu.isOpen())
+				mFloatingActionMenu.close(true);
+			Bundle b = new Bundle();
+			b.putSerializable("home_news_item", item);
+			Intent readIntent = new Intent(getApplicationContext(), ReadFeedActivity.class);
+			readIntent.putExtras(b);
+			startActivity(readIntent);
+		}
+		
+	}
+	
+	private class ApplicationBroadcastReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Log.v("Launchpet2"," test for application install/uninstall");
+			new FetchApplicationListTask().execute();
+		}
+		
+	}
+
+}

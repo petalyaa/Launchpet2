@@ -1,0 +1,99 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory
+        android:key="pref_personalize_general"
+        android:title="@string/pref_header_general" >
+        
+        <ListPreference
+            android:defaultValue="-1"
+            android:entries="@array/pref_theme_list_title"
+            android:entryValues="@array/pref_theme_list_value"
+            android:key="personalize_general_theme"
+            android:negativeButtonText="@string/button_close"
+            android:positiveButtonText="@string/button_ok"
+            android:title="@string/pref_personalize_general_theme" />
+        
+        <EditTextPreference
+            android:capitalize="words"
+            android:inputType="textCapWords"
+            android:key="personalize_general_display_name"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_personalize_general_display_name" />
+        
+        <Preference
+        	android:key="personalize_general_profile_image_selection"
+        	android:title="@string/pref_personalize_general_profile_image_select" />
+        
+        <Preference
+        	android:key="personalize_general_banner_image_selection"
+        	android:title="@string/pref_personalize_general_banner_image_select" />
+        
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="personalize_general_display_date"
+            android:summaryOn="@string/pref_personalize_general_display_date_on_sum"
+            android:summaryOff="@string/pref_personalize_general_display_date_off_sum"
+            android:title="@string/pref_personalize_general_display_date" />
+        
+        <EditTextPreference
+            android:capitalize="words"
+            android:inputType="textCapWords"
+            android:key="personalize_general_date_format"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_personalize_general_date_format" />
+        
+    </PreferenceCategory>
+    
+    <PreferenceCategory
+        android:key="pref_personalize_color"
+        android:title="@string/pref_header_color" >
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="personalize_color_override_default"
+            android:summaryOn="@string/pref_personalize_color_override_default_on_sum"
+            android:summaryOff="@string/pref_personalize_color_override_default_off_sum"
+            android:title="@string/pref_personalize_color_override_default" />
+        
+        <org.pet.launchpet2.preference.ColorPreference
+            android:key="personalize_color_navbar_color"
+            android:negativeButtonText="@string/button_close"
+            android:positiveButtonText="@string/button_ok"
+            android:widgetLayout="@layout/dialog_color_picker"
+        	android:title="@string/pref_personalize_color_navbar_color" />
+        
+        <org.pet.launchpet2.preference.ColorPreference
+            android:key="personalize_color_statusbar_color"
+            android:negativeButtonText="@string/button_close"
+            android:positiveButtonText="@string/button_ok"
+            android:widgetLayout="@layout/dialog_color_picker"
+        	android:title="@string/pref_personalize_color_statusbar_color" />
+        
+        <org.pet.launchpet2.preference.ColorPreference
+            android:key="personalize_color_toolbar_color"
+            android:negativeButtonText="@string/button_close"
+            android:positiveButtonText="@string/button_ok"
+            android:widgetLayout="@layout/dialog_color_picker"
+        	android:title="@string/pref_personalize_color_toolbar_color" />
+        
+        <org.pet.launchpet2.preference.ColorPreference
+            android:key="personalize_color_date_text_color"
+            android:negativeButtonText="@string/button_close"
+            android:positiveButtonText="@string/button_ok"
+            android:widgetLayout="@layout/dialog_color_picker"
+        	android:title="@string/pref_personalize_color_date_text_color" />
+        
+        <org.pet.launchpet2.preference.ColorPreference
+            android:key="personalize_color_background_color"
+            android:negativeButtonText="@string/button_close"
+            android:positiveButtonText="@string/button_ok"
+            android:widgetLayout="@layout/dialog_color_picker"
+        	android:title="@string/pref_personalize_color_background_color" />
+        	
+    </PreferenceCategory>
+
+</PreferenceScreen>

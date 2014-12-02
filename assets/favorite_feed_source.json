@@ -1,0 +1,6 @@
+{"favorites" : [
+{"name" : "DZONE", "feedUrl" : "http://feeds.dzone.com/dzone/frontpage?format=xml", "webUrl" : "http://www.dzone.com/links"}, 
+{"name" : "XDA Developers", "feedUrl" : "http://feeds.feedburner.com/xda-developers/ShsH?format=xml", "webUrl" : "http://www.xda-developers.com"}, 
+{"name" : "Android Central", "feedUrl" : "http://feeds.feedburner.com/androidcentral?format=xml", "webUrl" : "http://www.androidcentral.com"},
+{"name" : "Android Police", "feedUrl" : "http://feeds.feedburner.com/AndroidPolice?format=xml", "webUrl" : "http://www.androidpolice.com"}
+]}
