@@ -7,7 +7,7 @@
     android:background="@color/content_background" >
 
     <RelativeLayout
-        android:id="@+id/relativeLayout1"
+        android:id="@+id/application_toolbar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_alignParentTop="true"
@@ -61,7 +61,7 @@
         android:paddingEnd="5dp"
         android:divider="@color/list_divider"
         android:dividerHeight="1dp"
-        android:layout_below="@+id/relativeLayout1"
+        android:layout_below="@+id/application_toolbar"
         android:layout_centerHorizontal="true" >
     </ListView>
 
