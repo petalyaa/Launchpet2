@@ -107,6 +107,12 @@ public class PersonalizeSettingActivity extends PreferenceActivity {
 			mProfileImagePref = (Preference) getPreferenceManager().findPreference("personalize_general_profile_image_selection");
 			mBannerImagePref = (Preference) getPreferenceManager().findPreference("personalize_general_banner_image_selection");
 			mThemePreference = (ListPreference) getPreferenceManager().findPreference("personalize_general_theme");
+			
+			boolean isDateDisplay = mDisplayDateCheckbox.isChecked();
+			if(!isDateDisplay)
+				mDateFormatPreference.setEnabled(false);
+			else
+				mDateFormatPreference.setEnabled(true);
 
 			mDisplayDateCheckbox.setOnPreferenceChangeListener(new OnDisplayDateCheckboxChange());
 			mOverrideThemeColorCheckbox.setOnPreferenceChangeListener(new OnOverrideThemeColorChange());
