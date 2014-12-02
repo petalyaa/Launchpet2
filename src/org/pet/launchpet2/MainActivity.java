@@ -1161,7 +1161,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 		@Override
 		public void onClick(View v) {
-			if(mFloatingActionMenu.isOpen())
+			if(mFloatingActionMenu != null && mFloatingActionMenu.isOpen())
 				mFloatingActionMenu.close(true);
 			Bundle b = new Bundle();
 			b.putSerializable("home_news_item", item);

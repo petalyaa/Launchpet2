@@ -91,6 +91,8 @@
                     android:background="@drawable/ripple_selector"
                     android:contentDescription="@string/app_drawer_content_description"
                     android:src="@drawable/ic_action_arrow_drop_up" />
+                
+                
 
                 <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
                     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -134,6 +136,7 @@
                     android:paddingEnd="5dp"
                     android:paddingStart="5dp"
                     android:src="@drawable/launcher" />
+
             </RelativeLayout>
 
             <LinearLayout
