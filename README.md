@@ -37,6 +37,12 @@ Download
 <img src="https://developer.android.com/images/brand/en_generic_rgb_wo_45.png" />
 </a>
 
+Support
+=======
+<a href="http://forum.xda-developers.com/htc-one-m8/themes-apps/app-launchpet2-blinkfeed-style-launcher-t2959594">
+XDA-Developers
+</a>
+
 Third-party libraries
 =====================
 * https://github.com/jfeinstein10/SlidingMenu
