@@ -42,13 +42,8 @@ import org.pet.launchpet2.populator.DzoneCardPopulator;
 import org.pet.launchpet2.populator.ImageCardPopulator;
 import org.pet.launchpet2.populator.Populator;
 import org.pet.launchpet2.populator.TextCardPopulator;
-import org.pet.launchpet2.settings.item.AdvancedMenuItem;
-import org.pet.launchpet2.settings.item.AppDrawerMenuItem;
-import org.pet.launchpet2.settings.item.BackupRestoreMenuItem;
 import org.pet.launchpet2.settings.item.FeedSourceMenuItem;
 import org.pet.launchpet2.settings.item.PersonalizeMenuItem;
-import org.pet.launchpet2.settings.item.SocialNetworkMenuItem;
-import org.pet.launchpet2.settings.item.SyncSettingMenuItem;
 import org.pet.launchpet2.util.BitmapUtil;
 import org.pet.launchpet2.util.CommonUtil;
 import org.pet.launchpet2.util.ConfigurationUtil;
@@ -195,6 +190,10 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	private SmoothProgressBar mLoadingProgressbar;
 
 	private Builder mBottomMenu;
+	
+	private RelativeLayout mSettingToolbar;
+	
+	private RelativeLayout mApplicationToolbar;
 
 	private static List<LauncherApplication> launcherAppsList = new ArrayList<LauncherApplication>();
 
@@ -226,8 +225,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		mScrollTopButton = (ImageView) findViewById(R.id.top_toolbar_scroll_top_button);
 		mSecondaryProfileImageHolder = (RelativeLayout) findViewById(R.id.floating_profile_image_holder);
 		mSecondaryProfileImage = (ImageView) findViewById(R.id.secondary_profile_image);
-		//        mFloatingFavBtn = (FloatingActionButton) findViewById(R.id.floating_fav_button);
-		//        mFloatingFavMenuHolder = (RelativeLayout) findViewById(R.id.floating_fav_menu_view);
 		mLoadingProgressbar = (SmoothProgressBar) findViewById(R.id.toolbar_loading_progressbar);
 		mFloatingFavButton = (ImageButton) findViewById(R.id.floating_favorite_button);
 
@@ -247,6 +244,8 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		settingsView = inflater.inflate(R.layout.activity_settings, null);
 		homeView = inflater.inflate(R.layout.activity_home, null);
 		nowCardLayout = (NowCardLayout) homeView.findViewById(R.id.now_card_layout);
+		mSettingToolbar = (RelativeLayout) settingsView.findViewById(R.id.setting_top_header);
+		mApplicationToolbar = (RelativeLayout) applicationView.findViewById(R.id.application_toolbar);
 		
 		populateSettings();
 		populateHomeCard();
@@ -615,38 +614,42 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	}
 
 	private void reloadColors(SharedPreferences prefs) {
-
 		boolean isNeedOverride = prefs.getBoolean("personalize_color_override_default", false);
+		int navbarColor = getResources().getColor(R.color.navbar_color);
+		int dateTextColor = Color.WHITE;
+		int statusbarColor = getResources().getColor(R.color.status_bar_color);
+		int toolbarColor = getResources().getColor(R.color.toolbar_color);
+		int backgroundColor = getResources().getColor(R.color.content_background);
+		
 		if(isNeedOverride) {
-			int navbarColor = prefs.getInt("personalize_color_navbar_color", Color.TRANSPARENT);
-			int dateTextColor = prefs.getInt("personalize_color_date_text_color", 0);
-			int statusbarColor = prefs.getInt("personalize_color_statusbar_color", Color.TRANSPARENT);
-			int toolbarColor = prefs.getInt("personalize_color_toolbar_color", Color.BLACK);
-			int backgroundColor = prefs.getInt("personalize_color_background_color", Color.WHITE);
-			getWindow().setNavigationBarColor(navbarColor);
-			getWindow().setStatusBarColor(statusbarColor);
-			mStickyView.setBackgroundColor(toolbarColor);
-			dateHeaderLabel.setTextColor(dateTextColor);
-			mMainContent.setBackgroundColor(backgroundColor);
+			navbarColor = prefs.getInt("personalize_color_navbar_color", Color.TRANSPARENT);
+			dateTextColor = prefs.getInt("personalize_color_date_text_color", 0);
+			statusbarColor = prefs.getInt("personalize_color_statusbar_color", Color.TRANSPARENT);
+			toolbarColor = prefs.getInt("personalize_color_toolbar_color", Color.BLACK);
+			backgroundColor = prefs.getInt("personalize_color_background_color", Color.WHITE);
 		} else {
 			String themeSelected = prefs.getString("personalize_general_theme", null);
 			if(!StringUtil.isNullEmptyString(themeSelected)) {
 				int arrayResId = getArrayResId(getApplicationContext(), "theme_" + themeSelected);
 				if(arrayResId > 0) {
 					String[] mTestArray = getResources().getStringArray(arrayResId);
-					int statusbarColor = Color.parseColor(mTestArray[9]);
-					int toolbarColor = Color.parseColor(mTestArray[8]);
-					int backgroundColor = Color.parseColor(mTestArray[0]);
-					int dateTextColor = Color.parseColor(mTestArray[0]);
-					getWindow().setStatusBarColor(statusbarColor);
-					getWindow().setNavigationBarColor(Color.BLACK);
-					mStickyView.setBackgroundColor(toolbarColor);
-					mObservableScrollView.setBackgroundColor(backgroundColor);
-					mMainContent.setBackgroundColor(backgroundColor);
-					dateHeaderLabel.setTextColor(dateTextColor);
+					statusbarColor = Color.parseColor(mTestArray[9]);
+					toolbarColor = Color.parseColor(mTestArray[8]);
+					backgroundColor = Color.parseColor(mTestArray[0]);
+					dateTextColor = Color.parseColor(mTestArray[0]);
+					navbarColor = Color.parseColor(mTestArray[9]);
 				}
 			}
 		}
+		getWindow().setNavigationBarColor(navbarColor);
+		getWindow().setStatusBarColor(statusbarColor);
+		mStickyView.setBackgroundColor(toolbarColor);
+		dateHeaderLabel.setTextColor(dateTextColor);
+		mMainContent.setBackgroundColor(backgroundColor);
+		mObservableScrollView.setBackgroundColor(backgroundColor);
+		dateHeaderLabel.setTextColor(dateTextColor);
+		mSettingToolbar.setBackgroundColor(toolbarColor);
+		mApplicationToolbar.setBackgroundColor(toolbarColor);
 	}
 
 	public static int getArrayResId(Context context, String name) {

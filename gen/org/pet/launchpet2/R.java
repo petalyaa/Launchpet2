@@ -26,65 +26,50 @@ public final class R {
         public static final int gplus_colors=0x7f060002;
         /**  Options in dialog that appears after selecting Picture size setting option 
          */
-        public static final int pref_gallery_size_choices=0x7f060009;
+        public static final int pref_gallery_size_choices=0x7f060016;
         /**  Option values in dialog that appears after selecting Picture size setting option 
          */
-        public static final int pref_gallery_size_values=0x7f06000a;
+        public static final int pref_gallery_size_values=0x7f060017;
         /**  Options in dialog that appears after selecting Slideshow interval setting option 
          */
-        public static final int pref_gallery_slideshow_interval_choices=0x7f06000d;
+        public static final int pref_gallery_slideshow_interval_choices=0x7f06001a;
         /**  Option values in dialog that appears after selecting Slideshow interval setting option 
          */
-        public static final int pref_gallery_slideshow_interval_values=0x7f06000e;
+        public static final int pref_gallery_slideshow_interval_values=0x7f06001b;
         /**  Options in dialog that appears after selecting Slideshow transition
      setting option 
          */
-        public static final int pref_gallery_slideshow_transition_choices=0x7f06000f;
+        public static final int pref_gallery_slideshow_transition_choices=0x7f06001c;
         /**  Option values in dialog that appears after selecting Slideshow transition setting option 
          */
-        public static final int pref_gallery_slideshow_transition_values=0x7f060010;
+        public static final int pref_gallery_slideshow_transition_values=0x7f06001d;
         /**  Options in dialog that appears after selecting Picture sort setting option 
          */
-        public static final int pref_gallery_sort_choices=0x7f06000b;
+        public static final int pref_gallery_sort_choices=0x7f060018;
         /**  Option values in dialog that appears after selecting Picture sort setting option 
          */
-        public static final int pref_gallery_sort_values=0x7f06000c;
-        /**  <item>Light Blue</item>
-        <item>Cyan</item>
-        <item>Teal</item>
-        <item>Green</item>
-        <item>Light Green</item>
-        <item>Lime</item>
-        <item>Yellow</item>
-        <item>Amber</item>
-        <item>Orange</item>
-        <item>Deep Orange</item>
-        <item>Brown</item>
-        <item>Grey</item>
-        <item>Glue Grey</item> 
-         */
+        public static final int pref_gallery_sort_values=0x7f060019;
         public static final int pref_theme_list_title=0x7f060000;
-        /**  <item>light_blue</item>
-        <item>cyan</item>
-        <item>teal</item>
-        <item>green</item>
-        <item>light_green</item>
-        <item>lime</item>
-        <item>yellow</item>
-        <item>amber</item>
-        <item>orange</item>
-        <item>deep_orange</item>
-        <item>brown</item>
-        <item>grey</item>
-        <item>blue_grey</item> 
-         */
         public static final int pref_theme_list_value=0x7f060001;
+        public static final int theme_amber=0x7f060010;
         public static final int theme_blue=0x7f060008;
+        public static final int theme_blue_grey=0x7f060015;
+        public static final int theme_brown=0x7f060013;
+        public static final int theme_cyan=0x7f06000a;
+        public static final int theme_deep_orange=0x7f060012;
         public static final int theme_deep_purple=0x7f060007;
+        public static final int theme_green=0x7f06000c;
+        public static final int theme_grey=0x7f060014;
         public static final int theme_indigo=0x7f060006;
+        public static final int theme_light_blue=0x7f060009;
+        public static final int theme_light_green=0x7f06000d;
+        public static final int theme_lime=0x7f06000e;
+        public static final int theme_orange=0x7f060011;
         public static final int theme_pink=0x7f060004;
         public static final int theme_purple=0x7f060005;
         public static final int theme_red=0x7f060003;
+        public static final int theme_teal=0x7f06000b;
+        public static final int theme_yellow=0x7f06000f;
     }
     public static final class attr {
         /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
@@ -774,6 +759,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int application_list_view=0x7f0c0014;
         public static final int application_name=0x7f0c007c;
         public static final int application_search_icon=0x7f0c0011;
+        public static final int application_toolbar=0x7f0c0010;
         public static final int card_dzone_footer_comments_icon=0x7f0c0072;
         public static final int card_dzone_footer_comments_label=0x7f0c0071;
         public static final int card_dzone_footer_view_icon=0x7f0c0074;
@@ -874,7 +860,6 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int read_feed_toolbar_back_btn=0x7f0c002b;
         public static final int read_feed_toolbar_more_btn=0x7f0c002d;
         public static final int read_feed_toolbar_title=0x7f0c002c;
-        public static final int relativeLayout1=0x7f0c0010;
         public static final int right=0x7f0c0007;
         public static final int save=0x7f0c003d;
         public static final int scroll_view=0x7f0c001c;
