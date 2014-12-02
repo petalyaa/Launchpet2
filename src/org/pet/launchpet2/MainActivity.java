@@ -121,7 +121,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 	private static final String HEADER_DATE_FORMAT = "dd MMM yyyy";
 
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat(HEADER_DATE_FORMAT, Locale.getDefault());
+	private static final SimpleDateFormat GENERIC_DATE_FORMAT = new SimpleDateFormat(HEADER_DATE_FORMAT, Locale.getDefault());
 
 	private static final int SELECT_PHOTO = 100;
 
@@ -208,9 +208,12 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_PACKAGE_ADDED);
         filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+        filter.addAction(Intent.ACTION_TIME_TICK);
         filter.addDataScheme("package");
         BroadcastReceiver receiver = new ApplicationBroadcastReceiver();
         registerReceiver(receiver, filter);
+        
+        registerReceiver(new ClockBroadcastReceiver(), new IntentFilter(Intent.ACTION_TIME_TICK));
 
 		mObservableScrollView = (ObservableScrollView) findViewById(R.id.scroll_view);
 		mObservableScrollView.setCallbacks(this);
@@ -271,7 +274,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		slidingMenu.setOnOpenedListener(new OnSlidingOpenedListener());
 
 		Date currentDate = new Date();
-		dateHeaderLabel.setText(dateFormat.format(currentDate));
+		dateHeaderLabel.setText(GENERIC_DATE_FORMAT.format(currentDate));
 		new FetchApplicationListTask().execute();
 
 		mObservableScrollView.getViewTreeObserver().addOnGlobalLayoutListener(
@@ -344,22 +347,37 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		//        mFloatingFavBtn.setOnClickListener(new OnFavButtonClick());
 		//        mFloatingFavBtn.setOnTouchListener(new OnFavButtonTouch());
 	}
-
+	
+	private void reloadDate() {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		boolean isDateDisplay = prefs.getBoolean("personalize_general_display_date", true);
+		if(isDateDisplay) {
+			String dateStr = null;
+			String dateFormat = prefs.getString("personalize_general_date_format", HEADER_DATE_FORMAT);
+			try {
+				Date date = new Date();
+				SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.getDefault());
+				dateStr = sdf.format(date);
+			} catch (Exception e) {
+				Date date = new Date();
+				dateStr = GENERIC_DATE_FORMAT.format(date);
+			}
+			if(dateStr != null) {
+				dateHeaderLabel.setText(dateStr);
+				dateHeaderLabel.setVisibility(View.VISIBLE);
+			} else {
+				dateHeaderLabel.setVisibility(View.INVISIBLE);
+			}
+		} else {
+			dateHeaderLabel.setVisibility(View.INVISIBLE);
+		}
+	}
+	
 	private void initUserPreference() {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		reloadAllBitmap();
 		reloadColors(prefs);
-
-		boolean isDateDisplay = prefs.getBoolean("personalize_general_display_date", true);
-		if(isDateDisplay) {
-			String dateFormat = prefs.getString("personalize_general_date_format", HEADER_DATE_FORMAT);
-			Date date = new Date();
-			SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.getDefault());
-			dateHeaderLabel.setText(sdf.format(date));
-			dateHeaderLabel.setVisibility(View.VISIBLE);
-		} else {
-			dateHeaderLabel.setVisibility(View.INVISIBLE);
-		}
+		reloadDate();
 
 		if(isRequireFeedUpdate())
 			populateHomeCard();
@@ -1158,8 +1176,17 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			Log.v("Launchpet2"," test for application install/uninstall");
 			new FetchApplicationListTask().execute();
+		}
+		
+	}
+	
+	private class ClockBroadcastReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context arg0, Intent arg1) {
+			Log.v("Launchpet2", "Receiving action : " + arg1.getAction());
+			reloadDate();
 		}
 		
 	}
