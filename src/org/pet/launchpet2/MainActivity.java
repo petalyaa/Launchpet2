@@ -388,22 +388,10 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		mObservableScrollView.fullScroll(ScrollView.FOCUS_UP);
 	}
 
-	//	private void hideFavMenu() {
-	//		isFavMenuVisible = false;
-	//		mFloatingFavMenuHolder.setVisibility(View.INVISIBLE);
-	//	}
-	//	
-	//	private void showFavMenu() {
-	//		if(getFavoriteApplicationList().size() <= 0) {
-	//			Toast.makeText(getApplicationContext(), getString(R.string.error_no_favorite_application_define), Toast.LENGTH_LONG).show();
-	//		} else {
-	//			isFavMenuVisible = true;
-	//			mFloatingFavMenuHolder.setVisibility(View.VISIBLE);
-	//		}
-	//	}
-
 	@Override
 	public void onBackPressed() {
+		if(mFloatingActionMenu != null && mFloatingActionMenu.isOpen())
+			mFloatingActionMenu.close(true);
 		if(slidingMenu.isMenuShowing())
 			slidingMenu.toggle();
 	}
