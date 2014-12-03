@@ -275,7 +275,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 		Date currentDate = new Date();
 		dateHeaderLabel.setText(GENERIC_DATE_FORMAT.format(currentDate));
-		new FetchApplicationListTask().execute();
 
 		mObservableScrollView.getViewTreeObserver().addOnGlobalLayoutListener(
 				new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -396,7 +395,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			slidingMenu.toggle();
 		mObservableScrollView.smoothScrollTo(0, 0);
 	}
-
 
 	private void populateSettings() {
 		final List<LauncherSettingItem> launcherSettingItems = new ArrayList<LauncherSettingItem>();
@@ -655,6 +653,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		dateHeaderLabel.setTextColor(dateTextColor);
 		mSettingToolbar.setBackgroundColor(toolbarColor);
 		mApplicationToolbar.setBackgroundColor(toolbarColor);
+		new FetchApplicationListTask(toolbarColor).execute();
 	}
 
 	public static int getArrayResId(Context context, String name) {
@@ -686,6 +685,12 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	}
 
 	private class FetchApplicationListTask extends AsyncTask<LauncherApplication, Void, List<LauncherApplication>> {
+		
+		private int titleColor;
+		
+		public FetchApplicationListTask(int titleColor) {
+			this.titleColor = titleColor;
+		}
 
 		@Override
 		protected List<LauncherApplication> doInBackground(LauncherApplication... params) {
@@ -708,7 +713,22 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 		@Override
 		protected void onPostExecute(List<LauncherApplication> homeNewsItemList) {
-			final ApplicationListAdapter adapter = new ApplicationListAdapter(launcherAppsList, getApplicationContext());
+			Iterator<LauncherApplication> launcherAppIter = launcherAppsList.iterator();
+			String prevLetter = null;
+			while(launcherAppIter.hasNext()) {
+				LauncherApplication app = launcherAppIter.next();
+				String thisLetter = app.getName().substring(0, 1).toLowerCase(Locale.getDefault());
+				if(prevLetter != null && !thisLetter.equals(prevLetter)) {
+					app.setStartGroup(true);
+					prevLetter = thisLetter;
+				}
+				if(prevLetter == null) {
+					app.setStartGroup(true);
+					prevLetter = thisLetter;
+				}
+				
+			}
+			final ApplicationListAdapter adapter = new ApplicationListAdapter(launcherAppsList, getApplicationContext(), titleColor);
 			mAppListView.setAdapter(adapter);
 			mAppListView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -1159,7 +1179,8 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			new FetchApplicationListTask().execute();
+			initUserPreference();
+//			new FetchApplicationListTask().execute();
 		}
 		
 	}

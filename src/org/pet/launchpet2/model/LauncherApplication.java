@@ -17,6 +17,8 @@ public class LauncherApplication implements Comparable<LauncherApplication> {
 	private Drawable icon;
 	
 	private int iconResId;
+	
+	private boolean startGroup;
 
 	public Intent getLaunchActivity() {
 		return launchActivity;
@@ -69,6 +71,14 @@ public class LauncherApplication implements Comparable<LauncherApplication> {
 
 	public void setIconResId(int iconResId) {
 		this.iconResId = iconResId;
+	}
+
+	public boolean isStartGroup() {
+		return startGroup;
+	}
+
+	public void setStartGroup(boolean startGroup) {
+		this.startGroup = startGroup;
 	}
 	
 }

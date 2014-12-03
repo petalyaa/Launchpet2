@@ -1,11 +1,14 @@
 package org.pet.launchpet2.adapter;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.pet.launchpet2.R;
 import org.pet.launchpet2.model.LauncherApplication;
 
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +24,12 @@ public class ApplicationListAdapter extends BaseAdapter {
 	
 	private Context context;
 	
-	public ApplicationListAdapter(List<LauncherApplication> launcherAppList, Context context) {
+	private int titleColor;
+	
+	public ApplicationListAdapter(List<LauncherApplication> launcherAppList, Context context, int titleColor) {
 		this.launcherAppList = launcherAppList;
 		this.context = context;
+		this.titleColor = titleColor;
 		this.hiddenItems = new boolean[launcherAppList.size()];
 		for(int i = 0; i < launcherAppList.size(); i++) {
 			this.hiddenItems[i] = false;
@@ -49,20 +55,6 @@ public class ApplicationListAdapter extends BaseAdapter {
 		notifyDataSetChanged();
 		notifyDataSetInvalidated();
 	}
-	
-//	public int getRealPosition(int position) {
-//		int hiddenCount = getHiddenCount();
-//		int notHidden = 0;
-//		for(int i = 0; i < launcherAppList.size(); i++) {
-//			if(position == notHidden) {
-//				position = i;
-//				break;
-//			}
-//			if(!hiddenItems[i])
-//				notHidden++;
-//		}
-//		return position;
-//	}
 	
 	public int getRealPosition(int position) {
 		int hElements = getHiddenCountUpTo(position);
@@ -116,19 +108,29 @@ public class ApplicationListAdapter extends BaseAdapter {
 			holder = new ViewHolder();
 			holder.name_view = (TextView) gridIconView.findViewById(R.id.application_name);
 			holder.icon_view = (ImageView) gridIconView.findViewById(R.id.application_icon);
+			holder.icon_title_view = (TextView) gridIconView.findViewById(R.id.application_title_icon);
+			if(app.isStartGroup()) {
+				GradientDrawable shapeDrawable = (GradientDrawable) holder.icon_title_view.getBackground();
+				shapeDrawable.setColor(titleColor);
+			}
 			gridIconView.setTag(holder);
 		} else {
 			holder = (ViewHolder) gridIconView.getTag();
 		}
-		
 		holder.icon_view.setImageDrawable(app.getIcon());
 		holder.name_view.setText(app.getName());
+		if(app.isStartGroup()) {
+			holder.icon_title_view.setText(app.getName().substring(0, 1).toUpperCase(Locale.getDefault()));
+			holder.icon_title_view.setVisibility(View.VISIBLE);
+		} else
+			holder.icon_title_view.setVisibility(View.INVISIBLE);
 		return gridIconView;
 	}
 	
 	static class ViewHolder {
 		private  ImageView icon_view;
 		private TextView name_view;
+		private TextView icon_title_view;
 	}
 
 }
