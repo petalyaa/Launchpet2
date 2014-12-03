@@ -27,14 +27,19 @@ public class ImageCardPopulator extends Populator {
 		ImageView imageView = (ImageView) card.findViewById(R.id.card_image_icon_image);
 		TextView titleTextView = (TextView) card.findViewById(R.id.card_image_title_label);
 		ImageView imageNewsView = (ImageView) card.findViewById(R.id.card_image_image);
+		ImageView gifImageView = (ImageView) card.findViewById(R.id.card_image_title_gif);
 		titleTextView.setText(Html.fromHtml(item.getTitle()));
 		String link = item.get("parentLink");
 		String imageUrl = item.getImageUrl();
+		if(!imageUrl.endsWith(".gif"))
+			gifImageView.setVisibility(View.INVISIBLE);
+		else
+			gifImageView.setVisibility(View.VISIBLE);
 		if(!StringUtil.isNullEmptyString(link))
 			new FetchFaviconAsync(imageView).execute(link);
 		if(!StringUtil.isNullEmptyString(imageUrl))
-			new FetchImageAsync(imageNewsView).execute(imageUrl);
+			new FetchImageAsync(imageNewsView, false).execute(imageUrl);
 		return card;
 	}
-
+	
 }

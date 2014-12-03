@@ -58,7 +58,6 @@ public class ConfigurationUtil {
 	public static final List<String> RSS_URL_TO_LOAD = new ArrayList<String>();
 	static {
 		RSS_URL_TO_LOAD.add("http://feeds.dzone.com/dzone/frontpage?format=xml");
-//		RSS_URL_TO_LOAD.add("http://podcasts.engadget.com/rss.xml");
 		RSS_URL_TO_LOAD.add("http://feeds.feedburner.com/androidcentral?format=xml");
 		RSS_URL_TO_LOAD.add("http://feeds.feedburner.com/xda-developers/ShsH?format=xml");
 	}

@@ -44,7 +44,7 @@ public class DzoneCardPopulator extends Populator {
 		if(!StringUtil.isNullEmptyString(userImageUrlStr))
 //			new FetchImageAsync(imageView).execute(userImageUrlStr);
 		if(!StringUtil.isNullEmptyString(thumbnailImageUrlStr))
-			new FetchImageAsync(imageNewsView).execute(thumbnailImageUrlStr);
+			new FetchImageAsync(imageNewsView, false).execute(thumbnailImageUrlStr);
 		String link = item.get("parentLink");
 //		Bitmap favicon = BitmapUtil.getFavicon(link);
 		if(!StringUtil.isNullEmptyString(link))

@@ -1024,7 +1024,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			CommonUtil.serializeHomeNewsObjectList(homeNewsItemList);
 			return homeNewsItemList;
 		}
-
+		
 		@Override
 		protected void onPreExecute() {
 			List<HomeNewsItem> homeNewsItemList = CommonUtil.deserializeHomeNewsObject();
@@ -1049,7 +1049,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		}
 
 	}
-
+	
 	private void addNewsToView(HomeNewsItem item) {
 		NewsType type = item.getType();
 		View card = null;

@@ -15,16 +15,13 @@
         android:layout_centerHorizontal="true"
         android:src="@drawable/placeholder" />
     
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/card_image_title_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:orientation="horizontal"
-        android:padding="15dp"
         android:elevation="@dimen/generic_elevation_height"
         android:background="#F44336"
-        android:gravity="center_vertical"
         tools:ignore="UseCompoundDrawables"
         android:layout_below="@+id/card_image_image" >
         
@@ -32,6 +29,9 @@
 	        android:id="@+id/card_image_icon_image"
 	        android:layout_width="20dp"
 	        android:layout_height="20dp"
+	        android:layout_alignParentStart="true"
+	        android:layout_centerVertical="true"
+	        android:layout_marginStart="10dp"
 	        android:contentDescription="@string/app_drawer_content_description"
 	        android:src="@drawable/rss" />
         
@@ -39,7 +39,16 @@
             android:id="@+id/card_image_title_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/card_image_icon_image"
+            android:layout_marginStart="15dp"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:freezesText="true"
+            android:marqueeRepeatLimit="marquee_forever"
             android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
 			android:shadowColor="@android:color/black"    
 			android:alpha=".9"
 			android:shadowDx="1"
@@ -47,12 +56,27 @@
 			android:paddingStart="5dp"
 			android:paddingEnd="0dp"
 			android:textSize="18sp"
+			android:layout_toStartOf="@+id/card_image_title_gif"
+			android:layout_centerVertical="true"
 			android:textStyle="bold"
+			android:layout_marginEnd="10dp"
 			android:fontFamily="sans-serif-condensed"
 			android:shadowRadius="1"      
             android:textColor="@android:color/white"
             android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <ImageView
+            android:id="@+id/card_image_title_gif"
+            android:contentDescription="@string/app_drawer_content_description"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:elevation="@dimen/generic_elevation_height"
+            android:background="@android:color/white"
+            android:layout_margin="10dp"
+            android:src="@drawable/gif" />
         
-	</LinearLayout>
-	
+	</RelativeLayout>
+
 </RelativeLayout>

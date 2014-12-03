@@ -1,5 +1,6 @@
 package org.pet.launchpet2.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -8,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
@@ -16,6 +18,7 @@ import android.graphics.Paint;
 import android.graphics.Shader.TileMode;
 import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore.Images;
 
 public class BitmapUtil {
 	
@@ -49,6 +52,13 @@ public class BitmapUtil {
 	
 	public static final String constructUniqueName(String url) {
 		return CommonUtil.getMD5(url);
+	}
+	
+	public static final Uri getImageUri(Context inContext, Bitmap inImage) {
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+		inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+		String path = Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+		return Uri.parse(path);
 	}
 	
 	public static final Bitmap getBitmapFromCache(String urlStr, BitmapType type) {

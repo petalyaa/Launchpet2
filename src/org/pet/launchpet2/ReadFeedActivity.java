@@ -9,6 +9,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.pet.launchpet2.animation.SplitAnimation;
+import org.pet.launchpet2.layout.GifWebView;
+import org.pet.launchpet2.listener.FetchBitmapTaskCallbackListener;
 import org.pet.launchpet2.thread.FetchFaviconAsync;
 import org.pet.launchpet2.thread.FetchImageAsync;
 import org.pet.launchpet2.util.StringUtil;
@@ -17,7 +19,9 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.ortiz.touch.ExtendedViewPager;
 import com.ortiz.touch.TouchImageView;
 
+import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,18 +29,19 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class ReadFeedActivity extends FragmentActivity {
+public class ReadFeedActivity extends FragmentActivity implements FetchBitmapTaskCallbackListener {
 	
 	private TextView mToolbarTitle;
 	
@@ -60,15 +65,21 @@ public class ReadFeedActivity extends FragmentActivity {
 	
 	private RelativeLayout mOverlayImageView;
 	
+	private GifWebView mGifImageView;
+	
+	private SmoothProgressBar mLoadingBar;
+	
+	private List<String> imageSrcUrlList = new ArrayList<String>();
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_read_feed);
-		
 		mToolbarTitle = (TextView) findViewById(R.id.read_feed_toolbar_title);
 		mToolbarBackButton = (ImageButton) findViewById(R.id.read_feed_toolbar_back_btn);
 		mContentImage = (ImageView) findViewById(R.id.read_feed_content_image);
+		mGifImageView = (GifWebView) findViewById(R.id.read_feed_content_gif);
 		mContentSourceIcon = (ImageView) findViewById(R.id.read_feed_content_source_icon);
 		mContentSourceName = (TextView) findViewById(R.id.read_feed_content_source_name);
 		mContentSourceDate = (TextView) findViewById(R.id.read_feed_content_source_date);
@@ -76,6 +87,8 @@ public class ReadFeedActivity extends FragmentActivity {
 		mFollowLinkBtn = (FloatingActionButton) findViewById(R.id.read_feed_content_follow_link);
 		mImageViewPager = (ExtendedViewPager) findViewById(R.id.read_feed_image_pager);
 		mOverlayImageView = (RelativeLayout) findViewById(R.id.read_feed_overlay_image_view);
+		mLoadingBar = (SmoothProgressBar) findViewById(R.id.read_feed_content_loading_progressbar);
+		mLoadingBar.setVisibility(View.INVISIBLE);
 		mOverlayImageView.setVisibility(View.INVISIBLE);
 		mOverlayImageView.setOnClickListener(new OnOverlayImageClick());
 		Bundle b = getIntent().getExtras();
@@ -89,7 +102,6 @@ public class ReadFeedActivity extends FragmentActivity {
 		Document doc = Jsoup.parse(description);
 		Elements imgs = doc.getElementsByTag("img");
 		String firstImgUrl = null;
-		List<String> imageSrcUrlList = new ArrayList<String>();
 		for (Element el : imgs) {
 			String src = el.absUrl("src");
 			if(StringUtil.isNullEmptyString(firstImgUrl))
@@ -98,9 +110,8 @@ public class ReadFeedActivity extends FragmentActivity {
 		}
 		if(!StringUtil.isNullEmptyString(parentLink))
 			new FetchFaviconAsync(mContentSourceIcon).execute(parentLink);
-		if(!StringUtil.isNullEmptyString(firstImgUrl))
-			new FetchImageAsync(mContentImage).execute(firstImgUrl);
-		
+		if(firstImgUrl != null)
+			new FetchImageAsync(this, true).execute(firstImgUrl);
 		String displayContent = Html.fromHtml(description.replaceAll("<img.+?>", "")).toString();
 		mPagerAdapter = new ImageSlidePagerAdapter(getSupportFragmentManager(), imageSrcUrlList);
 		mImageViewPager.setAdapter(mPagerAdapter);
@@ -109,7 +120,6 @@ public class ReadFeedActivity extends FragmentActivity {
 		mContentText.setText(displayContent);
 		mToolbarTitle.setText(Html.fromHtml(title));
 		mToolbarBackButton.setOnClickListener(new OnToolbarBackClickListener());
-		mContentImage.setOnClickListener(new OnContentImageClickListener(imageSrcUrlList));
 		mFollowLinkBtn.setOnClickListener(new OnFollowLinkClickListiner(link));
 	}
 	
@@ -215,8 +225,33 @@ public class ReadFeedActivity extends FragmentActivity {
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 			ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.image_slides_page_view, container, false);
 			TouchImageView mImgView = (TouchImageView) rootView.findViewById(R.id.image_slides_page_image_view);
-			new FetchImageAsync(mImgView).execute(urlStr);
+			new FetchImageAsync(mImgView, false).execute(urlStr);
 			return rootView;
+		}
+	}
+
+	@Override
+	public void onComplete(boolean isGif, String url, Bitmap bitmap) {
+		if(!isGif) {
+			mContentImage.setVisibility(View.VISIBLE);
+			mGifImageView.setVisibility(View.INVISIBLE);
+			mContentImage.setImageBitmap(bitmap);
+			mContentImage.setOnClickListener(new OnContentImageClickListener(imageSrcUrlList));
+		} else {
+			mLoadingBar.setVisibility(View.VISIBLE);
+			mContentImage.setVisibility(View.INVISIBLE);
+			mGifImageView.setVisibility(View.VISIBLE);
+			mGifImageView.getSettings().setLoadWithOverviewMode(true);
+			mGifImageView.getSettings().setUseWideViewPort(true);
+			mGifImageView.loadUrl(url);
+			mGifImageView.performClick();
+			mGifImageView.setWebViewClient(new WebViewClient() {
+				
+
+				   public void onPageFinished(WebView view, String url) {
+					   mLoadingBar.setVisibility(View.INVISIBLE);
+				    }
+				});
 		}
 	}
 
