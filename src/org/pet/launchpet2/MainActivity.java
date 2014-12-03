@@ -611,10 +611,8 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 		@Override
 		public void onOpen() {
-			if(isMenuOpen) {
-				if(mFloatingActionMenu != null && mFloatingActionMenu.isOpen())
-					mFloatingActionMenu.close(true);
-			}
+			if(mFloatingActionMenu != null && mFloatingActionMenu.isOpen())
+				mFloatingActionMenu.close(true);
 		}
 		
 	}
@@ -1064,18 +1062,14 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		}
 	}
 	
-	private boolean isMenuOpen = false;
-
 	@Override
 	public void onMenuOpened(FloatingActionMenu menu) {
-		Log.v("Launchpet2", "Menu opened...");
-		isMenuOpen = true;
+		
 	}
 
 	@Override
 	public void onMenuClosed(FloatingActionMenu menu) {
-		Log.v("Launchpet2", "Menu closed...");
-		isMenuOpen = false;
+		
 	}
 	
 	public class OnFavoriteMenuItemClick implements OnClickListener {
