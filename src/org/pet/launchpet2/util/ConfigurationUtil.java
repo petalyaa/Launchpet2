@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 public class ConfigurationUtil {
 	
 	public static final SimpleDateFormat NEWS_FEED_DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss", Locale.getDefault());
@@ -60,6 +63,25 @@ public class ConfigurationUtil {
 		RSS_URL_TO_LOAD.add("http://feeds.dzone.com/dzone/frontpage?format=xml");
 		RSS_URL_TO_LOAD.add("http://feeds.feedburner.com/androidcentral?format=xml");
 		RSS_URL_TO_LOAD.add("http://feeds.feedburner.com/xda-developers/ShsH?format=xml");
+	}
+	
+	public static final boolean isNeedReload(Context context) {
+		SharedPreferences pref = context.getSharedPreferences("general_settings", Context.MODE_PRIVATE);
+		return pref.getBoolean("require_reload", false);
+	}
+	
+	public static final void setRequireReload(Context context) {
+		SharedPreferences pref = context.getSharedPreferences("general_settings", Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = pref.edit();
+		editor.putBoolean("require_reload", true);
+		editor.commit();
+	}
+	
+	public static final void unsetRequireReload(Context context) {
+		SharedPreferences pref = context.getSharedPreferences("general_settings", Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = pref.edit();
+		editor.putBoolean("require_reload", false);
+		editor.commit();
 	}
 	
 }
