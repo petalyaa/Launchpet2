@@ -394,6 +394,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			mFloatingActionMenu.close(true);
 		if(slidingMenu.isMenuShowing())
 			slidingMenu.toggle();
+		mObservableScrollView.smoothScrollTo(0, 0);
 	}
 
 
