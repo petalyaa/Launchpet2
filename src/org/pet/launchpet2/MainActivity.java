@@ -100,7 +100,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -185,7 +184,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 	private Animation mAnimRefreshBtnShow;
 
-	private ImageButton mFloatingFavButton;
+	private com.getbase.floatingactionbutton.FloatingActionButton mFloatingFavButton;
 
 	private SmoothProgressBar mLoadingProgressbar;
 
@@ -229,8 +228,8 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		mSecondaryProfileImageHolder = (RelativeLayout) findViewById(R.id.floating_profile_image_holder);
 		mSecondaryProfileImage = (ImageView) findViewById(R.id.secondary_profile_image);
 		mLoadingProgressbar = (SmoothProgressBar) findViewById(R.id.toolbar_loading_progressbar);
-		mFloatingFavButton = (ImageButton) findViewById(R.id.floating_favorite_button);
-
+		mFloatingFavButton = (com.getbase.floatingactionbutton.FloatingActionButton) findViewById(R.id.floating_favorite_button);
+		
 		mScrollTopButton.setVisibility(View.INVISIBLE);
 		mLoadingProgressbar.setVisibility(View.INVISIBLE);
 
@@ -373,6 +372,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	}
 	
 	private void initUserPreference() {
+		Log.v("Launchpet2", "Reloading preference....");
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		reloadAllBitmap();
 		reloadColors(prefs);
@@ -445,7 +445,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		SharedPreferences pref = this.getSharedPreferences("feed_settings", Context.MODE_PRIVATE);
 		return pref.getBoolean("feed_update", true);
 	}
-
+	
 	private List<RSSFeedSource> getExistingFeedSource() {
 		List<RSSFeedSource> list = new ArrayList<RSSFeedSource>();
 		String jsonStr = getExistingSourceFromSharedPreference();
@@ -581,7 +581,10 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 		@Override
 		public void onClosed() {
-			initUserPreference();
+			if(ConfigurationUtil.isNeedReload(getApplicationContext())) {
+				initUserPreference();
+				ConfigurationUtil.unsetRequireReload(getApplicationContext());
+			}
 		}
 		
 	}
@@ -623,6 +626,8 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		int statusbarColor = getResources().getColor(R.color.status_bar_color);
 		int toolbarColor = getResources().getColor(R.color.toolbar_color);
 		int backgroundColor = getResources().getColor(R.color.content_background);
+		int floatingButtonNormal = getResources().getColor(R.color.primary);
+		int floatingButtonPressed = getResources().getColor(R.color.primary_pressed);
 		
 		if(isNeedOverride) {
 			navbarColor = prefs.getInt("personalize_color_navbar_color", Color.TRANSPARENT);
@@ -641,6 +646,8 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 					backgroundColor = Color.parseColor(mTestArray[0]);
 					dateTextColor = Color.parseColor(mTestArray[0]);
 					navbarColor = Color.parseColor(mTestArray[9]);
+					floatingButtonNormal = Color.parseColor(mTestArray[8]);
+					floatingButtonPressed = Color.parseColor(mTestArray[1]);
 				}
 			}
 		}
@@ -653,6 +660,8 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		dateHeaderLabel.setTextColor(dateTextColor);
 		mSettingToolbar.setBackgroundColor(toolbarColor);
 		mApplicationToolbar.setBackgroundColor(toolbarColor);
+		mFloatingFavButton.setColorNormal(floatingButtonNormal);
+		mFloatingFavButton.setColorPressed(floatingButtonPressed);
 		new FetchApplicationListTask(toolbarColor).execute();
 	}
 
@@ -1004,7 +1013,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 				if(FeedSource.DZONE == source) {
 					iconUrl = rssFeedData.get("dz:userimage");
 					thumbnailUrl = rssFeedData.get("dz:thumbnail");
-					type = NewsType.DZONE;
+					type = NewsType.IMAGE;
 				} else {
 					String content = rssFeedData.getDescription();
 					Document doc = Jsoup.parse(content);

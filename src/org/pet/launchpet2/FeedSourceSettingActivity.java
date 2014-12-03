@@ -257,8 +257,6 @@ public class FeedSourceSettingActivity extends Activity {
 	
 	private String getExistingSourceFromSharedPreference() {
 		String sourceJson = null;
-//		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-//		SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
 		SharedPreferences pref = this.getSharedPreferences("feed_settings", Context.MODE_PRIVATE);
 		sourceJson = pref.getString("feed_source", "");
 		return sourceJson;
@@ -277,8 +275,6 @@ public class FeedSourceSettingActivity extends Activity {
 			jsonArray.put(jsonObj);
 		}
 		String jsonStr = jsonArray.toString();
-//		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-//		SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
 		SharedPreferences pref = this.getSharedPreferences("feed_settings", Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = pref.edit();
 		editor.putString("feed_source", jsonStr);

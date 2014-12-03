@@ -160,18 +160,6 @@
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp" >
 
-        <!--
-             <ImageButton
-            android:id="@+id/floating_favorite_button"
-            android:contentDescription="@string/app_drawer_content_description"
-            android:layout_width="wrap_content"
-			android:background="@drawable/fab"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:src="@drawable/ic_action_star_rate" />
-        -->
-
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/floating_favorite_button"
             android:layout_width="58dp"

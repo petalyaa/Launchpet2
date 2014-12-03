@@ -84,7 +84,7 @@ public class PersonalizeSettingActivity extends PreferenceActivity {
 		} else if (resultCode == RESULT_OK && (requestCode == SAVE_CROPPED_BANNER_IMAGE || requestCode == SAVE_CROPPED_PROFILE_IMAGE)) {
 			
 		}
-
+		ConfigurationUtil.setRequireReload(getApplicationContext());
 	}
 
 	public class PersonalizeSettingFragment extends PreferenceFragment {
@@ -127,8 +127,7 @@ public class PersonalizeSettingActivity extends PreferenceActivity {
 
 		@Override
 		public boolean onPreferenceChange(Preference pref, Object newValue) {
-//			String selectedTheme = newValue.toString();
-			
+			ConfigurationUtil.setRequireReload(getApplicationContext());
 			return true;
 		}
 		
@@ -174,6 +173,7 @@ public class PersonalizeSettingActivity extends PreferenceActivity {
 				mStatusBarColor.setEnabled(false);
 				mToolbarColor.setEnabled(false);
 			}
+			ConfigurationUtil.setRequireReload(getApplicationContext());
 			return true;
 		}
 
@@ -189,6 +189,7 @@ public class PersonalizeSettingActivity extends PreferenceActivity {
 			} else {
 				mDateFormatPreference.setEnabled(false);
 			}
+			ConfigurationUtil.setRequireReload(getApplicationContext());
 			return true;
 		}
 
