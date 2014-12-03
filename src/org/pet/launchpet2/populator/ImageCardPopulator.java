@@ -12,6 +12,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class ImageCardPopulator extends Populator {
@@ -28,7 +29,16 @@ public class ImageCardPopulator extends Populator {
 		TextView titleTextView = (TextView) card.findViewById(R.id.card_image_title_label);
 		ImageView imageNewsView = (ImageView) card.findViewById(R.id.card_image_image);
 		ImageView gifImageView = (ImageView) card.findViewById(R.id.card_image_title_gif);
+		RelativeLayout titleHolder = (RelativeLayout) card.findViewById(R.id.card_image_title_holder);
+		RelativeLayout parentHolder = (RelativeLayout) card.findViewById(R.id.card_parent_holder);
 		titleTextView.setText(Html.fromHtml(item.getTitle()));
+		
+		int titleBackgroundColor = getTitleBackgroundColor();
+		if(titleBackgroundColor != 0) {
+			titleHolder.setBackgroundColor(titleBackgroundColor);
+			parentHolder.setBackgroundColor(titleBackgroundColor);
+		}
+		
 		String link = item.get("parentLink");
 		String imageUrl = item.getImageUrl();
 		if(!imageUrl.endsWith(".gif"))

@@ -9,10 +9,20 @@ public abstract class Populator {
 	
 	protected HomeNewsItem item;
 	
+	private int titleBackgroundColor;
+	
 	public Populator(HomeNewsItem item) {
 		this.item = item;
 	}
 	
 	public abstract View populateView(LayoutInflater inflater);
+
+	public int getTitleBackgroundColor() {
+		return titleBackgroundColor;
+	}
+
+	public void setTitleBackgroundColor(int titleBackgroundColor) {
+		this.titleBackgroundColor = titleBackgroundColor;
+	}
 
 }

@@ -197,6 +197,22 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	private static List<LauncherApplication> launcherAppsList = new ArrayList<LauncherApplication>();
 
 	private boolean isSecondaryProfileImageVisible = false;
+	
+	private int navbarColor;
+	
+	private int dateTextColor;
+	
+	private int statusbarColor;
+	
+	private int toolbarColor;
+	
+	private int backgroundColor;
+	
+	private int floatingButtonNormal;
+	
+	private int floatingButtonPressed;
+	
+	private int cardTitleBackgroundColor;
 
 	@SuppressLint({ "InflateParams", "ClickableViewAccessibility" })
 	@Override
@@ -250,7 +266,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		mApplicationToolbar = (RelativeLayout) applicationView.findViewById(R.id.application_toolbar);
 		
 		populateSettings();
-		populateHomeCard();
 		reloadFavorite();
 
 		mMainContent.removeAllViews();
@@ -380,7 +395,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 		if(isRequireFeedUpdate())
 			populateHomeCard();
-
+		populateHomeCard();
 	}
 
 	private void scrollToTop() {
@@ -621,13 +636,14 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 	private void reloadColors(SharedPreferences prefs) {
 		boolean isNeedOverride = prefs.getBoolean("personalize_color_override_default", false);
-		int navbarColor = getResources().getColor(R.color.navbar_color);
-		int dateTextColor = Color.WHITE;
-		int statusbarColor = getResources().getColor(R.color.status_bar_color);
-		int toolbarColor = getResources().getColor(R.color.toolbar_color);
-		int backgroundColor = getResources().getColor(R.color.content_background);
-		int floatingButtonNormal = getResources().getColor(R.color.primary);
-		int floatingButtonPressed = getResources().getColor(R.color.primary_pressed);
+		navbarColor = getResources().getColor(R.color.navbar_color);
+		dateTextColor = Color.WHITE;
+		statusbarColor = getResources().getColor(R.color.status_bar_color);
+		toolbarColor = getResources().getColor(R.color.toolbar_color);
+		backgroundColor = getResources().getColor(R.color.content_background);
+		floatingButtonNormal = getResources().getColor(R.color.primary);
+		floatingButtonPressed = getResources().getColor(R.color.primary_pressed);
+		cardTitleBackgroundColor = getResources().getColor(R.color.toolbar_color);
 		
 		if(isNeedOverride) {
 			navbarColor = prefs.getInt("personalize_color_navbar_color", Color.TRANSPARENT);
@@ -643,11 +659,12 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 					String[] mTestArray = getResources().getStringArray(arrayResId);
 					statusbarColor = Color.parseColor(mTestArray[9]);
 					toolbarColor = Color.parseColor(mTestArray[8]);
-					backgroundColor = Color.parseColor(mTestArray[0]);
+					backgroundColor = Color.parseColor(mTestArray[6]);
 					dateTextColor = Color.parseColor(mTestArray[0]);
 					navbarColor = Color.parseColor(mTestArray[9]);
 					floatingButtonNormal = Color.parseColor(mTestArray[8]);
 					floatingButtonPressed = Color.parseColor(mTestArray[1]);
+					cardTitleBackgroundColor = Color.parseColor(mTestArray[7]);
 				}
 			}
 		}
@@ -1082,6 +1099,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			populator = new DzoneCardPopulator(item, new BrowserLinkOpenListener(getApplicationContext()));
 		else
 			return;
+		populator.setTitleBackgroundColor(cardTitleBackgroundColor);
 		card = populator.populateView(inflater);
 		if(card != null) {
 			card.setOnClickListener(new OnCardClickListener(item));
