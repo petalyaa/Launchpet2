@@ -2,5 +2,9 @@
 {"name" : "DZONE", "feedUrl" : "http://feeds.dzone.com/dzone/frontpage?format=xml", "webUrl" : "http://www.dzone.com/links"}, 
 {"name" : "XDA Developers", "feedUrl" : "http://feeds.feedburner.com/xda-developers/ShsH?format=xml", "webUrl" : "http://www.xda-developers.com"}, 
 {"name" : "Android Central", "feedUrl" : "http://feeds.feedburner.com/androidcentral?format=xml", "webUrl" : "http://www.androidcentral.com"},
-{"name" : "Android Police", "feedUrl" : "http://feeds.feedburner.com/AndroidPolice?format=xml", "webUrl" : "http://www.androidpolice.com"}
+{"name" : "Android Police", "feedUrl" : "http://feeds.feedburner.com/AndroidPolice?format=xml", "webUrl" : "http://www.androidpolice.com"},
+{"name" : "9GAG Trending", "feedUrl" : "http://9gag-rss.com/api/rss/get?code=9GAG&format=2", "webUrl" : "http://9gag-rss.com"},
+{"name" : "9GAG Hot", "feedUrl" : "http://9gag-rss.com/api/rss/get?code=9GAGHot&format=2", "webUrl" : "http://9gag-rss.com"},
+{"name" : "9GAG Fresh", "feedUrl" : "http://9gag-rss.com/api/rss/get?code=9GAGFresh&format=2", "webUrl" : "http://9gag-rss.com"},
+{"name" : "9GAG Gif", "feedUrl" : "http://9gag-rss.com/api/rss/get?code=9GAGGIF&format=2", "webUrl" : "http://9gag-rss.com"}
 ]}
