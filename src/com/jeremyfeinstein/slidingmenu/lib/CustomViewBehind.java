@@ -131,8 +131,12 @@ public class CustomViewBehind extends ViewGroup {
 		final int width = r - l;
 		final int height = b - t;
 		mContent.layout(0, 0, width-mWidthOffset, height);
+		try {
 		if (mSecondaryContent != null)
 			mSecondaryContent.layout(0, 0, width-mWidthOffset, height);
+		} catch (Exception e) {
+			Log.e("Launchpet2", "Error in slidingmenu");
+		}
 	}
 
 	@Override
