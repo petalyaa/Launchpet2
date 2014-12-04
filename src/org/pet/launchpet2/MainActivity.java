@@ -53,6 +53,8 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnCloseListener;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnClosedListener;
@@ -69,9 +71,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -90,6 +94,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -108,13 +113,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
-import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
-import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu.Builder;
-import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
-
 @SuppressLint("InflateParams")
-public class MainActivity extends FragmentActivity implements ObservableScrollView.Callbacks, FloatingActionMenu.MenuStateChangeListener {
+public class MainActivity extends FragmentActivity implements ObservableScrollView.Callbacks {
 
 	private static final String RSS_FEED_JSON_KEY = "rss";
 
@@ -167,8 +167,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	private ImageView mScrollTopButton;
 
 	private RelativeLayout mSecondaryProfileImageHolder;
-	
-	private FloatingActionMenu mFloatingActionMenu;
 
 	private ImageView mSecondaryProfileImage;
 
@@ -184,36 +182,36 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 	private Animation mAnimRefreshBtnShow;
 
-	private com.getbase.floatingactionbutton.FloatingActionButton mFloatingFavButton;
+	private FloatingActionsMenu mFloatingFavButton;
 
 	private SmoothProgressBar mLoadingProgressbar;
 
-	private Builder mBottomMenu;
-	
 	private RelativeLayout mSettingToolbar;
-	
+
 	private RelativeLayout mApplicationToolbar;
 
 	private static List<LauncherApplication> launcherAppsList = new ArrayList<LauncherApplication>();
 
 	private boolean isSecondaryProfileImageVisible = false;
-	
+
 	private int navbarColor;
-	
+
 	private int dateTextColor;
-	
+
 	private int statusbarColor;
-	
+
 	private int toolbarColor;
-	
+
 	private int backgroundColor;
-	
+
 	private int floatingButtonNormal;
-	
+
 	private int floatingButtonPressed;
-	
+
 	private int cardTitleBackgroundColor;
-	
+
+	private int cardContentBackgroundColor;
+
 	private int appTitleCircleColor;
 
 	@SuppressLint({ "InflateParams", "ClickableViewAccessibility" })
@@ -221,15 +219,15 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+
 		IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_PACKAGE_ADDED);
-        filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
-        filter.addAction(Intent.ACTION_TIME_TICK);
-        filter.addDataScheme("package");
-        BroadcastReceiver receiver = new ApplicationBroadcastReceiver();
-        registerReceiver(receiver, filter);
-        registerReceiver(new ClockBroadcastReceiver(), new IntentFilter(Intent.ACTION_TIME_TICK));
+		filter.addAction(Intent.ACTION_PACKAGE_ADDED);
+		filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+		filter.addAction(Intent.ACTION_TIME_TICK);
+		filter.addDataScheme("package");
+		BroadcastReceiver receiver = new ApplicationBroadcastReceiver();
+		registerReceiver(receiver, filter);
+		registerReceiver(new ClockBroadcastReceiver(), new IntentFilter(Intent.ACTION_TIME_TICK));
 
 		mObservableScrollView = (ObservableScrollView) findViewById(R.id.scroll_view);
 		mObservableScrollView.setCallbacks(this);
@@ -245,8 +243,8 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		mSecondaryProfileImageHolder = (RelativeLayout) findViewById(R.id.floating_profile_image_holder);
 		mSecondaryProfileImage = (ImageView) findViewById(R.id.secondary_profile_image);
 		mLoadingProgressbar = (SmoothProgressBar) findViewById(R.id.toolbar_loading_progressbar);
-		mFloatingFavButton = (com.getbase.floatingactionbutton.FloatingActionButton) findViewById(R.id.floating_favorite_button);
-		
+		mFloatingFavButton = (FloatingActionsMenu) findViewById(R.id.floating_favorite_button);
+
 		mScrollTopButton.setVisibility(View.INVISIBLE);
 		mLoadingProgressbar.setVisibility(View.INVISIBLE);
 
@@ -265,7 +263,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		nowCardLayout = (NowCardLayout) homeView.findViewById(R.id.now_card_layout);
 		mSettingToolbar = (RelativeLayout) settingsView.findViewById(R.id.setting_top_header);
 		mApplicationToolbar = (RelativeLayout) applicationView.findViewById(R.id.application_toolbar);
-		
+
 		mMainContent.removeAllViews();
 		mMainContent.addView(homeView);
 		mAppListView = (ListView) applicationView.findViewById(R.id.application_list_view);
@@ -350,9 +348,9 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		mAnimRefreshBtnHide.setAnimationListener(new HideViewAnimationListener(mRefreshButton));
 		mAnimRefreshBtnShow.setAnimationListener(new ShowViewAnimationListener(mRefreshButton));
 
-		initUserPreference();
+		initUserPreference(false);
 	}
-	
+
 	private void reloadDate() {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		boolean isDateDisplay = prefs.getBoolean("personalize_general_display_date", true);
@@ -377,18 +375,20 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			dateHeaderLabel.setVisibility(View.INVISIBLE);
 		}
 	}
-	
-	private void initUserPreference() {
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		reloadAllBitmap();
-		reloadColors(prefs);
-		reloadDate();
 
-		if(isRequireFeedUpdate())
+	private void initUserPreference(boolean isReloadApplicationOnly) {
+		if(!isReloadApplicationOnly) {
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+			reloadAllBitmap();
+			reloadColors(prefs);
+			reloadDate();
+
+			if(isRequireFeedUpdate())
+				populateHomeCard();
 			populateHomeCard();
-		populateHomeCard();
-		populateSettings();
-		reloadFavorite();
+			populateSettings();
+			reloadFavorite();
+		}
 		new FetchApplicationListTask(appTitleCircleColor).execute();
 	}
 
@@ -398,8 +398,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 	@Override
 	public void onBackPressed() {
-		if(mFloatingActionMenu != null && mFloatingActionMenu.isOpen())
-			mFloatingActionMenu.close(true);
 		if(slidingMenu.isMenuShowing())
 			slidingMenu.toggle();
 		mObservableScrollView.smoothScrollTo(0, 0);
@@ -454,7 +452,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		SharedPreferences pref = this.getSharedPreferences("feed_settings", Context.MODE_PRIVATE);
 		return pref.getBoolean("feed_update", true);
 	}
-	
+
 	private List<RSSFeedSource> getExistingFeedSource() {
 		List<RSSFeedSource> list = new ArrayList<RSSFeedSource>();
 		String jsonStr = getExistingSourceFromSharedPreference();
@@ -563,8 +561,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 	@Override
 	public boolean onDownMotionEvent() {
-		if(mFloatingActionMenu != null && mFloatingActionMenu.isOpen())
-			mFloatingActionMenu.close(true);
 		return true;
 	}
 
@@ -585,47 +581,45 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		return true;
 		//		return !isFavMenuVisible && !isFavButtonTouch;
 	}
-	
+
 	private class OnSlidingClosedListener implements OnClosedListener {
 
 		@Override
 		public void onClosed() {
 			if(ConfigurationUtil.isNeedReload(getApplicationContext())) {
-				initUserPreference();
+				initUserPreference(false);
 				ConfigurationUtil.unsetRequireReload(getApplicationContext());
 			}
 		}
-		
+
 	}
-	
+
 	private class OnSlidingOpenedListener implements OnOpenedListener {
 
 		@Override
 		public void onOpened() {
-			
+
 		}
-		
+
 	}
-	
+
 
 
 	private class OnSlidingCloseListener implements OnCloseListener {
 
 		@Override
 		public void onClose() {
-			
+
 		}
 
 	}
-	
+
 	private class OnSlidingOpenListener implements OnOpenListener {
 
 		@Override
 		public void onOpen() {
-			if(mFloatingActionMenu != null && mFloatingActionMenu.isOpen())
-				mFloatingActionMenu.close(true);
 		}
-		
+
 	}
 
 	private void reloadColors(SharedPreferences prefs) {
@@ -639,7 +633,8 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		floatingButtonPressed = getResources().getColor(R.color.primary_pressed);
 		cardTitleBackgroundColor = getResources().getColor(R.color.toolbar_color);
 		appTitleCircleColor = getResources().getColor(R.color.toolbar_color);
-		
+		cardContentBackgroundColor = Color.WHITE;
+
 		if(isNeedOverride) {
 			navbarColor = prefs.getInt("personalize_color_navbar_color", Color.TRANSPARENT);
 			dateTextColor = prefs.getInt("personalize_color_date_text_color", 0);
@@ -654,10 +649,10 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 					String[] mTestArray = getResources().getStringArray(arrayResId);
 					statusbarColor = Color.parseColor(mTestArray[9]);
 					toolbarColor = Color.parseColor(mTestArray[8]);
-					backgroundColor = Color.parseColor(mTestArray[6]);
+					backgroundColor = Color.parseColor(mTestArray[4]);
 					dateTextColor = Color.parseColor(mTestArray[0]);
 					navbarColor = Color.parseColor(mTestArray[9]);
-					floatingButtonNormal = Color.parseColor(mTestArray[8]);
+					floatingButtonNormal = Color.parseColor(mTestArray[5]);
 					floatingButtonPressed = Color.parseColor(mTestArray[1]);
 					cardTitleBackgroundColor = Color.parseColor(mTestArray[7]);
 					appTitleCircleColor = Color.parseColor(mTestArray[3]);
@@ -673,8 +668,8 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		dateHeaderLabel.setTextColor(dateTextColor);
 		mSettingToolbar.setBackgroundColor(toolbarColor);
 		mApplicationToolbar.setBackgroundColor(toolbarColor);
-		mFloatingFavButton.setColorNormal(floatingButtonNormal);
-		mFloatingFavButton.setColorPressed(floatingButtonPressed);
+		//		mFloatingFavButton.setColorNormal(floatingButtonNormal);
+		//		mFloatingFavButton.setColorPressed(floatingButtonPressed);
 	}
 
 	public static int getArrayResId(Context context, String name) {
@@ -706,9 +701,9 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	}
 
 	private class FetchApplicationListTask extends AsyncTask<LauncherApplication, Void, List<LauncherApplication>> {
-		
+
 		private int titleColor;
-		
+
 		public FetchApplicationListTask(int titleColor) {
 			this.titleColor = titleColor;
 		}
@@ -747,7 +742,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 					app.setStartGroup(true);
 					prevLetter = thisLetter;
 				}
-				
+
 			}
 			final ApplicationListAdapter adapter = new ApplicationListAdapter(launcherAppsList, getApplicationContext(), titleColor);
 			mAppListView.setAdapter(adapter);
@@ -904,7 +899,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		writeFavoriteApplicationList(existingFavAppList);
 		reloadFavorite();
 	}
-	
+
 	public void writeFavoriteApplicationList(List<LauncherApplication> favAppList) {
 		JSONArray jsonArray = new JSONArray();
 		for(LauncherApplication appList : favAppList) {
@@ -928,27 +923,32 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	private void reloadFavorite() {
 		List<LauncherApplication> appList = getFavoriteApplicationList();
 		if(appList != null && appList.size() > 0) {
-			SubActionButton.Builder rLSubBuilder = new SubActionButton.Builder(this);
-			rLSubBuilder.setTheme(FloatingActionButton.THEME_DARK);
-			mBottomMenu = new FloatingActionMenu.Builder(this);
-			for(LauncherApplication app : appList) {
-				ImageView imageView = new ImageView(this);
-				try {
-					Drawable icon = getPackageManager().getApplicationIcon(app.getPackageName());
-					imageView.setImageDrawable(icon);
-				} catch (NameNotFoundException e) {
-					e.printStackTrace();
+			for(int i = 0; i < 6; i++) {
+				int resID = getResources().getIdentifier("floating_fav_menu_" + i, "id", getPackageName());
+				LinearLayout linearLayout = (LinearLayout) mFloatingFavButton.findViewById(resID);
+				if(i > appList.size()) {
+					linearLayout.setVisibility(View.INVISIBLE);
+				} else {
+					LauncherApplication app = appList.get(i);
+					try {
+						int btnResID = getResources().getIdentifier("floating_fav_menu_" + i + "_button", "id", getPackageName());
+						int txtResID = getResources().getIdentifier("floating_fav_menu_" + i + "_text", "id", getPackageName());
+						FloatingActionButton fab = (FloatingActionButton) linearLayout.findViewById(btnResID);
+						TextView txt = (TextView) linearLayout.findViewById(txtResID);
+						Drawable icon = getPackageManager().getApplicationIcon(app.getPackageName());
+						fab.setIconDrawable(icon);
+						String appName = app.getName();
+						appName = StringUtil.shortened(appName, 10);
+						txt.setText(appName);
+						txt.setVisibility(View.INVISIBLE);
+						linearLayout.setVisibility(View.VISIBLE);
+						fab.setOnClickListener(new OnFloatingMenuItemClick(app));
+						fab.setOnLongClickListener(new OnFloatingMenuItemLongClick(app));
+					} catch (NameNotFoundException e) {
+						e.printStackTrace();
+					}
 				}
-				mBottomMenu.addSubActionView(rLSubBuilder.setContentView(imageView).build(), 150, 150);
-				imageView.setOnClickListener(new OnFavoriteMenuItemClick(app));
-				imageView.setOnLongClickListener(new OnFavoriteMenuItemLongClick(app));
 			}
-			mBottomMenu.setRadius(400);
-			mBottomMenu.attachTo(mFloatingFavButton);
-			mBottomMenu.setStartAngle(170);
-			mBottomMenu.setEndAngle(275);
-			mBottomMenu.setStateChangeListener(this);
-			mFloatingActionMenu = mBottomMenu.build();
 		}
 	}
 
@@ -1052,7 +1052,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			CommonUtil.serializeHomeNewsObjectList(homeNewsItemList);
 			return homeNewsItemList;
 		}
-		
+
 		@Override
 		protected void onPreExecute() {
 			List<HomeNewsItem> homeNewsItemList = CommonUtil.deserializeHomeNewsObject();
@@ -1077,7 +1077,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		}
 
 	}
-	
+
 	private void addNewsToView(HomeNewsItem item) {
 		NewsType type = item.getType();
 		View card = null;
@@ -1095,118 +1095,77 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		else
 			return;
 		populator.setTitleBackgroundColor(cardTitleBackgroundColor);
+		populator.setContentBackgroundColor(cardContentBackgroundColor);
 		card = populator.populateView(inflater);
 		if(card != null) {
 			card.setOnClickListener(new OnCardClickListener(item));
-			card.setOnTouchListener(new OnCardTouchListener(card, mFloatingActionMenu));
+			card.setOnTouchListener(new OnCardTouchListener(card));
 			View spacerView = inflater.inflate(R.layout.spacer, null);
 			nowCardLayout.addView(card);
 			nowCardLayout.addView(spacerView);
 		}
 	}
-	
-	@Override
-	public void onMenuOpened(FloatingActionMenu menu) {
-		
-	}
 
-	@Override
-	public void onMenuClosed(FloatingActionMenu menu) {
-		
-	}
-	
-	public class OnFavoriteMenuItemClick implements OnClickListener {
-		
-		private LauncherApplication favApp;
-		
-		public OnFavoriteMenuItemClick(LauncherApplication favApp) {
-			this.favApp = favApp;
+	private class OnFloatingMenuItemClick implements OnClickListener {
+
+		private LauncherApplication app;
+
+		public OnFloatingMenuItemClick(LauncherApplication app) {
+			this.app = app;
 		}
 
 		@Override
 		public void onClick(View v) {
-			if(mFloatingActionMenu != null)
-				mFloatingActionMenu.close(true);
-			String packageName = favApp.getPackageName();
-			Intent LaunchIntent = getPackageManager().getLaunchIntentForPackage(packageName);
+			Intent LaunchIntent = getPackageManager().getLaunchIntentForPackage(app.getPackageName());
 			startActivity(LaunchIntent);
 		}
-		
-	}
-	
-	public class OnFavoriteMenuItemLongClick implements OnLongClickListener {
 
-		private LauncherApplication favApp;
-		
-		public OnFavoriteMenuItemLongClick(LauncherApplication favApp) {
-			this.favApp = favApp;
+	}
+
+	private class OnFloatingMenuItemLongClick implements OnLongClickListener {
+
+		private LauncherApplication app;
+
+		public OnFloatingMenuItemLongClick(LauncherApplication app) {
+			this.app = app;
 		}
-		
+
 		@Override
 		public boolean onLongClick(View arg0) {
-			if(mFloatingActionMenu != null)
-				mFloatingActionMenu.close(true);
-			AlertDialog.Builder builderSingle = new AlertDialog.Builder(MainActivity.this);
-			final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.select_dialog_singlechoice);
-			arrayAdapter.add(getString(R.string.remove_from_favorite));
-			builderSingle.setNegativeButton(getString(R.string.button_close), null);
-			builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					switch(which) {
-					case 0 :
-						List<LauncherApplication> existingFavorite = getFavoriteApplicationList();
-						Iterator<LauncherApplication> existingFavoriteIter = existingFavorite.iterator();
-						while(existingFavoriteIter.hasNext()) {
-							LauncherApplication app = existingFavoriteIter.next();
-							String packageName = app.getPackageName();
-							String thisPackageName = favApp.getPackageName();
-							if(packageName.equalsIgnoreCase(thisPackageName))
-								existingFavoriteIter.remove();
-						}
-						writeFavoriteApplicationList(existingFavorite);
-						reloadFavorite();
-						break;
-					}
-				}
-			});
-			builderSingle.show();
+
 			return true;
 		}
-		
+
 	}
-	
+
 	private class OnCardClickListener implements OnClickListener {
 
 		private HomeNewsItem item;
-		
+
 		public OnCardClickListener(HomeNewsItem item) {
 			this.item = item;
 		}
 
 		@Override
 		public void onClick(View v) {
-			if(mFloatingActionMenu != null && mFloatingActionMenu.isOpen())
-				mFloatingActionMenu.close(true);
 			Bundle b = new Bundle();
 			b.putSerializable("home_news_item", item);
 			Intent readIntent = new Intent(getApplicationContext(), ReadFeedActivity.class);
 			readIntent.putExtras(b);
 			startActivity(readIntent);
 		}
-		
+
 	}
-	
+
 	private class ApplicationBroadcastReceiver extends BroadcastReceiver {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			initUserPreference();
-//			new FetchApplicationListTask().execute();
+			initUserPreference(true);
 		}
-		
+
 	}
-	
+
 	private class ClockBroadcastReceiver extends BroadcastReceiver {
 
 		@Override
@@ -1214,7 +1173,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			Log.v("Launchpet2", "Receiving action : " + arg1.getAction());
 			reloadDate();
 		}
-		
+
 	}
 
 }
