@@ -405,7 +405,8 @@ public class FeedSourceSettingActivity extends Activity {
 			} catch (XmlPullParserException e) {
 				e.printStackTrace();
 			} finally {
-				conn.disconnect();
+				if(conn != null)
+					conn.disconnect();
 				try {
 					if(stream != null)
 						stream.close();
