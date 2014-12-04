@@ -4,9 +4,7 @@ import com.facebook.rebound.Spring;
 import com.facebook.rebound.SpringConfig;
 import com.facebook.rebound.SpringListener;
 import com.facebook.rebound.SpringSystem;
-import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -19,16 +17,13 @@ public class OnCardTouchListener implements OnTouchListener {
 	
 	private boolean isAlreadyMove = false;
 	
-	private final FloatingActionMenu mFloatingActionMenu;
-	
 	private Spring spring;
 	
-	public OnCardTouchListener(final View view, final FloatingActionMenu mFloatingActionMenu) {
+	public OnCardTouchListener(final View view) {
 		SpringSystem springSystem = SpringSystem.create();
 		spring = springSystem.createSpring();
 		SpringConfig config = new SpringConfig(TENSION, DAMPER);
 		spring.setSpringConfig(config);
-		this.mFloatingActionMenu = mFloatingActionMenu;
 		spring.addListener(new SpringListener() {
 			
 			@Override
@@ -60,8 +55,6 @@ public class OnCardTouchListener implements OnTouchListener {
 	public boolean onTouch(final View view, MotionEvent motionEvent) {
 		switch (motionEvent.getActionMasked()) {
 		case MotionEvent.ACTION_DOWN:
-			if(mFloatingActionMenu != null && mFloatingActionMenu.isOpen())
-				mFloatingActionMenu.close(true);
 			isAlreadyMove = false;
 			spring.setEndValue(1f);
 			break;

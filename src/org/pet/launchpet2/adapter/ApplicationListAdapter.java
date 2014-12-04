@@ -117,8 +117,10 @@ public class ApplicationListAdapter extends BaseAdapter {
 		} else {
 			holder = (ViewHolder) gridIconView.getTag();
 		}
-		holder.icon_view.setImageDrawable(app.getIcon());
-		holder.name_view.setText(app.getName());
+		if(app != null) {
+			holder.icon_view.setImageDrawable(app.getIcon());
+			holder.name_view.setText(app.getName());
+		}
 		if(app.isStartGroup()) {
 			holder.icon_title_view.setText(app.getName().substring(0, 1).toUpperCase(Locale.getDefault()));
 			holder.icon_title_view.setVisibility(View.VISIBLE);

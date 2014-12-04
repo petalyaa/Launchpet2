@@ -11,10 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
-        android:scrollbars="none"
         android:layout_alignParentTop="true"
         android:background="@color/content_background"
-        android:fillViewport="true" >
+        android:fillViewport="true"
+        android:scrollbars="none" >
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -95,8 +95,6 @@
                     android:background="@drawable/ripple_selector"
                     android:contentDescription="@string/app_drawer_content_description"
                     android:src="@drawable/ic_action_arrow_drop_up" />
-                
-                
 
                 <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
                     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -140,7 +138,6 @@
                     android:paddingEnd="5dp"
                     android:paddingStart="5dp"
                     android:src="@drawable/launcher" />
-
             </RelativeLayout>
 
             <LinearLayout
@@ -164,15 +161,133 @@
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp" >
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
+        <com.getbase.floatingactionbutton.FloatingActionsMenu
             android:id="@+id/floating_favorite_button"
-            android:layout_width="58dp"
-            android:layout_height="58dp"
-            fab:fab_colorNormal="@color/primary"
-            fab:fab_colorPressed="@color/primary_pressed"
-            fab:fab_icon="@drawable/ic_action_star_rate"
-            android:clickable="true"
-            />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="bottom|end"
+        	android:gravity="end"
+            fab:fab_addButtonColorNormal="@color/primary"
+            fab:fab_addButtonColorPressed="@color/primary_pressed"
+            fab:fab_addButtonPlusIconColor="@android:color/white" >
+
+            <LinearLayout
+                android:id="@+id/floating_fav_menu_0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical" >
+                <TextView
+                    android:id="@+id/floating_fav_menu_0_text"
+                    style="@style/floating_menu_text_item" />
+                
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/floating_fav_menu_0_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fab_size="mini"
+                    fab:fab_colorNormal="@android:color/white"
+                    fab:fab_colorPressed="@android:color/white" />
+                
+            </LinearLayout>
+            
+            <LinearLayout
+                android:id="@+id/floating_fav_menu_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical" >
+                <TextView
+                    android:id="@+id/floating_fav_menu_1_text"
+                    style="@style/floating_menu_text_item" />
+                
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/floating_fav_menu_1_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fab_size="mini"
+                    fab:fab_colorNormal="@android:color/white"
+                    fab:fab_colorPressed="@android:color/white" />
+                
+            </LinearLayout>
+            
+            <LinearLayout
+                android:id="@+id/floating_fav_menu_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical" >
+                <TextView
+                    android:id="@+id/floating_fav_menu_2_text"
+                    style="@style/floating_menu_text_item" />
+                
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/floating_fav_menu_2_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fab_size="mini"
+                    fab:fab_colorNormal="@android:color/white"
+                    fab:fab_colorPressed="@android:color/white" />
+                
+            </LinearLayout>
+            
+            <LinearLayout
+                android:id="@+id/floating_fav_menu_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical" >
+                <TextView
+                    android:id="@+id/floating_fav_menu_3_text"
+                    style="@style/floating_menu_text_item" />
+                
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/floating_fav_menu_3_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fab_size="mini"
+                    fab:fab_colorNormal="@android:color/white"
+                    fab:fab_colorPressed="@android:color/white" />
+                
+            </LinearLayout>
+            
+            <LinearLayout
+                android:id="@+id/floating_fav_menu_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical" >
+                <TextView
+                    android:id="@+id/floating_fav_menu_4_text"
+                    style="@style/floating_menu_text_item" />
+                
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/floating_fav_menu_4_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fab_size="mini"
+                    fab:fab_colorNormal="@android:color/white"
+                    fab:fab_colorPressed="@android:color/white" />
+                
+            </LinearLayout>
+            
+            <LinearLayout
+                android:id="@+id/floating_fav_menu_5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical" >
+                <TextView
+                    android:id="@+id/floating_fav_menu_5_text"
+                    style="@style/floating_menu_text_item" />
+                
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/floating_fav_menu_5_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fab_size="mini"
+                    fab:fab_colorNormal="@android:color/white"
+                    fab:fab_colorPressed="@android:color/white" />
+                
+            </LinearLayout>
+
+        </com.getbase.floatingactionbutton.FloatingActionsMenu>
     </RelativeLayout>
 
 </RelativeLayout>

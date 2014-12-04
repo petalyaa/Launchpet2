@@ -59,6 +59,9 @@ public class ConfigurationUtil {
 	public static final int DIMENSION_Y_BANNER_IMAGE = 800;
 	
 	public static final List<String> RSS_URL_TO_LOAD = new ArrayList<String>();
+	
+	public static final int MAX_FAVORITE = 6;
+	
 	static {
 		RSS_URL_TO_LOAD.add("http://feeds.dzone.com/dzone/frontpage?format=xml");
 		RSS_URL_TO_LOAD.add("http://feeds.feedburner.com/androidcentral?format=xml");

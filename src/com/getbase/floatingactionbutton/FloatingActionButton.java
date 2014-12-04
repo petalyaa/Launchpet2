@@ -45,6 +45,7 @@ public class FloatingActionButton extends ImageButton {
 	int mColorPressed;
 	@DrawableRes
 	private int mIcon;
+	private Drawable mIconDrawable;
 	private int mSize;
 
 	private float mCircleSize;
@@ -116,6 +117,11 @@ public class FloatingActionButton extends ImageButton {
 			mIcon = icon;
 			updateBackground();
 		}
+	}
+
+	public void setIconDrawable(Drawable icon) {
+		mIconDrawable = icon;
+		updateBackground();
 	}
 
 	/**
@@ -196,12 +202,16 @@ public class FloatingActionButton extends ImageButton {
 		final RectF circleRect = new RectF(circleLeft, circleTop, circleLeft
 				+ mCircleSize, circleTop + mCircleSize);
 
+		Drawable iconDrawable = mIconDrawable;
+		if (iconDrawable == null)
+			iconDrawable = getIconDrawable();
+
 		LayerDrawable layerDrawable = new LayerDrawable(new Drawable[] {
 				getResources().getDrawable(
 						mSize == SIZE_NORMAL ? R.drawable.fab_bg_normal
 								: R.drawable.fab_bg_mini),
 				createFillDrawable(circleRect),
-				createStrokesDrawable(circleRect), getIconDrawable() });
+				createStrokesDrawable(circleRect), iconDrawable });
 
 		float iconOffset = (mCircleSize - getDimension(R.dimen.fab_icon_size)) / 2f;
 

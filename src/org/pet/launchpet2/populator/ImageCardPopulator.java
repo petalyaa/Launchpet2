@@ -34,11 +34,11 @@ public class ImageCardPopulator extends Populator {
 		titleTextView.setText(Html.fromHtml(item.getTitle()));
 		
 		int titleBackgroundColor = getTitleBackgroundColor();
-		if(titleBackgroundColor != 0) {
+		int contentBackgroundColor = getContentBackgroundColor();
+		if(titleBackgroundColor != 0)
 			titleHolder.setBackgroundColor(titleBackgroundColor);
-			parentHolder.setBackgroundColor(titleBackgroundColor);
-		}
-		
+		if(contentBackgroundColor != 0) 
+			parentHolder.setBackgroundColor(contentBackgroundColor);
 		String link = item.get("parentLink");
 		String imageUrl = item.getImageUrl();
 		if(!imageUrl.endsWith(".gif"))

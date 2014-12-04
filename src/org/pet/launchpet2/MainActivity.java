@@ -71,11 +71,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -94,7 +92,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -203,10 +200,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	private int toolbarColor;
 
 	private int backgroundColor;
-
-	private int floatingButtonNormal;
-
-	private int floatingButtonPressed;
 
 	private int cardTitleBackgroundColor;
 
@@ -629,8 +622,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		statusbarColor = getResources().getColor(R.color.status_bar_color);
 		toolbarColor = getResources().getColor(R.color.toolbar_color);
 		backgroundColor = getResources().getColor(R.color.content_background);
-		floatingButtonNormal = getResources().getColor(R.color.primary);
-		floatingButtonPressed = getResources().getColor(R.color.primary_pressed);
 		cardTitleBackgroundColor = getResources().getColor(R.color.toolbar_color);
 		appTitleCircleColor = getResources().getColor(R.color.toolbar_color);
 		cardContentBackgroundColor = Color.WHITE;
@@ -652,8 +643,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 					backgroundColor = Color.parseColor(mTestArray[4]);
 					dateTextColor = Color.parseColor(mTestArray[0]);
 					navbarColor = Color.parseColor(mTestArray[9]);
-					floatingButtonNormal = Color.parseColor(mTestArray[5]);
-					floatingButtonPressed = Color.parseColor(mTestArray[1]);
 					cardTitleBackgroundColor = Color.parseColor(mTestArray[7]);
 					appTitleCircleColor = Color.parseColor(mTestArray[3]);
 				}
@@ -668,8 +657,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		dateHeaderLabel.setTextColor(dateTextColor);
 		mSettingToolbar.setBackgroundColor(toolbarColor);
 		mApplicationToolbar.setBackgroundColor(toolbarColor);
-		//		mFloatingFavButton.setColorNormal(floatingButtonNormal);
-		//		mFloatingFavButton.setColorPressed(floatingButtonPressed);
 	}
 
 	public static int getArrayResId(Context context, String name) {
@@ -895,6 +882,10 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		}
 		if(existingFavAppList == null)
 			existingFavAppList = new ArrayList<LauncherApplication>();
+		if(existingFavAppList.size() >= ConfigurationUtil.MAX_FAVORITE) {
+			Toast.makeText(getApplicationContext(), getString(R.string.error_max_fav_reach), Toast.LENGTH_SHORT).show();
+			return;
+		}
 		existingFavAppList.add(app);
 		writeFavoriteApplicationList(existingFavAppList);
 		reloadFavorite();
@@ -923,13 +914,16 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	private void reloadFavorite() {
 		List<LauncherApplication> appList = getFavoriteApplicationList();
 		if(appList != null && appList.size() > 0) {
-			for(int i = 0; i < 6; i++) {
+			Log.v("Launchpet2", "AppList size : " + appList.size());
+			int currentIndex = 0;
+			for(int i = ConfigurationUtil.MAX_FAVORITE - 1; i >= 0; i--) {
+				Log.v("Launchpet2", "Current i : " + i);
 				int resID = getResources().getIdentifier("floating_fav_menu_" + i, "id", getPackageName());
 				LinearLayout linearLayout = (LinearLayout) mFloatingFavButton.findViewById(resID);
-				if(i > appList.size()) {
+				if(currentIndex >= appList.size()) {
 					linearLayout.setVisibility(View.INVISIBLE);
 				} else {
-					LauncherApplication app = appList.get(i);
+					LauncherApplication app = appList.get(currentIndex);
 					try {
 						int btnResID = getResources().getIdentifier("floating_fav_menu_" + i + "_button", "id", getPackageName());
 						int txtResID = getResources().getIdentifier("floating_fav_menu_" + i + "_text", "id", getPackageName());
@@ -948,6 +942,13 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 						e.printStackTrace();
 					}
 				}
+				currentIndex++;
+			}
+		} else {
+			for(int i = 0; i < 6; i++) {
+				int resID = getResources().getIdentifier("floating_fav_menu_" + i, "id", getPackageName());
+				LinearLayout linearLayout = (LinearLayout) mFloatingFavButton.findViewById(resID);
+				linearLayout.setVisibility(View.INVISIBLE);
 			}
 		}
 	}
@@ -1124,15 +1125,39 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 	private class OnFloatingMenuItemLongClick implements OnLongClickListener {
 
-		private LauncherApplication app;
+		private LauncherApplication launcherApp;
 
-		public OnFloatingMenuItemLongClick(LauncherApplication app) {
-			this.app = app;
+		public OnFloatingMenuItemLongClick(LauncherApplication launcherApp) {
+			this.launcherApp = launcherApp;
 		}
 
 		@Override
 		public boolean onLongClick(View arg0) {
-
+			AlertDialog.Builder builderSingle = new AlertDialog.Builder(MainActivity.this);
+			final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.select_dialog_singlechoice);
+			arrayAdapter.add(getString(R.string.remove_from_favorite));
+			builderSingle.setNegativeButton(getString(R.string.button_close), null);
+			builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					switch(which) {
+					case 0 :
+						List<LauncherApplication> existingFavorite = getFavoriteApplicationList();
+						Iterator<LauncherApplication> existingFavoriteIter = existingFavorite.iterator();
+						while(existingFavoriteIter.hasNext()) {
+							LauncherApplication app = existingFavoriteIter.next();
+							String packageName = app.getPackageName();
+							String thisPackageName = launcherApp.getPackageName();
+							if(packageName.equalsIgnoreCase(thisPackageName))
+								existingFavoriteIter.remove();
+						}
+						writeFavoriteApplicationList(existingFavorite);
+						reloadFavorite();
+						break;
+					}
+				}
+			});
+			builderSingle.show();
 			return true;
 		}
 

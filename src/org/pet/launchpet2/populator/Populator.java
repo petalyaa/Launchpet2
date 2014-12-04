@@ -11,6 +11,8 @@ public abstract class Populator {
 	
 	private int titleBackgroundColor;
 	
+	private int contentBackgroundColor;
+	
 	public Populator(HomeNewsItem item) {
 		this.item = item;
 	}
@@ -23,6 +25,14 @@ public abstract class Populator {
 
 	public void setTitleBackgroundColor(int titleBackgroundColor) {
 		this.titleBackgroundColor = titleBackgroundColor;
+	}
+
+	public int getContentBackgroundColor() {
+		return contentBackgroundColor;
+	}
+
+	public void setContentBackgroundColor(int contentBackgroundColor) {
+		this.contentBackgroundColor = contentBackgroundColor;
 	}
 
 }
