@@ -540,12 +540,12 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			if(!isSecondaryProfileImageVisible)
 				mSecondaryProfileImageHolder.startAnimation(mAnimSecondaryProfileShow);
 			isSecondaryProfileImageVisible = true;
-			mScrollTopButton.setVisibility(View.VISIBLE);
+			//mScrollTopButton.setVisibility(View.VISIBLE);
 		} else {
 			if(isSecondaryProfileImageVisible)
 				mSecondaryProfileImageHolder.startAnimation(mAnimSecondaryProfileHide);
 			isSecondaryProfileImageVisible = false;
-			mScrollTopButton.setVisibility(View.INVISIBLE);
+			//mScrollTopButton.setVisibility(View.INVISIBLE);
 		}
 		float bannerYTranslation = scrollY / BANNER_SPEED;
 		topHeaderImage.setTranslationY(bannerYTranslation);
