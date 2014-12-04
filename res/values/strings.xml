@@ -80,6 +80,7 @@
     <string name="application_details">App detail</string>
     <string name="application_uninstall">Uninstall</string>
     <string name="error_already_in_favorite">Application already in favorite</string>
+    <string name="error_max_fav_reach">You have exceed the limit for favorite</string>
     <string name="error_no_favorite_application_define">No favorite application define. To add, simply open application drawer and long press any application.</string>
     <string name="remove_from_favorite">Remove from favorite</string>
     <string name="title_activity_read_feed">ReadFeedActivity</string>
