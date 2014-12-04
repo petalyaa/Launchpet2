@@ -256,6 +256,8 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		nowCardLayout = (NowCardLayout) homeView.findViewById(R.id.now_card_layout);
 		mSettingToolbar = (RelativeLayout) settingsView.findViewById(R.id.setting_top_header);
 		mApplicationToolbar = (RelativeLayout) applicationView.findViewById(R.id.application_toolbar);
+		
+		mStickyView.setOnClickListener(new OnToolbarClickListener());
 
 		mMainContent.removeAllViews();
 		mMainContent.addView(homeView);
@@ -527,25 +529,32 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	public void onScrollChanged(int scrollY) {
 		float translationY = mStickyView.getTranslationY();
 		int stickyViewTop = mStickyView.getTop();
+		float startAlpha = 1f;
+		float endAlpha = .6f;
+		float alpha = startAlpha;
 		if(Math.max(mPlaceholderView.getTop(), scrollY) >= stickyViewTop) {
 			translationY = +(scrollY - stickyViewTop);
+			alpha = endAlpha;
 		} else {
 			translationY = -(scrollY / TOOLBAR_ADJUSTER);
 		}
-
 		mStickyView.setTranslationY(translationY);
+		
+		int diff = (int) (mStickyView.getY() - scrollY);
+		alpha = (((diff * 1f) / 600)* (startAlpha - endAlpha)) + endAlpha;
+		mStickyView.setAlpha(alpha);
+		Log.v("Launchpet2", "alpha : " + alpha);
+		
 		mSecondaryProfileImageHolder.setTranslationY(translationY);
 		mSecondaryProfileImageHolder.setTranslationZ(16f);
 		if(translationY > 0) { // This indicate toolbar already reach top
 			if(!isSecondaryProfileImageVisible)
 				mSecondaryProfileImageHolder.startAnimation(mAnimSecondaryProfileShow);
 			isSecondaryProfileImageVisible = true;
-			//mScrollTopButton.setVisibility(View.VISIBLE);
 		} else {
 			if(isSecondaryProfileImageVisible)
 				mSecondaryProfileImageHolder.startAnimation(mAnimSecondaryProfileHide);
 			isSecondaryProfileImageVisible = false;
-			//mScrollTopButton.setVisibility(View.INVISIBLE);
 		}
 		float bannerYTranslation = scrollY / BANNER_SPEED;
 		topHeaderImage.setTranslationY(bannerYTranslation);
@@ -1210,6 +1219,15 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			reloadDate();
 		}
 
+	}
+	
+	private class OnToolbarClickListener implements OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			
+		}
+		
 	}
 
 }
