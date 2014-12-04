@@ -391,9 +391,12 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 	@Override
 	public void onBackPressed() {
-		if(slidingMenu.isMenuShowing())
+		if(mFloatingFavButton != null && mFloatingFavButton.isExpanded())
+			mFloatingFavButton.collapse();
+		if(slidingMenu != null && slidingMenu.isMenuShowing())
 			slidingMenu.toggle();
-		mObservableScrollView.smoothScrollTo(0, 0);
+		if(mObservableScrollView != null)
+			mObservableScrollView.smoothScrollTo(0, 0);
 	}
 
 	private void populateSettings() {
