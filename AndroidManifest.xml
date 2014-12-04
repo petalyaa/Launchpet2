@@ -46,6 +46,9 @@
             android:name=".FeedImageViewSlides"
             android:label="@string/title_activity_feed_image_view_slides" >
         </activity>
+        <service
+            android:name="org.pet.launchpet2.services.CacheCleanupService"
+            android:exported="false"/>
     </application>
 
 </manifest>
