@@ -213,6 +213,8 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	private int floatingButtonPressed;
 	
 	private int cardTitleBackgroundColor;
+	
+	private int appTitleCircleColor;
 
 	@SuppressLint({ "InflateParams", "ClickableViewAccessibility" })
 	@Override
@@ -227,7 +229,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
         filter.addDataScheme("package");
         BroadcastReceiver receiver = new ApplicationBroadcastReceiver();
         registerReceiver(receiver, filter);
-        
         registerReceiver(new ClockBroadcastReceiver(), new IntentFilter(Intent.ACTION_TIME_TICK));
 
 		mObservableScrollView = (ObservableScrollView) findViewById(R.id.scroll_view);
@@ -265,9 +266,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		mSettingToolbar = (RelativeLayout) settingsView.findViewById(R.id.setting_top_header);
 		mApplicationToolbar = (RelativeLayout) applicationView.findViewById(R.id.application_toolbar);
 		
-		populateSettings();
-		reloadFavorite();
-
 		mMainContent.removeAllViews();
 		mMainContent.addView(homeView);
 		mAppListView = (ListView) applicationView.findViewById(R.id.application_list_view);
@@ -286,9 +284,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		slidingMenu.setOnOpenListener(new OnSlidingOpenListener());
 		slidingMenu.setOnClosedListener(new OnSlidingClosedListener());
 		slidingMenu.setOnOpenedListener(new OnSlidingOpenedListener());
-
-		Date currentDate = new Date();
-		dateHeaderLabel.setText(GENERIC_DATE_FORMAT.format(currentDate));
 
 		mObservableScrollView.getViewTreeObserver().addOnGlobalLayoutListener(
 				new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -350,15 +345,12 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			}
 		});
 
-		initUserPreference();
-
 		mAnimPrimaryProfileHide.setAnimationListener(new HideViewAnimationListener(mPrimaryProfileImage));
 		mAnimPrimaryProfileShow.setAnimationListener(new ShowViewAnimationListener(mPrimaryProfileImage));
 		mAnimRefreshBtnHide.setAnimationListener(new HideViewAnimationListener(mRefreshButton));
 		mAnimRefreshBtnShow.setAnimationListener(new ShowViewAnimationListener(mRefreshButton));
 
-		//        mFloatingFavBtn.setOnClickListener(new OnFavButtonClick());
-		//        mFloatingFavBtn.setOnTouchListener(new OnFavButtonTouch());
+		initUserPreference();
 	}
 	
 	private void reloadDate() {
@@ -387,7 +379,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	}
 	
 	private void initUserPreference() {
-		Log.v("Launchpet2", "Reloading preference....");
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		reloadAllBitmap();
 		reloadColors(prefs);
@@ -396,6 +387,9 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		if(isRequireFeedUpdate())
 			populateHomeCard();
 		populateHomeCard();
+		populateSettings();
+		reloadFavorite();
+		new FetchApplicationListTask(appTitleCircleColor).execute();
 	}
 
 	private void scrollToTop() {
@@ -644,6 +638,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		floatingButtonNormal = getResources().getColor(R.color.primary);
 		floatingButtonPressed = getResources().getColor(R.color.primary_pressed);
 		cardTitleBackgroundColor = getResources().getColor(R.color.toolbar_color);
+		appTitleCircleColor = getResources().getColor(R.color.toolbar_color);
 		
 		if(isNeedOverride) {
 			navbarColor = prefs.getInt("personalize_color_navbar_color", Color.TRANSPARENT);
@@ -665,6 +660,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 					floatingButtonNormal = Color.parseColor(mTestArray[8]);
 					floatingButtonPressed = Color.parseColor(mTestArray[1]);
 					cardTitleBackgroundColor = Color.parseColor(mTestArray[7]);
+					appTitleCircleColor = Color.parseColor(mTestArray[3]);
 				}
 			}
 		}
@@ -679,7 +675,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		mApplicationToolbar.setBackgroundColor(toolbarColor);
 		mFloatingFavButton.setColorNormal(floatingButtonNormal);
 		mFloatingFavButton.setColorPressed(floatingButtonPressed);
-		new FetchApplicationListTask(toolbarColor).execute();
 	}
 
 	public static int getArrayResId(Context context, String name) {
