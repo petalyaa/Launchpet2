@@ -58,7 +58,10 @@
                     android:layout_toEndOf="@+id/profile_image"
                     android:paddingEnd="10dp"
                     android:paddingStart="10dp"
-                    android:shadowColor="#E8EAF6"
+                    android:shadowColor="#000000"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="2"
                     android:text="@string/date_label"
                     android:textAppearance="@android:style/TextAppearance.Large"
                     android:textStyle="bold" />
