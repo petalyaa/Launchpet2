@@ -1126,6 +1126,8 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 		@Override
 		public void onClick(View v) {
+			if(mFloatingFavButton != null && mFloatingFavButton.isExpanded())
+				mFloatingFavButton.toggle();
 			Intent LaunchIntent = getPackageManager().getLaunchIntentForPackage(app.getPackageName());
 			startActivity(LaunchIntent);
 		}
