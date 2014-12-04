@@ -14,6 +14,7 @@ import android.os.Parcelable;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
@@ -43,7 +44,9 @@ public class FloatingActionsMenu extends ViewGroup {
 			.setDuration(ANIMATION_DURATION);
 	private AnimatorSet mCollapseAnimation = new AnimatorSet()
 			.setDuration(ANIMATION_DURATION);
+	
 	private AddFloatingActionButton mAddButton;
+	
 	private RotatingDrawable mRotatingDrawable;
 
 	public FloatingActionsMenu(Context context) {
@@ -167,14 +170,18 @@ public class FloatingActionsMenu extends ViewGroup {
 
 		int width = 0;
 		int height = 0;
-
+		
+		
 		for (int i = 0; i < getChildCount(); i++) {
 			View child = getChildAt(i);
 
 			switch (mExpandDirection) {
 			case EXPAND_UP:
 			case EXPAND_DOWN:
-				width = Math.max(width, child.getMeasuredWidth());
+//				width = Math.max(width, child.getMeasuredWidth());
+				if(width < child.getMeasuredWidth())
+					width = child.getMeasuredWidth();
+				Log.v("Launchpet2", "Width : " + width);
 				height += child.getMeasuredHeight();
 				break;
 			case EXPAND_LEFT:
@@ -183,6 +190,7 @@ public class FloatingActionsMenu extends ViewGroup {
 				height = Math.max(height, child.getMeasuredHeight());
 			}
 		}
+		
 
 		switch (mExpandDirection) {
 		case EXPAND_UP:

@@ -1,4 +1,6 @@
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources xmlns:android="http://schemas.android.com/apk/res/android" 
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res/org.pet.launchpet2">
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
@@ -14,27 +16,27 @@
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="@android:style/Theme.Material.NoActionBar">
-         <item name="android:colorPrimaryDark">@color/status_bar_color</item>
-         <item name="android:navigationBarColor">@android:color/transparent</item>
-         <item name="@attr/cardStyleRef">@style/nowCardStyle</item>
+        <item name="android:colorPrimaryDark">@color/status_bar_color</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="@attr/cardStyleRef">@style/nowCardStyle</item>
     </style>
-    
+
     <attr name="cardStyleRef" format="reference" />
-    
+
     <style name="button_text">
         <item name="android:shadowColor">#000000</item>
         <item name="android:shadowDx">1</item>
         <item name="android:shadowDy">1</item>
         <item name="android:shadowRadius">2</item>
     </style>
-    
+
     <style name="nowCardStyle">
         <item name="android:background">@drawable/search_bg_shadow</item>
         <item name="android:textColor">#707070</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
-    
+
     <style name="Theme.SmoothProgressBarDefaults" parent="android:Theme">
         <item name="spbStyle">@style/SmoothProgressBar</item>
     </style>
@@ -51,22 +53,39 @@
         <item name="android:minHeight">48dp</item>
         <item name="android:maxHeight">48dp</item>
     </style>
-    
+
+    <style name="floating_menu_layout_item">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">0dp</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
     <style name="floating_menu_text_item">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:shadowColor">@android:color/black</item>
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:background">@android:color/black</item>
+        <item name="android:background">@drawable/rounded_corner</item>
         <item name="android:paddingBottom">3dp</item>
         <item name="android:paddingTop">3dp</item>
-        <item name="android:paddingEnd">5dp</item>
-        <item name="android:paddingStart">5dp</item>
+        <item name="android:paddingEnd">7dp</item>
+        <item name="android:paddingStart">7dp</item>
+        <item name="android:elevation">5dp</item>
         <item name="android:shadowDx">1</item>
         <item name="android:shadowDy">1</item>
         <item name="android:shadowRadius">2</item>
         <item name="android:textAppearance">@android:style/TextAppearance.DeviceDefault.Small</item>
         <item name="android:textStyle">bold</item>
-	</style>
+    </style>
+
+    <style name="floating_menu_button_item">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="fab_size">mini</item>
+        <item name="fab_colorNormal">@color/primary_item_normal</item>
+        <item name="fab_colorPressed">@color/primary_item_pressed</item>
+    </style>
 
 </resources>

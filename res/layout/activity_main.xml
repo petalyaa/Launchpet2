@@ -168,125 +168,88 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:layout_gravity="bottom|end"
-        	android:gravity="end"
+            android:gravity="end"
             fab:fab_addButtonColorNormal="@color/primary"
             fab:fab_addButtonColorPressed="@color/primary_pressed"
             fab:fab_addButtonPlusIconColor="@android:color/white" >
 
             <LinearLayout
                 android:id="@+id/floating_fav_menu_0"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical" >
+                style="@style/floating_menu_layout_item" >
+
                 <TextView
                     android:id="@+id/floating_fav_menu_0_text"
                     style="@style/floating_menu_text_item" />
-                
+
                 <com.getbase.floatingactionbutton.FloatingActionButton
                     android:id="@+id/floating_fav_menu_0_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:fab_size="mini"
-                    fab:fab_colorNormal="@android:color/white"
-                    fab:fab_colorPressed="@android:color/white" />
-                
+                    style="@style/floating_menu_button_item" />
             </LinearLayout>
-            
+
             <LinearLayout
                 android:id="@+id/floating_fav_menu_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical" >
+                style="@style/floating_menu_layout_item" >
+
                 <TextView
                     android:id="@+id/floating_fav_menu_1_text"
                     style="@style/floating_menu_text_item" />
-                
+
                 <com.getbase.floatingactionbutton.FloatingActionButton
                     android:id="@+id/floating_fav_menu_1_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:fab_size="mini"
-                    fab:fab_colorNormal="@android:color/white"
-                    fab:fab_colorPressed="@android:color/white" />
-                
+                    style="@style/floating_menu_button_item" />
             </LinearLayout>
-            
+
             <LinearLayout
                 android:id="@+id/floating_fav_menu_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical" >
+                style="@style/floating_menu_layout_item" >
+
                 <TextView
                     android:id="@+id/floating_fav_menu_2_text"
                     style="@style/floating_menu_text_item" />
-                
+
                 <com.getbase.floatingactionbutton.FloatingActionButton
                     android:id="@+id/floating_fav_menu_2_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:fab_size="mini"
-                    fab:fab_colorNormal="@android:color/white"
-                    fab:fab_colorPressed="@android:color/white" />
-                
+                    style="@style/floating_menu_button_item" />
             </LinearLayout>
-            
+
             <LinearLayout
                 android:id="@+id/floating_fav_menu_3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical" >
+                style="@style/floating_menu_layout_item" >
+
                 <TextView
                     android:id="@+id/floating_fav_menu_3_text"
                     style="@style/floating_menu_text_item" />
-                
+
                 <com.getbase.floatingactionbutton.FloatingActionButton
                     android:id="@+id/floating_fav_menu_3_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:fab_size="mini"
-                    fab:fab_colorNormal="@android:color/white"
-                    fab:fab_colorPressed="@android:color/white" />
-                
+                    style="@style/floating_menu_button_item" />
             </LinearLayout>
-            
+
             <LinearLayout
                 android:id="@+id/floating_fav_menu_4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical" >
+                style="@style/floating_menu_layout_item" >
+
                 <TextView
                     android:id="@+id/floating_fav_menu_4_text"
                     style="@style/floating_menu_text_item" />
-                
+
                 <com.getbase.floatingactionbutton.FloatingActionButton
                     android:id="@+id/floating_fav_menu_4_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:fab_size="mini"
-                    fab:fab_colorNormal="@android:color/white"
-                    fab:fab_colorPressed="@android:color/white" />
-                
+                    style="@style/floating_menu_button_item" />
             </LinearLayout>
-            
+
             <LinearLayout
                 android:id="@+id/floating_fav_menu_5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical" >
+                style="@style/floating_menu_layout_item" >
+
                 <TextView
                     android:id="@+id/floating_fav_menu_5_text"
                     style="@style/floating_menu_text_item" />
-                
+
                 <com.getbase.floatingactionbutton.FloatingActionButton
                     android:id="@+id/floating_fav_menu_5_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:fab_size="mini"
-                    fab:fab_colorNormal="@android:color/white"
-                    fab:fab_colorPressed="@android:color/white" />
-                
+                    style="@style/floating_menu_button_item" />
             </LinearLayout>
-
         </com.getbase.floatingactionbutton.FloatingActionsMenu>
     </RelativeLayout>
 

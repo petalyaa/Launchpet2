@@ -478,6 +478,12 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		return list;
 	}
 
+	@Override
+	protected void onNewIntent(Intent intent) {
+		// TODO Auto-generated method stub
+		super.onNewIntent(intent);
+	}
+
 	@SuppressLint("InflateParams")
 	private void populateHomeCard() {
 		JSONArray rssList = new JSONArray();
@@ -935,10 +941,10 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 						Drawable icon = getPackageManager().getApplicationIcon(app.getPackageName());
 						fab.setIconDrawable(icon);
 						String appName = app.getName();
-						appName = StringUtil.shortened(appName, 10);
 						txt.setText(appName);
-						txt.setVisibility(View.INVISIBLE);
 						linearLayout.setVisibility(View.VISIBLE);
+						linearLayout.setOnClickListener(new OnFloatingMenuItemClick(app));
+						linearLayout.setOnLongClickListener(new OnFloatingMenuItemLongClick(app));
 						fab.setOnClickListener(new OnFloatingMenuItemClick(app));
 						fab.setOnLongClickListener(new OnFloatingMenuItemLongClick(app));
 					} catch (NameNotFoundException e) {

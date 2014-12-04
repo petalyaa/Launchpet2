@@ -29,6 +29,8 @@
     
     <color name="primary">#E53935</color>
     <color name="primary_pressed">#EF5350</color>
+    <color name="primary_item_normal">#FAFAFA</color>
+    <color name="primary_item_pressed">#EEEEEE</color>
     <color name="ripple">#ff80ab</color>
     <color name="accent">#ff4081</color>
     <color name="accent_pressed">#f50057</color>
