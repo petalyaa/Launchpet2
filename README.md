@@ -47,6 +47,5 @@ Third-party libraries
 =====================
 * https://github.com/jfeinstein10/SlidingMenu
 * https://github.com/LarsWerkman/HoloColorPicker
-* https://github.com/oguzbilgener/CircularFloatingActionMenu
 * https://github.com/MikeOrtiz/TouchImageView
 * https://github.com/castorflex/SmoothProgressBar
