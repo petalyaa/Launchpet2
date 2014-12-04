@@ -42,6 +42,7 @@ import org.pet.launchpet2.populator.DzoneCardPopulator;
 import org.pet.launchpet2.populator.ImageCardPopulator;
 import org.pet.launchpet2.populator.Populator;
 import org.pet.launchpet2.populator.TextCardPopulator;
+import org.pet.launchpet2.services.CacheCleanupService;
 import org.pet.launchpet2.settings.item.FeedSourceMenuItem;
 import org.pet.launchpet2.settings.item.PersonalizeMenuItem;
 import org.pet.launchpet2.util.BitmapUtil;
@@ -64,6 +65,7 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenedListener;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.IntentService;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -221,7 +223,10 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		BroadcastReceiver receiver = new ApplicationBroadcastReceiver();
 		registerReceiver(receiver, filter);
 		registerReceiver(new ClockBroadcastReceiver(), new IntentFilter(Intent.ACTION_TIME_TICK));
-
+		
+		Intent mServiceIntent = new Intent(this, CacheCleanupService.class);
+		startService(mServiceIntent);
+		
 		mObservableScrollView = (ObservableScrollView) findViewById(R.id.scroll_view);
 		mObservableScrollView.setCallbacks(this);
 
@@ -543,7 +548,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		int diff = (int) (mStickyView.getY() - scrollY);
 		alpha = (((diff * 1f) / 600)* (startAlpha - endAlpha)) + endAlpha;
 		mStickyView.setAlpha(alpha);
-		Log.v("Launchpet2", "alpha : " + alpha);
 		
 		mSecondaryProfileImageHolder.setTranslationY(translationY);
 		mSecondaryProfileImageHolder.setTranslationZ(16f);
@@ -932,10 +936,8 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	private void reloadFavorite() {
 		List<LauncherApplication> appList = getFavoriteApplicationList();
 		if(appList != null && appList.size() > 0) {
-			Log.v("Launchpet2", "AppList size : " + appList.size());
 			int currentIndex = 0;
 			for(int i = ConfigurationUtil.MAX_FAVORITE - 1; i >= 0; i--) {
-				Log.v("Launchpet2", "Current i : " + i);
 				int resID = getResources().getIdentifier("floating_fav_menu_" + i, "id", getPackageName());
 				LinearLayout linearLayout = (LinearLayout) mFloatingFavButton.findViewById(resID);
 				if(currentIndex >= appList.size()) {
@@ -1215,7 +1217,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 		@Override
 		public void onReceive(Context arg0, Intent arg1) {
-			Log.v("Launchpet2", "Receiving action : " + arg1.getAction());
 			reloadDate();
 		}
 

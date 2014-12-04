@@ -14,7 +14,6 @@ import android.os.Parcelable;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
@@ -181,7 +180,6 @@ public class FloatingActionsMenu extends ViewGroup {
 //				width = Math.max(width, child.getMeasuredWidth());
 				if(width < child.getMeasuredWidth())
 					width = child.getMeasuredWidth();
-				Log.v("Launchpet2", "Width : " + width);
 				height += child.getMeasuredHeight();
 				break;
 			case EXPAND_LEFT:

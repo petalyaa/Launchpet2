@@ -60,6 +60,12 @@ public class ConfigurationUtil {
 	
 	public static final List<String> RSS_URL_TO_LOAD = new ArrayList<String>();
 	
+	public static final long CACHE_SERVICE_STARTUP_DELAY = 1000;
+	
+	public static final long CACHE_SERVICE_CHECKING_INTERVAL = 1000 * 60 * 60 * 12;
+	
+	public static final int CACHE_MAX_DAYS = 1;
+	
 	public static final int MAX_FAVORITE = 6;
 	
 	static {
