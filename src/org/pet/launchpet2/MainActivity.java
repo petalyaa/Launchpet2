@@ -65,7 +65,6 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenedListener;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.IntentService;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -96,7 +95,6 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -108,7 +106,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -163,7 +160,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 	private ImageView mRefreshButton;
 
-	private ImageView mScrollTopButton;
+	private ImageView mGoogleSearchBtn;
 
 	private RelativeLayout mSecondaryProfileImageHolder;
 
@@ -172,10 +169,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	private Animation mAnimSecondaryProfileShow;
 
 	private Animation mAnimSecondaryProfileHide;
-
-	private Animation mAnimPrimaryProfileShow;
-
-	private Animation mAnimPrimaryProfileHide;
 
 	private Animation mAnimRefreshBtnHide;
 
@@ -245,7 +238,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		mPrimaryProfileImage = (ImageView) findViewById(R.id.profile_image);
 		mMainContent = (LinearLayout) findViewById(R.id.main_content);
 		mRefreshButton = (ImageView) findViewById(R.id.top_toolbar_refresh_button);
-		mScrollTopButton = (ImageView) findViewById(R.id.top_toolbar_scroll_top_button);
+		mGoogleSearchBtn = (ImageView) findViewById(R.id.top_toolbar_google_search_button);
 		mSecondaryProfileImageHolder = (RelativeLayout) findViewById(R.id.floating_profile_image_holder);
 		mSecondaryProfileImage = (ImageView) findViewById(R.id.secondary_profile_image);
 		mLoadingProgressbar = (SmoothProgressBar) findViewById(R.id.toolbar_loading_progressbar);
@@ -253,13 +246,10 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		mHeaderHolder = (RelativeLayout) findViewById(R.id.top_header_image_holder);
 		mHeaderOverlay = (RelativeLayout) findViewById(R.id.top_header_image_overlay);
 
-		mScrollTopButton.setVisibility(View.INVISIBLE);
 		mLoadingProgressbar.setVisibility(View.INVISIBLE);
 
 		mAnimSecondaryProfileShow = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_left_to_right);
 		mAnimSecondaryProfileHide = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_right_to_left);
-		mAnimPrimaryProfileShow = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_left_to_right);
-		mAnimPrimaryProfileHide = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_right_to_left);
 		mAnimRefreshBtnShow = FadeAnimation.getFadeInAnimation(this);
 		mAnimRefreshBtnHide = FadeAnimation.getFadeOutAnimation(this);
 
@@ -309,11 +299,23 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			}
 		});
 
-		mScrollTopButton.setOnClickListener(new OnClickListener() {
+		mGoogleSearchBtn.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				scrollToTop();
+				String packageToRun = ConfigurationUtil.GOOGLE_NOW_PACKAGE;
+				if(isPackageInstalled(packageToRun, getApplicationContext())) {
+					Intent intent = getPackageManager().getLaunchIntentForPackage(packageToRun);
+					startActivity(intent);
+				} else {
+					Uri mobileUri = Uri.parse(ConfigurationUtil.PLAY_STORE_MOBILE_URI_STR + packageToRun);
+					Uri webUri = Uri.parse(ConfigurationUtil.PLAY_STORE_WEB_URI_STR + packageToRun);
+					try {
+					    startActivity(new Intent(Intent.ACTION_VIEW, mobileUri));
+					} catch (ActivityNotFoundException e) {
+					    startActivity(new Intent(Intent.ACTION_VIEW, webUri));
+					}
+				}
 			}
 		});
 
@@ -323,6 +325,16 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		mAnimRefreshBtnShow.setAnimationListener(new ShowViewAnimationListener(mRefreshButton));
 
 		initUserPreference(false);
+	}
+	
+	private boolean isPackageInstalled(String packagename, Context context) {
+	    PackageManager pm = context.getPackageManager();
+	    try {
+	        pm.getPackageInfo(packagename, PackageManager.GET_ACTIVITIES);
+	        return true;
+	    } catch (NameNotFoundException e) {
+	        return false;
+	    }
 	}
 
 	private void reloadDate() {
@@ -364,10 +376,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			reloadFavorite();
 		}
 		new FetchApplicationListTask(appTitleCircleColor).execute();
-	}
-
-	private void scrollToTop() {
-		mObservableScrollView.fullScroll(ScrollView.FOCUS_UP);
 	}
 
 	@Override
