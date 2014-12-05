@@ -2,6 +2,6 @@
 <resources>
      <integer name="config_slide_time">800</integer>
      
-     <integer name="anim_slide_duration">200</integer>
+     <integer name="anim_slide_duration">500</integer>
      
 </resources>
