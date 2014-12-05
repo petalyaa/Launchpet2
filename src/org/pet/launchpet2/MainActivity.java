@@ -520,10 +520,10 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	public void onScrollChanged(int scrollY) {
 		float translationY = mStickyView.getTranslationY();
 		int stickyViewTop = mStickyView.getTop();
-		//float alpha = ConfigurationUtil.MAX_TOOLBAR_TRANSPARENCY;
+		float alpha = ConfigurationUtil.MAX_TOOLBAR_TRANSPARENCY;
 		if(Math.max(mPlaceholderView.getTop(), scrollY) >= stickyViewTop) {
 			translationY = +(scrollY - stickyViewTop);
-			//alpha = ConfigurationUtil.MIN_TOOLBAR_TRANSPARENCY;
+			alpha = ConfigurationUtil.MIN_TOOLBAR_TRANSPARENCY;
 		} else {
 			translationY = -(scrollY / TOOLBAR_ADJUSTER);
 		}
@@ -532,11 +532,11 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 //		if(scrollY <= mHeaderHolder.getMeasuredWidth())
 //			mHeaderHolder.setTranslationX(-scrollY);
 		currentY = mHeaderHolder.getTranslationY();
-		mHeaderHolder.setTranslationY(scrollY / 5);
+		mHeaderHolder.setTranslationY(scrollY / 3);
 
-		//int diff = (int) (mStickyView.getY() - scrollY);
-		//alpha = (((diff * 1f) / 600)* (ConfigurationUtil.MAX_TOOLBAR_TRANSPARENCY - ConfigurationUtil.MIN_TOOLBAR_TRANSPARENCY)) + ConfigurationUtil.MIN_TOOLBAR_TRANSPARENCY;
-		//mStickyView.setAlpha(alpha);
+		int diff = (int) (mStickyView.getY() - scrollY);
+		alpha = (((diff * 1f) / 600)* (ConfigurationUtil.MAX_TOOLBAR_TRANSPARENCY - ConfigurationUtil.MIN_TOOLBAR_TRANSPARENCY)) + ConfigurationUtil.MIN_TOOLBAR_TRANSPARENCY;
+		mStickyView.setAlpha(alpha);
 		mSecondaryProfileImageHolder.setTranslationY(translationY);
 		mSecondaryProfileImageHolder.setTranslationZ(16f);
 		if(translationY > 0) { // This indicate toolbar already reach top
