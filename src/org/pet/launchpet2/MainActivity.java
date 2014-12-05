@@ -220,6 +220,10 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	private TextView mWeatherDisplay;
 	
 	private ImageView mWeatherIcon;
+	
+	private Timer timer;
+	
+	private static boolean isWeatherThreadStarted;
 
 	@SuppressLint({ "InflateParams", "ClickableViewAccessibility" })
 	@Override
@@ -340,14 +344,17 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 		initUserPreference(false);
 		
-		Timer timer = new Timer();
-		timer.scheduleAtFixedRate(new TimerTask() {
-			
-			@Override
-			public void run() {
-				reloadWeather();
-			}
-		}, 1000, 1000 * 60 * 15);
+		timer = new Timer();
+		if(!isWeatherThreadStarted) {
+			timer.scheduleAtFixedRate(new TimerTask() {
+
+				@Override
+				public void run() {
+					reloadWeather();
+					isWeatherThreadStarted = true;
+				}
+			}, 1000, ConfigurationUtil.WEATHER_UPDATE_FREQUENCY);
+		}
 	}
 	
 	private boolean isPackageInstalled(String packagename, Context context) {
@@ -402,11 +409,19 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		new FetchApplicationListTask(appTitleCircleColor).execute();
 	}
 	
+	@Override
+	protected void onDestroy() {
+		if(isWeatherThreadStarted && timer != null) {
+			timer.cancel();
+		}
+	}
+
 	private void prepareWeatherSection() {
 		reloadWeather();
 	}
 	
 	private void reloadWeather() {
+		Log.v("Launchpet2", "reloading weather...");
 		LocationManager mLocManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 		new WeatherServiceThread(getApplicationContext(), mWeatherDisplay, mWeatherIcon).execute(mLocManager);
 	}
