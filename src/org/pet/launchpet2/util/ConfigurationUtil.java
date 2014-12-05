@@ -68,6 +68,10 @@ public class ConfigurationUtil {
 	
 	public static final int MAX_FAVORITE = 6;
 	
+	public static final float MAX_TOOLBAR_TRANSPARENCY = 1f;
+	
+	public static final float MIN_TOOLBAR_TRANSPARENCY = .8f;
+	
 	static {
 		RSS_URL_TO_LOAD.add("http://feeds.dzone.com/dzone/frontpage?format=xml");
 		RSS_URL_TO_LOAD.add("http://feeds.feedburner.com/androidcentral?format=xml");

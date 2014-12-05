@@ -534,19 +534,17 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	public void onScrollChanged(int scrollY) {
 		float translationY = mStickyView.getTranslationY();
 		int stickyViewTop = mStickyView.getTop();
-		float startAlpha = 1f;
-		float endAlpha = .6f;
-		float alpha = startAlpha;
+		float alpha = ConfigurationUtil.MAX_TOOLBAR_TRANSPARENCY;
 		if(Math.max(mPlaceholderView.getTop(), scrollY) >= stickyViewTop) {
 			translationY = +(scrollY - stickyViewTop);
-			alpha = endAlpha;
+			alpha = ConfigurationUtil.MIN_TOOLBAR_TRANSPARENCY;
 		} else {
 			translationY = -(scrollY / TOOLBAR_ADJUSTER);
 		}
 		mStickyView.setTranslationY(translationY);
 		
 		int diff = (int) (mStickyView.getY() - scrollY);
-		alpha = (((diff * 1f) / 600)* (startAlpha - endAlpha)) + endAlpha;
+		alpha = (((diff * 1f) / 600)* (ConfigurationUtil.MAX_TOOLBAR_TRANSPARENCY - ConfigurationUtil.MIN_TOOLBAR_TRANSPARENCY)) + ConfigurationUtil.MIN_TOOLBAR_TRANSPARENCY;
 		mStickyView.setAlpha(alpha);
 		
 		mSecondaryProfileImageHolder.setTranslationY(translationY);
