@@ -9,17 +9,20 @@ I've been a fan of blinkfeed since I started using my M7 until today with the be
 Screenshot
 ==========
 <br />
-![alt tag](http://i.imgur.com/shLkx3ul.png)
+![alt tag](http://i.imgur.com/QJMbFBNl.png)
 <br />
-![alt tag](http://i.imgur.com/zBzXhKFl.png)
+![alt tag](http://i.imgur.com/v2oUFNDl.png)
 <br />
-![alt tag](http://i.imgur.com/617DHUel.png)
+![alt tag](http://i.imgur.com/jXtt7G6l.png)
 <br />
-![alt tag](http://i.imgur.com/TS7tTq7l.png)
+![alt tag](http://i.imgur.com/vgkEbJxl.png)
 <br />
-![alt tag](http://i.imgur.com/OxpXmDpl.png)
+![alt tag](http://i.imgur.com/Ue76MKFl.png)
 <br />
-![alt tag](http://i.imgur.com/7lTu11cl.png)
+![alt tag](http://i.imgur.com/PaHzNdxl.png)
+<br />
+![alt tag](http://i.imgur.com/B4t6i7Pl.png)
+
 
 Features
 ========
