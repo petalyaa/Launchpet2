@@ -15,6 +15,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,6 +47,7 @@ import org.pet.launchpet2.populator.TextCardPopulator;
 import org.pet.launchpet2.services.CacheCleanupService;
 import org.pet.launchpet2.settings.item.FeedSourceMenuItem;
 import org.pet.launchpet2.settings.item.PersonalizeMenuItem;
+import org.pet.launchpet2.thread.WeatherServiceThread;
 import org.pet.launchpet2.util.BitmapUtil;
 import org.pet.launchpet2.util.CommonUtil;
 import org.pet.launchpet2.util.ConfigurationUtil;
@@ -80,6 +83,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -211,6 +216,10 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	private RelativeLayout mHeaderOverlay;
 	
 	private TextView mNameDisplayLabel;
+	
+	private TextView mWeatherDisplay;
+	
+	private ImageView mWeatherIcon;
 
 	@SuppressLint({ "InflateParams", "ClickableViewAccessibility" })
 	@Override
@@ -248,6 +257,8 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		mHeaderHolder = (RelativeLayout) findViewById(R.id.top_header_image_holder);
 		mHeaderOverlay = (RelativeLayout) findViewById(R.id.top_header_image_overlay);
 		mNameDisplayLabel = (TextView) findViewById(R.id.name_display_label);
+		mWeatherDisplay = (TextView) findViewById(R.id.weather_display_label);
+		mWeatherIcon = (ImageView) findViewById(R.id.weather_display_icon);
 
 		mLoadingProgressbar.setVisibility(View.INVISIBLE);
 
@@ -328,6 +339,15 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		mAnimRefreshBtnShow.setAnimationListener(new ShowViewAnimationListener(mRefreshButton));
 
 		initUserPreference(false);
+		
+		Timer timer = new Timer();
+		timer.scheduleAtFixedRate(new TimerTask() {
+			
+			@Override
+			public void run() {
+				reloadWeather();
+			}
+		}, 1000, 1000 * 60 * 15);
 	}
 	
 	private boolean isPackageInstalled(String packagename, Context context) {
@@ -372,6 +392,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			reloadOtherData(prefs);
 			reloadColors(prefs);
 			reloadDate();
+			prepareWeatherSection();
 			if(isRequireFeedUpdate())
 				populateHomeCard();
 			populateHomeCard();
@@ -379,6 +400,15 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			reloadFavorite();
 		}
 		new FetchApplicationListTask(appTitleCircleColor).execute();
+	}
+	
+	private void prepareWeatherSection() {
+		reloadWeather();
+	}
+	
+	private void reloadWeather() {
+		LocationManager mLocManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+		new WeatherServiceThread(getApplicationContext(), mWeatherDisplay, mWeatherIcon).execute(mLocManager);
 	}
 
 	@Override
@@ -668,7 +698,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 					String headerHolderBackgroundColorStr = mTestArray[8];
 					String headerOverlayBackgroundColorStr = mTestArray[8];
 					headerHolderBackgroundColorStr = headerHolderBackgroundColorStr.replaceFirst("#", "#71");
-					headerOverlayBackgroundColorStr = headerOverlayBackgroundColorStr.replaceFirst("#", "#BE");
+					headerOverlayBackgroundColorStr = headerOverlayBackgroundColorStr.replaceFirst("#", "#60");
 					headerHolderBackgroundColor = Color.parseColor(headerHolderBackgroundColorStr);
 					Log.v("Launchpet2", "Color : " + headerOverlayBackgroundColorStr);
 					headerImageOverlayColor = Color.parseColor(headerOverlayBackgroundColorStr);
@@ -1243,5 +1273,5 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		}
 		
 	}
-
+	
 }

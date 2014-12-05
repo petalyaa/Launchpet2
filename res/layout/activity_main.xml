@@ -89,13 +89,6 @@
                         android:layout_below="@+id/date_header_label"
                         android:layout_centerHorizontal="true"
                         android:alpha=".9"
-                        android:ellipsize="marquee"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true"
-                        android:freezesText="true"
-                        android:marqueeRepeatLimit="marquee_forever"
-                        android:maxLines="1"
-                        android:scrollHorizontally="true"
                         android:shadowColor="#000000"
                         android:shadowDx="1"
                         android:shadowDy="1"
@@ -103,6 +96,30 @@
                         android:singleLine="true"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/weather_display_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/name_display_label"
+                        android:layout_centerHorizontal="true"
+                        android:alpha=".9"
+                        android:shadowColor="#000000"
+                        android:shadowDx="1"
+                        android:shadowDy="1"
+                        android:shadowRadius="2"
+                        android:singleLine="true"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/weather_display_icon"
+                        android:contentDescription="@string/app_drawer_content_description"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@+id/weather_display_label" />
+                    
                 </RelativeLayout>
             </RelativeLayout>
 
@@ -176,7 +193,6 @@
                     android:layout_centerVertical="true"
                     android:contentDescription="@string/profile_image"
                     android:src="@drawable/launcher" />
-
             </RelativeLayout>
 
             <LinearLayout
@@ -186,7 +202,8 @@
                 android:layout_below="@+id/top_toolbar"
                 android:layout_centerHorizontal="true"
                 android:background="@color/content_background"
-                android:orientation="vertical" >
+                android:orientation="vertical"
+                android:padding="20dp" >
             </LinearLayout>
         </RelativeLayout>
     </org.pet.launchpet2.ObservableScrollView>
