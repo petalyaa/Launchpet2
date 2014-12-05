@@ -206,8 +206,16 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	private int cardTitleBackgroundColor;
 
 	private int cardContentBackgroundColor;
+	
+	private int headerHolderBackgroundColor;
+	
+	private int headerImageOverlayColor;
 
 	private int appTitleCircleColor;
+	
+	private RelativeLayout mHeaderHolder;
+	
+	private RelativeLayout mHeaderOverlay;
 
 	@SuppressLint({ "InflateParams", "ClickableViewAccessibility" })
 	@Override
@@ -242,6 +250,8 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		mSecondaryProfileImage = (ImageView) findViewById(R.id.secondary_profile_image);
 		mLoadingProgressbar = (SmoothProgressBar) findViewById(R.id.toolbar_loading_progressbar);
 		mFloatingFavButton = (FloatingActionsMenu) findViewById(R.id.floating_favorite_button);
+		mHeaderHolder = (RelativeLayout) findViewById(R.id.top_header_image_holder);
+		mHeaderOverlay = (RelativeLayout) findViewById(R.id.top_header_image_overlay);
 
 		mScrollTopButton.setVisibility(View.INVISIBLE);
 		mLoadingProgressbar.setVisibility(View.INVISIBLE);
@@ -307,44 +317,8 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			}
 		});
 
-		mAnimSecondaryProfileHide.setAnimationListener(new AnimationListener() {
-
-			@Override
-			public void onAnimationStart(Animation animation) {
-				mPrimaryProfileImage.startAnimation(mAnimPrimaryProfileShow);
-			}
-
-			@Override
-			public void onAnimationRepeat(Animation animation) {
-
-			}
-
-			@Override
-			public void onAnimationEnd(Animation animation) {
-				mSecondaryProfileImageHolder.setVisibility(View.INVISIBLE);
-			}
-		});
-
-		mAnimSecondaryProfileShow.setAnimationListener(new AnimationListener() {
-
-			@Override
-			public void onAnimationStart(Animation animation) {
-				mPrimaryProfileImage.startAnimation(mAnimPrimaryProfileHide);
-			}
-
-			@Override
-			public void onAnimationRepeat(Animation animation) {
-
-			}
-
-			@Override
-			public void onAnimationEnd(Animation arg0) {
-				mSecondaryProfileImageHolder.setVisibility(View.VISIBLE);
-			}
-		});
-
-		mAnimPrimaryProfileHide.setAnimationListener(new HideViewAnimationListener(mPrimaryProfileImage));
-		mAnimPrimaryProfileShow.setAnimationListener(new ShowViewAnimationListener(mPrimaryProfileImage));
+		mAnimSecondaryProfileHide.setAnimationListener(new HideViewAnimationListener(mSecondaryProfileImageHolder));
+		mAnimSecondaryProfileShow.setAnimationListener(new ShowViewAnimationListener(mSecondaryProfileImageHolder));
 		mAnimRefreshBtnHide.setAnimationListener(new HideViewAnimationListener(mRefreshButton));
 		mAnimRefreshBtnShow.setAnimationListener(new ShowViewAnimationListener(mRefreshButton));
 
@@ -487,7 +461,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 	@Override
 	protected void onNewIntent(Intent intent) {
-		// TODO Auto-generated method stub
 		super.onNewIntent(intent);
 	}
 
@@ -542,11 +515,10 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			translationY = -(scrollY / TOOLBAR_ADJUSTER);
 		}
 		mStickyView.setTranslationY(translationY);
-		
+		mHeaderHolder.setTranslationX(-scrollY);
 		int diff = (int) (mStickyView.getY() - scrollY);
 		alpha = (((diff * 1f) / 600)* (ConfigurationUtil.MAX_TOOLBAR_TRANSPARENCY - ConfigurationUtil.MIN_TOOLBAR_TRANSPARENCY)) + ConfigurationUtil.MIN_TOOLBAR_TRANSPARENCY;
 		mStickyView.setAlpha(alpha);
-		
 		mSecondaryProfileImageHolder.setTranslationY(translationY);
 		mSecondaryProfileImageHolder.setTranslationZ(16f);
 		if(translationY > 0) { // This indicate toolbar already reach top
@@ -665,6 +637,13 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 					navbarColor = Color.parseColor(mTestArray[9]);
 					cardTitleBackgroundColor = Color.parseColor(mTestArray[7]);
 					appTitleCircleColor = Color.parseColor(mTestArray[3]);
+					String headerHolderBackgroundColorStr = mTestArray[8];
+					String headerOverlayBackgroundColorStr = mTestArray[8];
+					headerHolderBackgroundColorStr = headerHolderBackgroundColorStr.replaceFirst("#", "#71");
+					headerOverlayBackgroundColorStr = headerOverlayBackgroundColorStr.replaceFirst("#", "#BE");
+					headerHolderBackgroundColor = Color.parseColor(headerHolderBackgroundColorStr);
+					Log.v("Launchpet2", "Color : " + headerOverlayBackgroundColorStr);
+					headerImageOverlayColor = Color.parseColor(headerOverlayBackgroundColorStr);
 				}
 			}
 		}
@@ -677,6 +656,10 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		dateHeaderLabel.setTextColor(dateTextColor);
 		mSettingToolbar.setBackgroundColor(toolbarColor);
 		mApplicationToolbar.setBackgroundColor(toolbarColor);
+		if(headerHolderBackgroundColor != 0)
+			mHeaderHolder.setBackgroundColor(headerHolderBackgroundColor);
+		if(headerImageOverlayColor != 0)
+			mHeaderOverlay.setBackgroundColor(headerImageOverlayColor);
 	}
 
 	public static int getArrayResId(Context context, String name) {
@@ -740,6 +723,10 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			String prevLetter = null;
 			while(launcherAppIter.hasNext()) {
 				LauncherApplication app = launcherAppIter.next();
+				if(app.getName() == null) {
+					launcherAppIter.remove();
+					continue;
+				}
 				String thisLetter = app.getName().substring(0, 1).toLowerCase(Locale.getDefault());
 				if(prevLetter != null && !thisLetter.equals(prevLetter)) {
 					app.setStartGroup(true);
