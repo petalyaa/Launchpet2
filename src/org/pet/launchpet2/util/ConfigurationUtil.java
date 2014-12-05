@@ -70,7 +70,7 @@ public class ConfigurationUtil {
 	
 	public static final float MAX_TOOLBAR_TRANSPARENCY = 1f;
 	
-	public static final float MIN_TOOLBAR_TRANSPARENCY = .9f;
+	public static final float MIN_TOOLBAR_TRANSPARENCY = .6f;
 	
 	public static final String GOOGLE_NOW_PACKAGE = "com.google.android.googlequicksearchbox";
 	
