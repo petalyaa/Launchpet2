@@ -203,7 +203,7 @@
                 android:layout_centerHorizontal="true"
                 android:background="@color/content_background"
                 android:orientation="vertical"
-                android:padding="20dp" >
+                android:padding="10dp" >
             </LinearLayout>
         </RelativeLayout>
     </org.pet.launchpet2.ObservableScrollView>
