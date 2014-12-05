@@ -48,6 +48,8 @@ public class PersonalizeSettingActivity extends PreferenceActivity {
 	private Preference mProfileImagePref;
 
 	private Preference mBannerImagePref;
+	
+	private EditTextPreference mDisplayNamePref;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +109,7 @@ public class PersonalizeSettingActivity extends PreferenceActivity {
 			mProfileImagePref = (Preference) getPreferenceManager().findPreference("personalize_general_profile_image_selection");
 			mBannerImagePref = (Preference) getPreferenceManager().findPreference("personalize_general_banner_image_selection");
 			mThemePreference = (ListPreference) getPreferenceManager().findPreference("personalize_general_theme");
+			mDisplayNamePref = (EditTextPreference) getPreferenceManager().findPreference("personalize_general_display_name");
 			
 			boolean isDateDisplay = mDisplayDateCheckbox.isChecked();
 			if(!isDateDisplay)
@@ -119,8 +122,19 @@ public class PersonalizeSettingActivity extends PreferenceActivity {
 			mProfileImagePref.setOnPreferenceClickListener(new OnProfileImagePreferenceClick());
 			mBannerImagePref.setOnPreferenceClickListener(new OnBannerImagePreferenceClick());
 			mThemePreference.setOnPreferenceChangeListener(new OnThemePreferenceChange());
+			mDisplayNamePref.setOnPreferenceChangeListener(new OnDisplayNamePrefChange());
 		}
 
+	}
+	
+	private class OnDisplayNamePrefChange implements OnPreferenceChangeListener {
+
+		@Override
+		public boolean onPreferenceChange(Preference arg0, Object arg1) {
+			ConfigurationUtil.setRequireReload(getApplicationContext());
+			return true;
+		}
+		
 	}
 	
 	private class OnThemePreferenceChange implements OnPreferenceChangeListener {

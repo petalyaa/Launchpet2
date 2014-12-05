@@ -209,6 +209,8 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	private RelativeLayout mHeaderHolder;
 	
 	private RelativeLayout mHeaderOverlay;
+	
+	private TextView mNameDisplayLabel;
 
 	@SuppressLint({ "InflateParams", "ClickableViewAccessibility" })
 	@Override
@@ -245,6 +247,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		mFloatingFavButton = (FloatingActionsMenu) findViewById(R.id.floating_favorite_button);
 		mHeaderHolder = (RelativeLayout) findViewById(R.id.top_header_image_holder);
 		mHeaderOverlay = (RelativeLayout) findViewById(R.id.top_header_image_overlay);
+		mNameDisplayLabel = (TextView) findViewById(R.id.name_display_label);
 
 		mLoadingProgressbar.setVisibility(View.INVISIBLE);
 
@@ -366,9 +369,9 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		if(!isReloadApplicationOnly) {
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 			reloadAllBitmap();
+			reloadOtherData(prefs);
 			reloadColors(prefs);
 			reloadDate();
-
 			if(isRequireFeedUpdate())
 				populateHomeCard();
 			populateHomeCard();
@@ -510,23 +513,30 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			}
 		}
 	}
+	
+	float currentY;
 
 	@Override
 	public void onScrollChanged(int scrollY) {
 		float translationY = mStickyView.getTranslationY();
 		int stickyViewTop = mStickyView.getTop();
-		float alpha = ConfigurationUtil.MAX_TOOLBAR_TRANSPARENCY;
+		//float alpha = ConfigurationUtil.MAX_TOOLBAR_TRANSPARENCY;
 		if(Math.max(mPlaceholderView.getTop(), scrollY) >= stickyViewTop) {
 			translationY = +(scrollY - stickyViewTop);
-			alpha = ConfigurationUtil.MIN_TOOLBAR_TRANSPARENCY;
+			//alpha = ConfigurationUtil.MIN_TOOLBAR_TRANSPARENCY;
 		} else {
 			translationY = -(scrollY / TOOLBAR_ADJUSTER);
 		}
 		mStickyView.setTranslationY(translationY);
-		mHeaderHolder.setTranslationX(-scrollY);
-		int diff = (int) (mStickyView.getY() - scrollY);
-		alpha = (((diff * 1f) / 600)* (ConfigurationUtil.MAX_TOOLBAR_TRANSPARENCY - ConfigurationUtil.MIN_TOOLBAR_TRANSPARENCY)) + ConfigurationUtil.MIN_TOOLBAR_TRANSPARENCY;
-		mStickyView.setAlpha(alpha);
+		
+//		if(scrollY <= mHeaderHolder.getMeasuredWidth())
+//			mHeaderHolder.setTranslationX(-scrollY);
+		currentY = mHeaderHolder.getTranslationY();
+		mHeaderHolder.setTranslationY(scrollY / 5);
+
+		//int diff = (int) (mStickyView.getY() - scrollY);
+		//alpha = (((diff * 1f) / 600)* (ConfigurationUtil.MAX_TOOLBAR_TRANSPARENCY - ConfigurationUtil.MIN_TOOLBAR_TRANSPARENCY)) + ConfigurationUtil.MIN_TOOLBAR_TRANSPARENCY;
+		//mStickyView.setAlpha(alpha);
 		mSecondaryProfileImageHolder.setTranslationY(translationY);
 		mSecondaryProfileImageHolder.setTranslationZ(16f);
 		if(translationY > 0) { // This indicate toolbar already reach top
@@ -613,6 +623,16 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		public void onOpen() {
 		}
 
+	}
+	
+	private void reloadOtherData(SharedPreferences prefs) {
+		String displayNameStr = prefs.getString("personalize_general_display_name", null);
+		if(StringUtil.isNullEmptyString(displayNameStr)) {
+			mNameDisplayLabel.setVisibility(View.INVISIBLE);
+		} else {
+			mNameDisplayLabel.setVisibility(View.VISIBLE);
+			mNameDisplayLabel.setText(displayNameStr);
+		}
 	}
 
 	private void reloadColors(SharedPreferences prefs) {
