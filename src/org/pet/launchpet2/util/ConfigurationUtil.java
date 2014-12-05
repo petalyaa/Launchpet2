@@ -72,6 +72,12 @@ public class ConfigurationUtil {
 	
 	public static final float MIN_TOOLBAR_TRANSPARENCY = .9f;
 	
+	public static final String GOOGLE_NOW_PACKAGE = "com.google.android.googlequicksearchbox";
+	
+	public static final String PLAY_STORE_MOBILE_URI_STR = "market://details?id=";
+	
+	public static final String PLAY_STORE_WEB_URI_STR = "http://play.google.com/store/apps/details?id=";
+	
 	static {
 		RSS_URL_TO_LOAD.add("http://feeds.dzone.com/dzone/frontpage?format=xml");
 		RSS_URL_TO_LOAD.add("http://feeds.feedburner.com/androidcentral?format=xml");
