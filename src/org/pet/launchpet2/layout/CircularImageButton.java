@@ -2,7 +2,6 @@ package org.pet.launchpet2.layout;
 
 import org.pet.launchpet2.R;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
