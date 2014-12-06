@@ -1184,7 +1184,11 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 								for(Post post : posts) {
 									User user = post.getFrom();
 									String type = post.getType();
-									Log.i("Launchpet2", "Post from = " + user.getName() + "; Type = " + type);
+									String msg = null;
+									if(type.equals("video")) {
+										msg = post.getMessage();
+									}
+									Log.i("Launchpet2", "Post from = " + user.getName() + "; Type = " + type + "; msg = " + msg);
 								}
 							}
 							Log.i("Launchpet2", "Number of posts = " + posts.size());
