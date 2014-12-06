@@ -54,6 +54,7 @@ import org.pet.launchpet2.thread.WeatherServiceThread;
 import org.pet.launchpet2.util.BitmapUtil;
 import org.pet.launchpet2.util.CommonUtil;
 import org.pet.launchpet2.util.ConfigurationUtil;
+import org.pet.launchpet2.util.FBUtil;
 import org.pet.launchpet2.util.StringUtil;
 import org.pet.launchpet2.util.XMLParser;
 import org.xmlpull.v1.XmlPullParser;
@@ -69,6 +70,8 @@ import com.facebook.SessionState;
 import com.facebook.Session.OpenRequest;
 import com.facebook.Session.StatusCallback;
 import com.facebook.android.Util;
+import com.facebook.model.GraphObject;
+import com.facebook.model.GraphUser;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
@@ -76,6 +79,9 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnCloseListener;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnClosedListener;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenListener;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenedListener;
+import com.sromku.simple.fb.Permission;
+import com.sromku.simple.fb.SimpleFacebook;
+import com.sromku.simple.fb.listeners.OnLoginListener;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import android.annotation.SuppressLint;
@@ -217,25 +223,27 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	private int cardTitleBackgroundColor;
 
 	private int cardContentBackgroundColor;
-	
+
 	private int headerHolderBackgroundColor;
-	
+
 	private int headerImageOverlayColor;
 
 	private int appTitleCircleColor;
-	
+
 	private RelativeLayout mHeaderHolder;
-	
+
 	private RelativeLayout mHeaderOverlay;
-	
+
 	private TextView mNameDisplayLabel;
-	
+
 	private TextView mWeatherDisplay;
-	
+
 	private ImageView mWeatherIcon;
-	
+
 	private Timer timer;
 	
+	private SimpleFacebook mSimpleFacebook;
+
 	private static boolean isWeatherThreadStarted;
 
 	@SuppressLint({ "InflateParams", "ClickableViewAccessibility" })
@@ -252,10 +260,13 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		BroadcastReceiver receiver = new ApplicationBroadcastReceiver();
 		registerReceiver(receiver, filter);
 		registerReceiver(new ClockBroadcastReceiver(), new IntentFilter(Intent.ACTION_TIME_TICK));
-		
+
 		Intent mServiceIntent = new Intent(this, CacheCleanupService.class);
 		startService(mServiceIntent);
 		
+		SimpleFacebook.setConfiguration(FBUtil.FB_CONFIGURATION);
+		mSimpleFacebook = SimpleFacebook.getInstance(this);
+
 		mObservableScrollView = (ObservableScrollView) findViewById(R.id.scroll_view);
 		mObservableScrollView.setCallbacks(this);
 
@@ -292,7 +303,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		nowCardLayout = (NowCardLayout) homeView.findViewById(R.id.now_card_layout);
 		mSettingToolbar = (RelativeLayout) settingsView.findViewById(R.id.setting_top_header);
 		mApplicationToolbar = (RelativeLayout) applicationView.findViewById(R.id.application_toolbar);
-		
+
 		mStickyView.setOnClickListener(new OnToolbarClickListener());
 
 		mMainContent.removeAllViews();
@@ -342,9 +353,9 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 					Uri mobileUri = Uri.parse(ConfigurationUtil.PLAY_STORE_MOBILE_URI_STR + packageToRun);
 					Uri webUri = Uri.parse(ConfigurationUtil.PLAY_STORE_WEB_URI_STR + packageToRun);
 					try {
-					    startActivity(new Intent(Intent.ACTION_VIEW, mobileUri));
+						startActivity(new Intent(Intent.ACTION_VIEW, mobileUri));
 					} catch (ActivityNotFoundException e) {
-					    startActivity(new Intent(Intent.ACTION_VIEW, webUri));
+						startActivity(new Intent(Intent.ACTION_VIEW, webUri));
 					}
 				}
 			}
@@ -356,7 +367,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		mAnimRefreshBtnShow.setAnimationListener(new ShowViewAnimationListener(mRefreshButton));
 
 		initUserPreference(false);
-		
+
 		timer = new Timer();
 		if(!isWeatherThreadStarted) {
 			timer.scheduleAtFixedRate(new TimerTask() {
@@ -369,27 +380,26 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			}, 1000, ConfigurationUtil.WEATHER_UPDATE_FREQUENCY);
 		}
 	}
-	
+
 	@Override
 	protected void onResume() {
-	  super.onResume();
-	  AppEventsLogger.activateApp(this);
+		super.onResume();
+		mSimpleFacebook = SimpleFacebook.getInstance(this);
 	}
-	
+
 	@Override
 	protected void onPause() {
-	  super.onPause();
-	  AppEventsLogger.deactivateApp(this);
+		super.onPause();
 	}
-	
+
 	private boolean isPackageInstalled(String packagename, Context context) {
-	    PackageManager pm = context.getPackageManager();
-	    try {
-	        pm.getPackageInfo(packagename, PackageManager.GET_ACTIVITIES);
-	        return true;
-	    } catch (NameNotFoundException e) {
-	        return false;
-	    }
+		PackageManager pm = context.getPackageManager();
+		try {
+			pm.getPackageInfo(packagename, PackageManager.GET_ACTIVITIES);
+			return true;
+		} catch (NameNotFoundException e) {
+			return false;
+		}
 	}
 
 	private void reloadDate() {
@@ -433,7 +443,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		}
 		new FetchApplicationListTask(appTitleCircleColor).execute();
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		if(isWeatherThreadStarted && timer != null) {
@@ -444,7 +454,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	private void prepareWeatherSection() {
 		reloadWeather();
 	}
-	
+
 	private void reloadWeather() {
 		Log.v("Launchpet2", "reloading weather...");
 		LocationManager mLocManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -567,7 +577,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) { 
 		super.onActivityResult(requestCode, resultCode, imageReturnedIntent); 
-
+		mSimpleFacebook.onActivityResult(this, requestCode, resultCode, imageReturnedIntent); 
 		switch(requestCode) { 
 		case SELECT_PHOTO:
 			if(resultCode == RESULT_OK){  
@@ -583,7 +593,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			}
 		}
 	}
-	
+
 	float currentY;
 
 	@Override
@@ -598,9 +608,9 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			translationY = -(scrollY / TOOLBAR_ADJUSTER);
 		}
 		mStickyView.setTranslationY(translationY);
-		
-//		if(scrollY <= mHeaderHolder.getMeasuredWidth())
-//			mHeaderHolder.setTranslationX(-scrollY);
+
+		//		if(scrollY <= mHeaderHolder.getMeasuredWidth())
+		//			mHeaderHolder.setTranslationX(-scrollY);
 		currentY = mHeaderHolder.getTranslationY();
 		mHeaderHolder.setTranslationY(scrollY / 3);
 
@@ -694,7 +704,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		}
 
 	}
-	
+
 	private void reloadOtherData(SharedPreferences prefs) {
 		String displayNameStr = prefs.getString("personalize_general_display_name", null);
 		if(StringUtil.isNullEmptyString(displayNameStr)) {
@@ -1055,36 +1065,45 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			}
 		}
 	}
-	
+
 	private Session getFacebookSession() {
 		Session session = Session.getActiveSession();
-		if (session == null || !session.isOpened()) {
-			session = openActiveSession(this, true, Arrays.asList("email", "user_birthday", "user_hometown", "user_location", "read_stream"), new Session.StatusCallback() {
+		OnLoginListener onLoginListener = new OnLoginListener() {
+		    @Override
+		    public void onLogin() {
+		        // change the state of the button or do whatever you want
+		        Log.i("Launchpet2", "Logged in");
+		    }
 
-				@Override
-				public void call(Session session, SessionState state, Exception exception) {
-					if (exception != null) {
-						Log.d("Launchpet2", exception.getMessage());
-					}
-					Log.d("Launchpet2", "Session State: " + session.getState());
-				}
+		    @Override
+		    public void onNotAcceptingPermissions(Permission.Type type) {
+		        // user didn't accept READ or WRITE permission
+		        Log.w("Launchpet2", String.format("You didn't accept %s permissions", type.name()));
+		    }
 
-			});
-		}
-		Session.setActiveSession(session);
+			@Override
+			public void onThinking() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onException(Throwable arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onFail(String arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+		};
+		mSimpleFacebook.login(onLoginListener);
 		return session;
 	}
-	
-	private Session openActiveSession(Activity activity, boolean allowLoginUI, List<String> permissions, StatusCallback callback) { 
-		OpenRequest openRequest = new OpenRequest(activity).setPermissions(permissions).setCallback(callback);
-		Session session = new Session.Builder(activity).build();
-		if (SessionState.CREATED_TOKEN_LOADED.equals(session.getState()) || allowLoginUI) {
-			Session.setActiveSession(session);
-			session.openForRead(openRequest);
-			return session;
-		}
-		return null;
-	}
+
 
 	private class FetchNewsTask extends AsyncTask<String, Void, List<HomeNewsItem>> {
 
@@ -1182,7 +1201,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 				item.putAll(rssFeedData);
 				homeNewsItemList.add(item);
 			}
-			
+
 			Collections.sort(homeNewsItemList);
 			CommonUtil.serializeHomeNewsObjectList(homeNewsItemList);
 			return homeNewsItemList;
@@ -1198,41 +1217,18 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			}
 			showNewsFeedLoading();
 		}
-		
+
 		@SuppressLint("InflateParams")
 		@Override
 		protected void onPostExecute(final List<HomeNewsItem> homeNewsItemList) {
-			Session session = getFacebookSession();
-			if(session != null) {
-				new Request(
-					    session,
-					    "/me/home",
-					    null,
-					    HttpMethod.GET,
-					    new Request.Callback() {
-					        public void onCompleted(Response response) {
-					        	String rawResponse = response.getRawResponse();
-					        	Log.v("Launchpet2", "Raw respones : " + rawResponse);
-					        	nowCardLayout.removeAllViews();
-								if(homeNewsItemList != null && homeNewsItemList.size() > 0) {
-									for(HomeNewsItem item : homeNewsItemList) {
-										addNewsToView(item);
-									}
-								}
-								hideNewsFeedLoading();
-					        }
-					    }
-					).executeAsync();
-			} else {
-				Log.v("Launchpet2", "Outside facebook...");
-				nowCardLayout.removeAllViews();
-				if(homeNewsItemList != null && homeNewsItemList.size() > 0) {
-					for(HomeNewsItem item : homeNewsItemList) {
-						addNewsToView(item);
-					}
+			getFacebookSession();
+			nowCardLayout.removeAllViews();
+			if(homeNewsItemList != null && homeNewsItemList.size() > 0) {
+				for(HomeNewsItem item : homeNewsItemList) {
+					addNewsToView(item);
 				}
-				hideNewsFeedLoading();
 			}
+			hideNewsFeedLoading();
 		}
 
 	}
@@ -1359,14 +1355,14 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		}
 
 	}
-	
+
 	private class OnToolbarClickListener implements OnClickListener {
 
 		@Override
 		public void onClick(View v) {
-			
+
 		}
-		
+
 	}
-	
+
 }
