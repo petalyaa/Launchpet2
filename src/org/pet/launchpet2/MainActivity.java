@@ -1176,7 +1176,8 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 				@Override
 				public void onConnect() {
-					mSimpleFacebook.get("me", "home", null, new OnActionListener<List<Post>>() {
+					Bundle bundle = new Bundle();
+					mSimpleFacebook.get("me", "home", bundle, new OnActionListener<List<Post>>() {
 
 					    @Override
 					    public void onComplete(List<Post> posts) {
@@ -1186,7 +1187,9 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 									String type = post.getType();
 									String msg = null;
 									if(type.equals("video")) {
-										msg = post.getMessage();
+										msg = post.getObjectId();
+									} else if (type.equals("link")) {
+										msg = post.getLink();
 									}
 									Log.i("Launchpet2", "Post from = " + user.getName() + "; Type = " + type + "; msg = " + msg);
 								}
