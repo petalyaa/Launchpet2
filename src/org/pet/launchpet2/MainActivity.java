@@ -10,7 +10,6 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
@@ -55,23 +54,13 @@ import org.pet.launchpet2.util.BitmapUtil;
 import org.pet.launchpet2.util.CommonUtil;
 import org.pet.launchpet2.util.ConfigurationUtil;
 import org.pet.launchpet2.util.FBUtil;
+import org.pet.launchpet2.util.FBUtil.FBCallback;
 import org.pet.launchpet2.util.StringUtil;
 import org.pet.launchpet2.util.XMLParser;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import com.facebook.AppEventsLogger;
-import com.facebook.HttpMethod;
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.Session.OpenRequest;
-import com.facebook.Session.StatusCallback;
-import com.facebook.android.Util;
-import com.facebook.model.GraphObject;
-import com.facebook.model.GraphUser;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
@@ -79,13 +68,15 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnCloseListener;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnClosedListener;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenListener;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenedListener;
-import com.sromku.simple.fb.Permission;
 import com.sromku.simple.fb.SimpleFacebook;
-import com.sromku.simple.fb.listeners.OnLoginListener;
+import com.sromku.simple.fb.entities.Post;
+import com.sromku.simple.fb.entities.Post.PostType;
+import com.sromku.simple.fb.entities.User;
+import com.sromku.simple.fb.listeners.OnActionListener;
+import com.sromku.simple.fb.listeners.OnPostsListener;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -102,7 +93,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -241,7 +231,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	private ImageView mWeatherIcon;
 
 	private Timer timer;
-	
+
 	private SimpleFacebook mSimpleFacebook;
 
 	private static boolean isWeatherThreadStarted;
@@ -263,7 +253,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 		Intent mServiceIntent = new Intent(this, CacheCleanupService.class);
 		startService(mServiceIntent);
-		
+
 		SimpleFacebook.setConfiguration(FBUtil.FB_CONFIGURATION);
 		mSimpleFacebook = SimpleFacebook.getInstance(this);
 
@@ -475,7 +465,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		final List<LauncherSettingItem> launcherSettingItems = new ArrayList<LauncherSettingItem>();
 		launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_palette, getString(R.string.settings_item_personalize), new PersonalizeMenuItem(getApplicationContext())));
 		launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_input, getString(R.string.settings_item_feed_source), new FeedSourceMenuItem(getApplicationContext())));
-		launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_account_child, getString(R.string.settings_item_social_network), new SocialNetworkMenuItem(getApplicationContext())));
+//		launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_account_child, getString(R.string.settings_item_social_network), new SocialNetworkMenuItem(getApplicationContext())));
 		//launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_apps, getString(R.string.settings_item_app_drawer), new AppDrawerMenuItem()));
 		//launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_sync, getString(R.string.settings_item_sync_setting), new SyncSettingMenuItem()));
 		//launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_settings_backup_restore, getString(R.string.settings_item_backup_restore), new BackupRestoreMenuItem()));
@@ -1066,45 +1056,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		}
 	}
 
-	private Session getFacebookSession() {
-		Session session = Session.getActiveSession();
-		OnLoginListener onLoginListener = new OnLoginListener() {
-		    @Override
-		    public void onLogin() {
-		        // change the state of the button or do whatever you want
-		        Log.i("Launchpet2", "Logged in");
-		    }
-
-		    @Override
-		    public void onNotAcceptingPermissions(Permission.Type type) {
-		        // user didn't accept READ or WRITE permission
-		        Log.w("Launchpet2", String.format("You didn't accept %s permissions", type.name()));
-		    }
-
-			@Override
-			public void onThinking() {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onException(Throwable arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onFail(String arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-
-		};
-		mSimpleFacebook.login(onLoginListener);
-		return session;
-	}
-
-
 	private class FetchNewsTask extends AsyncTask<String, Void, List<HomeNewsItem>> {
 
 		@SuppressLint("InflateParams")
@@ -1221,16 +1172,35 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		@SuppressLint("InflateParams")
 		@Override
 		protected void onPostExecute(final List<HomeNewsItem> homeNewsItemList) {
-			getFacebookSession();
-			nowCardLayout.removeAllViews();
-			if(homeNewsItemList != null && homeNewsItemList.size() > 0) {
-				for(HomeNewsItem item : homeNewsItemList) {
-					addNewsToView(item);
-				}
-			}
-			hideNewsFeedLoading();
-		}
+			FBUtil.getFacebookSession(mSimpleFacebook, new FBCallback() {
 
+				@Override
+				public void onConnect() {
+					mSimpleFacebook.get("me", "home", null, new OnActionListener<List<Post>>() {
+
+					    @Override
+					    public void onComplete(List<Post> posts) {
+					    	if(posts != null) {
+								for(Post post : posts) {
+									User user = post.getFrom();
+									String type = post.getType();
+									Log.i("Launchpet2", "Post from = " + user.getName() + "; Type = " + type);
+								}
+							}
+							Log.i("Launchpet2", "Number of posts = " + posts.size());
+							nowCardLayout.removeAllViews();
+							if(homeNewsItemList != null && homeNewsItemList.size() > 0) {
+								for(HomeNewsItem item : homeNewsItemList) {
+									addNewsToView(item);
+								}
+							}
+							hideNewsFeedLoading();
+					    }
+
+					});
+				}
+			});
+		}
 	}
 
 	private void addNewsToView(HomeNewsItem item) {
