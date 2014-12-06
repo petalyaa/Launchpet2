@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 public class DzoneCardPopulator extends Populator {
 	
+	@SuppressWarnings("unused")
 	private ActionPerformedListener actionPerformedListener;
 
 	public DzoneCardPopulator(HomeNewsItem item, ActionPerformedListener actionPerformedListener) {
