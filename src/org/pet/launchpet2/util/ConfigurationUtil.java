@@ -78,7 +78,7 @@ public class ConfigurationUtil {
 	
 	public static final String PLAY_STORE_WEB_URI_STR = "http://play.google.com/store/apps/details?id=";
 	
-	public static final long WEATHER_UPDATE_FREQUENCY = 1000 * 60;
+	public static final long WEATHER_UPDATE_FREQUENCY = 1000 * 60 * 10;
 	
 	static {
 		RSS_URL_TO_LOAD.add("http://feeds.dzone.com/dzone/frontpage?format=xml");

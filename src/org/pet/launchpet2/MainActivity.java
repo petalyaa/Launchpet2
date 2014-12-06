@@ -10,6 +10,7 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
@@ -29,6 +30,7 @@ import org.pet.launchpet2.adapter.ApplicationListAdapter;
 import org.pet.launchpet2.adapter.SettingListAdapter;
 import org.pet.launchpet2.animation.FadeAnimation;
 import org.pet.launchpet2.layout.NowCardLayout;
+import org.pet.launchpet2.layout.ObservableScrollView;
 import org.pet.launchpet2.listener.BrowserLinkOpenListener;
 import org.pet.launchpet2.listener.HideViewAnimationListener;
 import org.pet.launchpet2.listener.OnCardTouchListener;
@@ -47,6 +49,7 @@ import org.pet.launchpet2.populator.TextCardPopulator;
 import org.pet.launchpet2.services.CacheCleanupService;
 import org.pet.launchpet2.settings.item.FeedSourceMenuItem;
 import org.pet.launchpet2.settings.item.PersonalizeMenuItem;
+import org.pet.launchpet2.settings.item.SocialNetworkMenuItem;
 import org.pet.launchpet2.thread.WeatherServiceThread;
 import org.pet.launchpet2.util.BitmapUtil;
 import org.pet.launchpet2.util.CommonUtil;
@@ -57,6 +60,15 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import com.facebook.AppEventsLogger;
+import com.facebook.HttpMethod;
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.Session.OpenRequest;
+import com.facebook.Session.StatusCallback;
+import com.facebook.android.Util;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
@@ -67,6 +79,7 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenedListener;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -357,6 +370,18 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		}
 	}
 	
+	@Override
+	protected void onResume() {
+	  super.onResume();
+	  AppEventsLogger.activateApp(this);
+	}
+	
+	@Override
+	protected void onPause() {
+	  super.onPause();
+	  AppEventsLogger.deactivateApp(this);
+	}
+	
 	private boolean isPackageInstalled(String packagename, Context context) {
 	    PackageManager pm = context.getPackageManager();
 	    try {
@@ -440,7 +465,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		final List<LauncherSettingItem> launcherSettingItems = new ArrayList<LauncherSettingItem>();
 		launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_palette, getString(R.string.settings_item_personalize), new PersonalizeMenuItem(getApplicationContext())));
 		launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_input, getString(R.string.settings_item_feed_source), new FeedSourceMenuItem(getApplicationContext())));
-		//launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_account_child, getString(R.string.settings_item_social_network), new SocialNetworkMenuItem()));
+		launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_account_child, getString(R.string.settings_item_social_network), new SocialNetworkMenuItem(getApplicationContext())));
 		//launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_apps, getString(R.string.settings_item_app_drawer), new AppDrawerMenuItem()));
 		//launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_sync, getString(R.string.settings_item_sync_setting), new SyncSettingMenuItem()));
 		//launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_settings_backup_restore, getString(R.string.settings_item_backup_restore), new BackupRestoreMenuItem()));
@@ -1030,6 +1055,36 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			}
 		}
 	}
+	
+	private Session getFacebookSession() {
+		Session session = Session.getActiveSession();
+		if (session == null || !session.isOpened()) {
+			session = openActiveSession(this, true, Arrays.asList("email", "user_birthday", "user_hometown", "user_location", "read_stream"), new Session.StatusCallback() {
+
+				@Override
+				public void call(Session session, SessionState state, Exception exception) {
+					if (exception != null) {
+						Log.d("Launchpet2", exception.getMessage());
+					}
+					Log.d("Launchpet2", "Session State: " + session.getState());
+				}
+
+			});
+		}
+		Session.setActiveSession(session);
+		return session;
+	}
+	
+	private Session openActiveSession(Activity activity, boolean allowLoginUI, List<String> permissions, StatusCallback callback) { 
+		OpenRequest openRequest = new OpenRequest(activity).setPermissions(permissions).setCallback(callback);
+		Session session = new Session.Builder(activity).build();
+		if (SessionState.CREATED_TOKEN_LOADED.equals(session.getState()) || allowLoginUI) {
+			Session.setActiveSession(session);
+			session.openForRead(openRequest);
+			return session;
+		}
+		return null;
+	}
 
 	private class FetchNewsTask extends AsyncTask<String, Void, List<HomeNewsItem>> {
 
@@ -1127,6 +1182,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 				item.putAll(rssFeedData);
 				homeNewsItemList.add(item);
 			}
+			
 			Collections.sort(homeNewsItemList);
 			CommonUtil.serializeHomeNewsObjectList(homeNewsItemList);
 			return homeNewsItemList;
@@ -1142,17 +1198,41 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			}
 			showNewsFeedLoading();
 		}
-
+		
 		@SuppressLint("InflateParams")
 		@Override
-		protected void onPostExecute(List<HomeNewsItem> homeNewsItemList) {
-			nowCardLayout.removeAllViews();
-			if(homeNewsItemList != null && homeNewsItemList.size() > 0) {
-				for(HomeNewsItem item : homeNewsItemList) {
-					addNewsToView(item);
+		protected void onPostExecute(final List<HomeNewsItem> homeNewsItemList) {
+			Session session = getFacebookSession();
+			if(session != null) {
+				new Request(
+					    session,
+					    "/me/home",
+					    null,
+					    HttpMethod.GET,
+					    new Request.Callback() {
+					        public void onCompleted(Response response) {
+					        	String rawResponse = response.getRawResponse();
+					        	Log.v("Launchpet2", "Raw respones : " + rawResponse);
+					        	nowCardLayout.removeAllViews();
+								if(homeNewsItemList != null && homeNewsItemList.size() > 0) {
+									for(HomeNewsItem item : homeNewsItemList) {
+										addNewsToView(item);
+									}
+								}
+								hideNewsFeedLoading();
+					        }
+					    }
+					).executeAsync();
+			} else {
+				Log.v("Launchpet2", "Outside facebook...");
+				nowCardLayout.removeAllViews();
+				if(homeNewsItemList != null && homeNewsItemList.size() > 0) {
+					for(HomeNewsItem item : homeNewsItemList) {
+						addNewsToView(item);
+					}
 				}
+				hideNewsFeedLoading();
 			}
-			hideNewsFeedLoading();
 		}
 
 	}

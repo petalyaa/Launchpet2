@@ -88,5 +88,11 @@
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
+    <string name="title_activity_social_setting">SocialSettingActivity</string>
+    
+    <string name="social_setting_facebook">Facebook</string>
+    <string name="social_setting_twitter">Twitter</string>
+    <string name="facebook_app_id">926046527413033</string>
+    <string name="title_facebook_login">Facebook Login</string>
 
 </resources>

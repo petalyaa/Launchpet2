@@ -1,4 +1,4 @@
-package org.pet.launchpet2;
+package org.pet.launchpet2.layout;
 /*
  * Copyright 2013 Google Inc.
  *

@@ -16,6 +16,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.pet.launchpet2.adapter.SettingFeedListAdapter;
+import org.pet.launchpet2.listener.OnSettingBackButtonClickListener;
 import org.pet.launchpet2.model.RSSFeedSource;
 import org.pet.launchpet2.util.ConfigurationUtil;
 import org.pet.launchpet2.util.StringUtil;
@@ -63,7 +64,7 @@ public class FeedSourceSettingActivity extends Activity {
 
 		mBackBtn = (ImageButton) findViewById(R.id.feed_source_toolbar_back_btn);
 		mAddBtn = (ImageButton) findViewById(R.id.feed_source_toolbar_add_btn);
-		mBackBtn.setOnClickListener(new OnBackButtonClick());
+		mBackBtn.setOnClickListener(new OnSettingBackButtonClickListener(this));
 		mAddBtn.setOnClickListener(new OnAddButtonClick());
 
 		favoriteFeedSource = new ArrayList<RSSFeedSource>();
@@ -327,15 +328,6 @@ public class FeedSourceSettingActivity extends Activity {
 		}
 	}
 
-	private class OnBackButtonClick implements OnClickListener {
-
-		@Override
-		public void onClick(View v) {
-			finish();
-		}
-
-	}
-	
 	private class onLongPressSelectionClick implements DialogInterface.OnClickListener {
 
 		@Override
