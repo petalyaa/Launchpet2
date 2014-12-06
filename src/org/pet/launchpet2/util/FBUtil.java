@@ -21,7 +21,7 @@ public class FBUtil {
 	}
 	
 	public static final Permission[] FB_PERMISSION = new Permission[] {
-			Permission.USER_PHOTOS, Permission.EMAIL, Permission.PUBLISH_ACTION };
+			Permission.USER_PHOTOS, Permission.EMAIL, Permission.READ_STREAM };
 
 	public static final SimpleFacebookConfiguration FB_CONFIGURATION = new SimpleFacebookConfiguration.Builder()
 			.setAppId(FB_APP_ID).setNamespace(FB_NAMESPACE)
