@@ -127,7 +127,7 @@ public class FeedSourceSettingActivity extends Activity {
 				final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(FeedSourceSettingActivity.this, android.R.layout.select_dialog_singlechoice);
 				arrayAdapter.add(getString(R.string.delete_feed_source));
 				builderSingle.setNegativeButton(getString(R.string.button_close), new OnCloseSelectionSourceClick());
-				builderSingle.setAdapter(arrayAdapter, new onLongPressSelectionClick(feedDataList.get(position)));
+				builderSingle.setAdapter(arrayAdapter, new OnLongPressSelectionClick(feedDataList.get(position)));
 				builderSingle.show();
 				return false;
 			}
@@ -279,8 +279,8 @@ public class FeedSourceSettingActivity extends Activity {
 		SharedPreferences pref = this.getSharedPreferences("feed_settings", Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = pref.edit();
 		editor.putString("feed_source", jsonStr);
-		editor.putBoolean("feed_update", true);
 		editor.commit();
+		ConfigurationUtil.setRequireFeedReload(getApplicationContext());
 	}
 
 	private void onAddManualSourceClick() {
@@ -329,14 +329,32 @@ public class FeedSourceSettingActivity extends Activity {
 	}
 	
 	private void onFeedDelete(RSSFeedSource feedSource) {
-		
+		String feedUrl = feedSource.getFeedUrl();
+		List<RSSFeedSource> feedSourceList = getExistingFeedSource();
+		if(feedSourceList != null && feedSourceList.size() > 0) {
+			Iterator<RSSFeedSource> feedSourceIter = feedSourceList.iterator();
+			while(feedSourceIter.hasNext()) {
+				RSSFeedSource tmpFeedSource = feedSourceIter.next();
+				String tmpFeedUrl = tmpFeedSource.getFeedUrl();
+				if(tmpFeedUrl.equals(feedUrl)) {
+					feedSourceIter.remove();
+					break;
+				}
+			}
+			try {
+				writeSourceToSharedPreference(feedSourceList);
+				populateMainListView(feedSourceList);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
-	private class onLongPressSelectionClick implements DialogInterface.OnClickListener {
+	private class OnLongPressSelectionClick implements DialogInterface.OnClickListener {
 		
 		private RSSFeedSource feedSource;
 		
-		public onLongPressSelectionClick(RSSFeedSource feedSource) {
+		public OnLongPressSelectionClick(RSSFeedSource feedSource) {
 			this.feedSource = feedSource;
 		}
 

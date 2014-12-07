@@ -80,6 +80,12 @@ public class ConfigurationUtil {
 	
 	public static final long WEATHER_UPDATE_FREQUENCY = 1000 * 60 * 10;
 	
+	public static final String SHARED_PREFERENCE_GENERAL_SETTINGS = "general_settings";
+	
+	public static final String SHARED_PREFERENCE_FEED_SETTINGS = "feed_settings";
+	
+	public static final String SHARED_PREFERENCE_KEY_REQUIRE_RELOAD = "require_reload";
+	
 	static {
 		RSS_URL_TO_LOAD.add("http://feeds.dzone.com/dzone/frontpage?format=xml");
 		RSS_URL_TO_LOAD.add("http://feeds.feedburner.com/androidcentral?format=xml");
@@ -87,21 +93,40 @@ public class ConfigurationUtil {
 	}
 	
 	public static final boolean isNeedReload(Context context) {
-		SharedPreferences pref = context.getSharedPreferences("general_settings", Context.MODE_PRIVATE);
-		return pref.getBoolean("require_reload", false);
+		SharedPreferences pref = context.getSharedPreferences(SHARED_PREFERENCE_GENERAL_SETTINGS, Context.MODE_PRIVATE);
+		return pref.getBoolean(SHARED_PREFERENCE_KEY_REQUIRE_RELOAD, false);
 	}
 	
 	public static final void setRequireReload(Context context) {
-		SharedPreferences pref = context.getSharedPreferences("general_settings", Context.MODE_PRIVATE);
+		SharedPreferences pref = context.getSharedPreferences(SHARED_PREFERENCE_GENERAL_SETTINGS, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = pref.edit();
-		editor.putBoolean("require_reload", true);
+		editor.putBoolean(SHARED_PREFERENCE_KEY_REQUIRE_RELOAD, true);
 		editor.commit();
 	}
 	
 	public static final void unsetRequireReload(Context context) {
-		SharedPreferences pref = context.getSharedPreferences("general_settings", Context.MODE_PRIVATE);
+		SharedPreferences pref = context.getSharedPreferences(SHARED_PREFERENCE_GENERAL_SETTINGS, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = pref.edit();
-		editor.putBoolean("require_reload", false);
+		editor.putBoolean(SHARED_PREFERENCE_KEY_REQUIRE_RELOAD, false);
+		editor.commit();
+	}
+	
+	public static final boolean isNeedFeedReload(Context context) {
+		SharedPreferences pref = context.getSharedPreferences(SHARED_PREFERENCE_FEED_SETTINGS, Context.MODE_PRIVATE);
+		return pref.getBoolean(SHARED_PREFERENCE_KEY_REQUIRE_RELOAD, false);
+	}
+	
+	public static final void setRequireFeedReload(Context context) {
+		SharedPreferences pref = context.getSharedPreferences(SHARED_PREFERENCE_FEED_SETTINGS, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = pref.edit();
+		editor.putBoolean(SHARED_PREFERENCE_KEY_REQUIRE_RELOAD, true);
+		editor.commit();
+	}
+	
+	public static final void unsetRequireFeedReload(Context context) {
+		SharedPreferences pref = context.getSharedPreferences(SHARED_PREFERENCE_FEED_SETTINGS, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = pref.edit();
+		editor.putBoolean(SHARED_PREFERENCE_KEY_REQUIRE_RELOAD, false);
 		editor.commit();
 	}
 	

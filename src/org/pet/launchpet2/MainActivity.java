@@ -425,13 +425,13 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			reloadColors(prefs);
 			reloadDate();
 			prepareWeatherSection();
-			if(isRequireFeedUpdate())
-				populateHomeCard();
 			populateHomeCard();
 			populateSettings();
 			reloadFavorite();
 		}
 		new FetchApplicationListTask(appTitleCircleColor).execute();
+		if(isRequireFeedUpdate())
+			populateHomeCard();
 	}
 
 	@Override
@@ -659,10 +659,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 		@Override
 		public void onClosed() {
-			if(ConfigurationUtil.isNeedReload(getApplicationContext())) {
-				initUserPreference(false);
-				ConfigurationUtil.unsetRequireReload(getApplicationContext());
-			}
+			
 		}
 
 	}
@@ -682,7 +679,14 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 		@Override
 		public void onClose() {
-
+			if(ConfigurationUtil.isNeedReload(getApplicationContext())) {
+				initUserPreference(false);
+				ConfigurationUtil.unsetRequireReload(getApplicationContext());
+			}
+			if(ConfigurationUtil.isNeedFeedReload(getApplicationContext())) {
+				populateHomeCard();
+				ConfigurationUtil.unsetRequireFeedReload(getApplicationContext());
+			}
 		}
 
 	}
