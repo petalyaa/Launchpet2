@@ -1172,41 +1172,49 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		@SuppressLint("InflateParams")
 		@Override
 		protected void onPostExecute(final List<HomeNewsItem> homeNewsItemList) {
-			FBUtil.getFacebookSession(mSimpleFacebook, new FBCallback() {
-
-				@Override
-				public void onConnect() {
-					Bundle bundle = new Bundle();
-					mSimpleFacebook.get("me", "home", bundle, new OnActionListener<List<Post>>() {
-
-					    @Override
-					    public void onComplete(List<Post> posts) {
-					    	if(posts != null) {
-								for(Post post : posts) {
-									User user = post.getFrom();
-									String type = post.getType();
-									String msg = null;
-									if(type.equals("video")) {
-										msg = post.getObjectId();
-									} else if (type.equals("link")) {
-										msg = post.getLink();
-									}
-									Log.i("Launchpet2", "Post from = " + user.getName() + "; Type = " + type + "; msg = " + msg);
-								}
-							}
-							Log.i("Launchpet2", "Number of posts = " + posts.size());
-							nowCardLayout.removeAllViews();
-							if(homeNewsItemList != null && homeNewsItemList.size() > 0) {
-								for(HomeNewsItem item : homeNewsItemList) {
-									addNewsToView(item);
-								}
-							}
-							hideNewsFeedLoading();
-					    }
-
-					});
+			nowCardLayout.removeAllViews();
+			if(homeNewsItemList != null && homeNewsItemList.size() > 0) {
+				for(HomeNewsItem item : homeNewsItemList) {
+					addNewsToView(item);
 				}
-			});
+			}
+			hideNewsFeedLoading();
+			
+//			FBUtil.getFacebookSession(mSimpleFacebook, new FBCallback() {
+//
+//				@Override
+//				public void onConnect() {
+//					Bundle bundle = new Bundle();
+//					mSimpleFacebook.get("me", "home", bundle, new OnActionListener<List<Post>>() {
+//
+//					    @Override
+//					    public void onComplete(List<Post> posts) {
+//					    	if(posts != null) {
+//								for(Post post : posts) {
+//									User user = post.getFrom();
+//									String type = post.getType();
+//									String msg = null;
+//									if(type.equals("video")) {
+//										msg = post.getObjectId();
+//									} else if (type.equals("link")) {
+//										msg = post.getLink();
+//									}
+//									Log.i("Launchpet2", "Post from = " + user.getName() + "; Type = " + type + "; msg = " + msg);
+//								}
+//							}
+//							Log.i("Launchpet2", "Number of posts = " + posts.size());
+//							nowCardLayout.removeAllViews();
+//							if(homeNewsItemList != null && homeNewsItemList.size() > 0) {
+//								for(HomeNewsItem item : homeNewsItemList) {
+//									addNewsToView(item);
+//								}
+//							}
+//							hideNewsFeedLoading();
+//					    }
+//
+//					});
+//				}
+//			});
 		}
 	}
 
