@@ -14,7 +14,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.pet.launchpet2.util.StringUtil;
 
 import android.content.Context;
 import android.location.Address;
@@ -22,8 +21,6 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
-import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -98,11 +95,12 @@ public class WeatherServiceThread extends AsyncTask<LocationManager, Void, Strin
 	@Override
 	protected void onPostExecute(String locationStr) {
 		super.onPostExecute(locationStr);
-		if(!StringUtil.isNullEmptyString(locationStr)) {
-			mLocTxtView.setText(locationStr);
-			mLocTxtView.setVisibility(View.VISIBLE);
-		} else
-			mLocTxtView.setVisibility(View.INVISIBLE);
+		if (locationStr == null)
+			locationStr = "";
+		// if(!StringUtil.isNullEmptyString(locationStr)) {
+		mLocTxtView.setText(locationStr);
+		// mLocTxtView.setVisibility(View.VISIBLE);
+		// }
 	}
 
 }
