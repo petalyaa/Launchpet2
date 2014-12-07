@@ -55,6 +55,7 @@
     <string name="pref_personalize_advanced_quick_access_hack_on_sum">Pressing floating favorite button will open application drawer. Long press will open favorite menu.</string>
     <string name="pref_personalize_advanced_quick_access_hack_off_sum">Pressing floating favorite button will open favorite menu. Long press will open application drawer.</string>
     <string name="define_FloatingActionButton"></string>
+    <string name="delete">Delete</string>
     <!-- Author section -->
     <string name="library_FloatingActionButton_author">Oleksandr Melnykov</string>
     <string name="library_FloatingActionButton_authorWebsite">https://github.com/makovkastar/FloatingActionButton</string>

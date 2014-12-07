@@ -25,9 +25,11 @@ import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.AdapterView.OnItemLongClickListener;
 
 public class HiddenApplicationActivity extends Activity {
 	
@@ -74,6 +76,7 @@ public class HiddenApplicationActivity extends Activity {
 		Collections.sort(hiddenApplicationItemList);
 		mAdapter = new HiddenApplicationListAdapter(getApplicationContext(), existingItemList);
 		mAppListView.setAdapter(mAdapter);
+		mAppListView.setOnItemLongClickListener(new OnHiddenAppLongClickListener());
 	}
 	
 	public void populateMainList() {
@@ -93,9 +96,13 @@ public class HiddenApplicationActivity extends Activity {
 		}
 		List<HiddenApplicationItem> existingItemList = getExistingHiddenApps();
 		existingItemList.add(item);
+		writeHiddenApplicationList(existingItemList);
+	}
+	
+	public void writeHiddenApplicationList(List<HiddenApplicationItem> itemList) {
 		JSONArray jsonArr = new JSONArray();
-		if(existingItemList != null && existingItemList.size() > 0) {
-			for(HiddenApplicationItem existingItem : existingItemList) {
+		if(itemList != null && itemList.size() > 0) {
+			for(HiddenApplicationItem existingItem : itemList) {
 				JSONObject jsonObj = new JSONObject();
 				try {
 					jsonObj.put("name", existingItem.getName());
@@ -111,6 +118,21 @@ public class HiddenApplicationActivity extends Activity {
 		SharedPreferences.Editor editor = pref.edit();
 		editor.putString(ConfigurationUtil.SHARED_PREFERENCE_EXISTING_HIDDEN_APPS_KEY, jsonStr);
 		editor.commit();
+		ConfigurationUtil.setRequireReload(getApplicationContext());
+	}
+	
+	public void deleteHiddenApplication(HiddenApplicationItem item) {
+		List<HiddenApplicationItem> existingItemList = getExistingHiddenApps();
+		Iterator<HiddenApplicationItem> itemIter = existingItemList.iterator();
+		while(itemIter.hasNext()) {
+			HiddenApplicationItem tmpItem = itemIter.next();
+			String packageName = tmpItem.getPackageName();
+			if(item.getPackageName().equals(packageName)) 
+				itemIter.remove();
+		}
+		writeHiddenApplicationList(existingItemList);
+		hiddenApplicationItemList.add(item);
+		Collections.sort(hiddenApplicationItemList);
 	}
 	
 	public List<HiddenApplicationItem> getExistingHiddenApps() {
@@ -166,5 +188,42 @@ public class HiddenApplicationActivity extends Activity {
 		}
 		
 	}
+	
+	private class OnHiddenAppLongClickListener implements OnItemLongClickListener {
 
+		@Override
+		public boolean onItemLongClick(AdapterView<?> adapter, View view, int position, long id) {
+			List<HiddenApplicationItem> existingItemList = getExistingHiddenApps();
+			HiddenApplicationItem item = existingItemList.get(position);
+			AlertDialog.Builder builderSingle = new AlertDialog.Builder(HiddenApplicationActivity.this);
+			final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(HiddenApplicationActivity.this, android.R.layout.select_dialog_singlechoice);
+			arrayAdapter.add(getString(R.string.delete));
+			builderSingle.setNegativeButton(getString(R.string.button_close), null);
+			builderSingle.setAdapter(arrayAdapter, new OnItemLongClickDialogSelection(item));
+			builderSingle.show();
+			return false;
+		}
+		
+	}
+
+	private class OnItemLongClickDialogSelection implements DialogInterface.OnClickListener {
+		
+		private HiddenApplicationItem item;
+		
+		public OnItemLongClickDialogSelection(HiddenApplicationItem item) {
+			this.item = item;
+		}
+
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			switch(which) {
+			case 0 :
+				deleteHiddenApplication(item);
+				populateMainList();
+				break;
+			}
+		}
+		
+	}
+	
 }
