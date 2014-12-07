@@ -117,7 +117,7 @@ public class FeedSourceSettingActivity extends Activity {
 		}
 		
 		mAdapter = new SettingFeedListAdapter(getApplicationContext());
-		List<RSSFeedSource> feedDataList = getExistingFeedSource();
+		final List<RSSFeedSource> feedDataList = getExistingFeedSource();
 		populateMainListView(feedDataList);
 		mListView.setOnItemLongClickListener(new OnItemLongClickListener() {
 
@@ -127,7 +127,7 @@ public class FeedSourceSettingActivity extends Activity {
 				final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(FeedSourceSettingActivity.this, android.R.layout.select_dialog_singlechoice);
 				arrayAdapter.add(getString(R.string.delete_feed_source));
 				builderSingle.setNegativeButton(getString(R.string.button_close), new OnCloseSelectionSourceClick());
-				builderSingle.setAdapter(arrayAdapter, new onLongPressSelectionClick());
+				builderSingle.setAdapter(arrayAdapter, new onLongPressSelectionClick(feedDataList.get(position)));
 				builderSingle.show();
 				return false;
 			}
@@ -327,12 +327,27 @@ public class FeedSourceSettingActivity extends Activity {
 		public void onClick(DialogInterface dialog, int which) {
 		}
 	}
+	
+	private void onFeedDelete(RSSFeedSource feedSource) {
+		
+	}
 
 	private class onLongPressSelectionClick implements DialogInterface.OnClickListener {
+		
+		private RSSFeedSource feedSource;
+		
+		public onLongPressSelectionClick(RSSFeedSource feedSource) {
+			this.feedSource = feedSource;
+		}
 
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
-			
+			Log.v("Launchpet2", "Selected : " + which);
+			switch (which) {
+			case 0 :
+				onFeedDelete(feedSource);
+				break;
+			}
 		}
 		
 	}
