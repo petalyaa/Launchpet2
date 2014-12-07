@@ -1,6 +1,7 @@
 package com.getbase.floatingactionbutton;
 
 import org.pet.launchpet2.R;
+import org.pet.launchpet2.listener.Callback;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -152,11 +153,39 @@ public class FloatingActionsMenu extends ViewGroup {
 		mAddButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				toggle();
+				if(!isExpanded() && isQuickHackEnable) {
+					if(callback != null)
+						callback.performCallback();
+				} else {
+					toggle();
+				}
+			}
+		});
+		
+		mAddButton.setOnLongClickListener(new OnLongClickListener() {
+			
+			@Override
+			public boolean onLongClick(View v) {
+				if(isQuickHackEnable) {
+					toggle();
+				} else {
+					if(callback != null)
+						callback.performCallback();
+				}
+				return true;
 			}
 		});
 
 		addView(mAddButton, super.generateDefaultLayoutParams());
+	}
+	
+	private boolean isQuickHackEnable;
+	
+	private Callback callback;
+	
+	public void setQuickHackEnable(boolean isQuickHackEnable, Callback callback) {
+		this.isQuickHackEnable = isQuickHackEnable;
+		this.callback = callback;
 	}
 
 	private int getColor(@ColorRes int id) {

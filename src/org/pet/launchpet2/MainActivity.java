@@ -31,6 +31,7 @@ import org.pet.launchpet2.animation.FadeAnimation;
 import org.pet.launchpet2.layout.NowCardLayout;
 import org.pet.launchpet2.layout.ObservableScrollView;
 import org.pet.launchpet2.listener.BrowserLinkOpenListener;
+import org.pet.launchpet2.listener.Callback;
 import org.pet.launchpet2.listener.HideViewAnimationListener;
 import org.pet.launchpet2.listener.OnCardTouchListener;
 import org.pet.launchpet2.listener.ShowViewAnimationListener;
@@ -107,6 +108,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -673,8 +675,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 	}
 
-
-
 	private class OnSlidingCloseListener implements OnCloseListener {
 
 		@Override
@@ -700,12 +700,25 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	}
 
 	private void reloadOtherData(SharedPreferences prefs) {
+		// For display name
 		String displayNameStr = prefs.getString("personalize_general_display_name", null);
 		if(StringUtil.isNullEmptyString(displayNameStr)) {
 			mNameDisplayLabel.setVisibility(View.INVISIBLE);
 		} else {
 			mNameDisplayLabel.setVisibility(View.VISIBLE);
 			mNameDisplayLabel.setText(displayNameStr);
+		}
+		
+		// For quick access hack
+		boolean isQuickAccessHackEnable = prefs.getBoolean("personalize_advanced_quick_access_hack", false);
+		if(mFloatingFavButton != null) {
+			mFloatingFavButton.setQuickHackEnable(isQuickAccessHackEnable, new Callback() {
+				
+				@Override
+				public void performCallback() {
+					slidingMenu.showSecondaryMenu(true);
+				}
+			});
 		}
 	}
 

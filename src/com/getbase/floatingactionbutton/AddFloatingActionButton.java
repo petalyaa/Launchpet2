@@ -20,8 +20,6 @@ import android.view.MotionEvent;
 
 public class AddFloatingActionButton extends FloatingActionButton {
 
-	private GestureDetector gestureDetector;
-
 	int mPlusColor;
 
 	public AddFloatingActionButton(Context context) {
@@ -30,7 +28,6 @@ public class AddFloatingActionButton extends FloatingActionButton {
 
 	public AddFloatingActionButton(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		gestureDetector = new GestureDetector(context, new GestureListener());
 	}
 
 	public AddFloatingActionButton(Context context, AttributeSet attrs, int defStyle) {
@@ -40,13 +37,7 @@ public class AddFloatingActionButton extends FloatingActionButton {
 	@SuppressLint("ClickableViewAccessibility")
 	@Override
 	public boolean onTouchEvent(MotionEvent e) {
-//		boolean isGestureDetected = gestureDetector.onTouchEvent(e);
-//		if(isGestureDetected) {
-//			return true;
-//		} else {
-//			Log.v("Launchpet2", "Handling default touch event");
-			return super.onTouchEvent(e);
-//		}
+		return super.onTouchEvent(e);
 	}
 
 	@Override
