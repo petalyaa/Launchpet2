@@ -30,6 +30,7 @@
     <string name="settings_item_sync_setting">Sync Setting</string>
     <string name="settings_item_backup_restore">Backup &amp; Restore</string>
     <string name="settings_item_advanced">Advanced</string>
+    <string name="settings_item_hidden_application">Hidden Apps</string>
     <string name="button_ok">OK</string>
     <string name="button_close">Close</string>
     <string name="pref_header_color">Color</string>
@@ -68,7 +69,7 @@
     <!-- License section -->
     <string name="library_FloatingActionButton_licenseId">mit</string>
     <!-- Custom variables section -->
-    
+
     <string name="title_activity_feed_source_setting">FeedSourceSettingActivity</string>
     <string name="pick_source">Pick Your Source</string>
     <string name="pick_source_favorite">Favorite</string>
@@ -92,10 +93,10 @@
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
     <string name="title_activity_social_setting">SocialSettingActivity</string>
-    
     <string name="social_setting_facebook">Facebook</string>
     <string name="social_setting_twitter">Twitter</string>
     <string name="facebook_app_id">926046527413033</string>
     <string name="title_facebook_login">Facebook Login</string>
+    <string name="title_activity_hidden_application">HiddenApplicationActivity</string>
 
 </resources>

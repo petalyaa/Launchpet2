@@ -86,6 +86,10 @@ public class ConfigurationUtil {
 	
 	public static final String SHARED_PREFERENCE_KEY_REQUIRE_RELOAD = "require_reload";
 	
+	public static final String SHARED_PREFERENCE_HIDDEN_APPS_SETTINGS = "hidden_apps_settings";
+	
+	public static final String SHARED_PREFERENCE_EXISTING_HIDDEN_APPS_KEY = "existing_hidden_apps";
+	
 	static {
 		RSS_URL_TO_LOAD.add("http://feeds.dzone.com/dzone/frontpage?format=xml");
 		RSS_URL_TO_LOAD.add("http://feeds.feedburner.com/androidcentral?format=xml");
