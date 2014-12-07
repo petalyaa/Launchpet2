@@ -11,7 +11,6 @@ import org.json.JSONObject;
 import org.pet.launchpet2.adapter.HiddenApplicationListAdapter;
 import org.pet.launchpet2.listener.OnSettingBackButtonClickListener;
 import org.pet.launchpet2.model.HiddenApplicationItem;
-import org.pet.launchpet2.model.LauncherApplication;
 import org.pet.launchpet2.util.ConfigurationUtil;
 
 import android.app.Activity;
