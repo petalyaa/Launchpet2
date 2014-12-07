@@ -36,6 +36,7 @@ import org.pet.launchpet2.listener.HideViewAnimationListener;
 import org.pet.launchpet2.listener.OnCardTouchListener;
 import org.pet.launchpet2.listener.ShowViewAnimationListener;
 import org.pet.launchpet2.model.FeedData;
+import org.pet.launchpet2.model.HiddenApplicationItem;
 import org.pet.launchpet2.model.HomeNewsItem;
 import org.pet.launchpet2.model.LauncherApplication;
 import org.pet.launchpet2.model.LauncherSettingItem;
@@ -798,6 +799,28 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		mPrimaryProfileImage.setImageBitmap(finalProfileImage);
 		mSecondaryProfileImage.setImageBitmap(finalProfileImage);
 	}
+	
+	public List<HiddenApplicationItem> getExistingHiddenApps() {
+		SharedPreferences pref = getSharedPreferences(ConfigurationUtil.SHARED_PREFERENCE_HIDDEN_APPS_SETTINGS, Context.MODE_PRIVATE);
+		String hiddenAppJsonStr = pref.getString(ConfigurationUtil.SHARED_PREFERENCE_EXISTING_HIDDEN_APPS_KEY, "");
+		List<HiddenApplicationItem> itemList = new ArrayList<HiddenApplicationItem>();
+		try {
+			JSONArray hiddenAppJsonArr = new JSONArray(hiddenAppJsonStr);
+			if(hiddenAppJsonArr != null && hiddenAppJsonArr.length() > 0) {
+				for(int i = 0; i < hiddenAppJsonArr.length(); i++) {
+					JSONObject hiddenAppJsonObj = hiddenAppJsonArr.getJSONObject(i);
+					HiddenApplicationItem item = new HiddenApplicationItem();
+					item.setHidden(true);
+					item.setName(hiddenAppJsonObj.getString("name"));
+					item.setPackageName(hiddenAppJsonObj.getString("package"));
+					itemList.add(item);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return itemList;
+	}
 
 	private class FetchApplicationListTask extends AsyncTask<LauncherApplication, Void, List<LauncherApplication>> {
 
@@ -809,6 +832,13 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 		@Override
 		protected List<LauncherApplication> doInBackground(LauncherApplication... params) {
+			List<HiddenApplicationItem> itemList = getExistingHiddenApps();
+			List<String> packageNameList = new ArrayList<String>();
+			if(itemList != null && itemList.size() > 0) {
+				for(HiddenApplicationItem item : itemList) {
+					packageNameList.add(item.getPackageName());
+				}
+			}
 			launcherAppsList.clear();
 			PackageManager pm = getPackageManager();
 			Intent i = new Intent(Intent.ACTION_MAIN, null);
@@ -817,6 +847,9 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			List<ResolveInfo> availableActivities = pm.queryIntentActivities(i, 0);
 			for(ResolveInfo ri:availableActivities){
 				LauncherApplication app = new LauncherApplication();
+				String packageName = ri.activityInfo.packageName;
+				if(packageNameList.contains(packageName))
+					continue;
 				app.setPackageName(ri.activityInfo.packageName);
 				app.setName(ri.loadLabel(pm).toString());
 				app.setIcon(ri.activityInfo.loadIcon(pm));
