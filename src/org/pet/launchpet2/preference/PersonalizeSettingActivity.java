@@ -36,6 +36,8 @@ public class PersonalizeSettingActivity extends PreferenceActivity {
 	private EditTextPreference mDateFormatPreference;
 
 	private CheckBoxPreference mDisplayDateCheckbox;
+	
+	private CheckBoxPreference mQuickAccessHackCheckbox;
 
 	private CheckBoxPreference mOverrideThemeColorCheckbox;
 
@@ -110,19 +112,19 @@ public class PersonalizeSettingActivity extends PreferenceActivity {
 			mBannerImagePref = (Preference) getPreferenceManager().findPreference("personalize_general_banner_image_selection");
 			mThemePreference = (ListPreference) getPreferenceManager().findPreference("personalize_general_theme");
 			mDisplayNamePref = (EditTextPreference) getPreferenceManager().findPreference("personalize_general_display_name");
-			
+			mQuickAccessHackCheckbox = (CheckBoxPreference) getPreferenceManager().findPreference("personalize_advanced_quick_access_hack");
 			boolean isDateDisplay = mDisplayDateCheckbox.isChecked();
 			if(!isDateDisplay)
 				mDateFormatPreference.setEnabled(false);
 			else
 				mDateFormatPreference.setEnabled(true);
-
 			mDisplayDateCheckbox.setOnPreferenceChangeListener(new OnDisplayDateCheckboxChange());
 			mOverrideThemeColorCheckbox.setOnPreferenceChangeListener(new OnOverrideThemeColorChange());
 			mProfileImagePref.setOnPreferenceClickListener(new OnProfileImagePreferenceClick());
 			mBannerImagePref.setOnPreferenceClickListener(new OnBannerImagePreferenceClick());
 			mThemePreference.setOnPreferenceChangeListener(new OnThemePreferenceChange());
 			mDisplayNamePref.setOnPreferenceChangeListener(new OnDisplayNamePrefChange());
+			mQuickAccessHackCheckbox.setOnPreferenceChangeListener(new OnQuickAccessPreferenceChange());
 		}
 
 	}
@@ -191,6 +193,16 @@ public class PersonalizeSettingActivity extends PreferenceActivity {
 			return true;
 		}
 
+	}
+	
+	private class OnQuickAccessPreferenceChange implements OnPreferenceChangeListener {
+
+		@Override
+		public boolean onPreferenceChange(Preference arg0, Object arg1) {
+			ConfigurationUtil.setRequireReload(getApplicationContext());
+			return true;
+		}
+		
 	}
 
 	private class OnDisplayDateCheckboxChange implements OnPreferenceChangeListener {

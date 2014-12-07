@@ -95,5 +95,18 @@
         	android:title="@string/pref_personalize_color_background_color" />
         	
     </PreferenceCategory>
+    
+    <PreferenceCategory
+        android:key="pref_personalize_advanced"
+        android:title="@string/settings_item_advanced" >
+        
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="personalize_advanced_quick_access_hack"
+            android:summaryOn="@string/pref_personalize_advanced_quick_access_hack_on_sum"
+            android:summaryOff="@string/pref_personalize_advanced_quick_access_hack_off_sum"
+            android:title="@string/pref_personalize_advanced_quick_access_hack" />
+        
+	</PreferenceCategory>
 
 </PreferenceScreen>

@@ -50,6 +50,9 @@
     <string name="pref_personalize_general_display_date_off_sum">Date will not be display in header</string>
     <string name="pref_personalize_color_override_default_on_sum">Default color will be override</string>
     <string name="pref_personalize_color_override_default_off_sum">Use default theme color</string>
+    <string name="pref_personalize_advanced_quick_access_hack">Quick Access Hack</string>
+    <string name="pref_personalize_advanced_quick_access_hack_on_sum">Pressing floating favorite button will open application drawer. Long press will open favorite menu.</string>
+    <string name="pref_personalize_advanced_quick_access_hack_off_sum">Pressing floating favorite button will open favorite menu. Long press will open application drawer.</string>
     <string name="define_FloatingActionButton"></string>
     <!-- Author section -->
     <string name="library_FloatingActionButton_author">Oleksandr Melnykov</string>
@@ -65,7 +68,7 @@
     <!-- License section -->
     <string name="library_FloatingActionButton_licenseId">mit</string>
     <!-- Custom variables section -->
-
+    
     <string name="title_activity_feed_source_setting">FeedSourceSettingActivity</string>
     <string name="pick_source">Pick Your Source</string>
     <string name="pick_source_favorite">Favorite</string>
