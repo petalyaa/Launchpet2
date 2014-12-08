@@ -37,9 +37,10 @@ public class BitmapUtil {
 	};
 	
 	public static final Bitmap getFavicon(String urlStr) {
-		// Hardcoded for 9gag favicon
-		if(urlStr.startsWith("http://9gag.com/"))
+		if(urlStr.startsWith("http://9gag.com/")) // Hardcoded for 9gag
 			urlStr = "http://9gag.com/";
+		if(urlStr.contains("cnn.com/")) // Hardcoded for cnn
+			urlStr = "http://edition.cnn.com/";
 		if(!urlStr.endsWith("/"))
 			urlStr = urlStr + "/";
 		urlStr = urlStr + "favicon.ico";

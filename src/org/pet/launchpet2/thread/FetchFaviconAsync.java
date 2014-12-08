@@ -21,7 +21,8 @@ public class FetchFaviconAsync extends AsyncTask<String, Void, Bitmap> {
 	
 	@Override
     protected void onPostExecute(Bitmap image) {
-		imageView.setImageBitmap(image);
+		if(image != null)
+			imageView.setImageBitmap(image);
 	}
 
 }

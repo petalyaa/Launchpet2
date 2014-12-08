@@ -32,7 +32,6 @@ public class ImageCardPopulator extends Populator {
 		RelativeLayout titleHolder = (RelativeLayout) card.findViewById(R.id.card_image_title_holder);
 		RelativeLayout parentHolder = (RelativeLayout) card.findViewById(R.id.card_parent_holder);
 		titleTextView.setText(Html.fromHtml(item.getTitle()));
-		
 		int titleBackgroundColor = getTitleBackgroundColor();
 		int contentBackgroundColor = getContentBackgroundColor();
 		if(titleBackgroundColor != 0)
