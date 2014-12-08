@@ -3,6 +3,7 @@ package org.pet.launchpet2;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -13,6 +14,7 @@ import org.pet.launchpet2.layout.GifWebView;
 import org.pet.launchpet2.listener.FetchBitmapTaskCallbackListener;
 import org.pet.launchpet2.thread.FetchFaviconAsync;
 import org.pet.launchpet2.thread.FetchImageAsync;
+import org.pet.launchpet2.util.ConfigurationUtil;
 import org.pet.launchpet2.util.StringUtil;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -20,6 +22,7 @@ import com.ortiz.touch.ExtendedViewPager;
 import com.ortiz.touch.TouchImageView;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -71,6 +74,7 @@ public class ReadFeedActivity extends FragmentActivity implements FetchBitmapTas
 	
 	private List<String> imageSrcUrlList = new ArrayList<String>();
 	
+	@SuppressLint("DefaultLocale")
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +95,8 @@ public class ReadFeedActivity extends FragmentActivity implements FetchBitmapTas
 		mLoadingBar.setVisibility(View.INVISIBLE);
 		mOverlayImageView.setVisibility(View.INVISIBLE);
 		mOverlayImageView.setOnClickListener(new OnOverlayImageClick());
+		mContentImage.setVisibility(View.INVISIBLE);
+		mGifImageView.setVisibility(View.INVISIBLE);
 		Bundle b = getIntent().getExtras();
 		HashMap<String, String> item = (HashMap<String, String>) b.getSerializable("home_news_item");
 		String title = item.get("title");
@@ -104,6 +110,10 @@ public class ReadFeedActivity extends FragmentActivity implements FetchBitmapTas
 		String firstImgUrl = null;
 		for (Element el : imgs) {
 			String src = el.absUrl("src");
+			int height = getElementIntegerValue(el, "height");
+			int width = getElementIntegerValue(el, "width");
+			if(height <= ConfigurationUtil.IMAGE_MIN_HEIGHT || width <= ConfigurationUtil.IMAGE_MIN_WIDTH)
+				continue;
 			if(StringUtil.isNullEmptyString(firstImgUrl))
 				firstImgUrl = src;
 			imageSrcUrlList.add(src);
@@ -112,15 +122,38 @@ public class ReadFeedActivity extends FragmentActivity implements FetchBitmapTas
 			new FetchFaviconAsync(mContentSourceIcon).execute(parentLink);
 		if(firstImgUrl != null)
 			new FetchImageAsync(this, true).execute(firstImgUrl);
+		else {
+			mContentImage.setImageResource(R.drawable.placeholder);
+			mContentImage.setVisibility(View.VISIBLE);
+		}
 		String displayContent = Html.fromHtml(description.replaceAll("<img.+?>", "")).toString();
-		mPagerAdapter = new ImageSlidePagerAdapter(getSupportFragmentManager(), imageSrcUrlList);
-		mImageViewPager.setAdapter(mPagerAdapter);
+		if(imageSrcUrlList != null && imageSrcUrlList.size() > 0) {
+			mPagerAdapter = new ImageSlidePagerAdapter(getSupportFragmentManager(), imageSrcUrlList);
+			mImageViewPager.setAdapter(mPagerAdapter);
+		}
 		mContentSourceDate.setText(pubDate);
 		mContentSourceName.setText(parentTitle);
 		mContentText.setText(displayContent);
 		mToolbarTitle.setText(Html.fromHtml(title));
 		mToolbarBackButton.setOnClickListener(new OnToolbarBackClickListener());
 		mFollowLinkBtn.setOnClickListener(new OnFollowLinkClickListiner(link));
+	}
+	
+	private int getElementIntegerValue(Element e, String key) {
+		String s = e.attr(key).toLowerCase(Locale.getDefault());
+		int i = 0;
+		if(!StringUtil.isNullEmptyString(s)) {
+			if(s.contains("px"))
+				s = s.replaceAll("px", "");
+			if(s.contains("%"))
+				s = s.replaceAll("%", "");
+			try {
+				i = Integer.parseInt(s);
+			} catch (NumberFormatException e1) {
+				i = 0;
+			}
+		}
+		return i;
 	}
 	
 	@Override
