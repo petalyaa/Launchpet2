@@ -12,9 +12,9 @@ import org.pet.launchpet2.adapter.HiddenApplicationListAdapter;
 import org.pet.launchpet2.listener.OnSettingBackButtonClickListener;
 import org.pet.launchpet2.model.HiddenApplicationItem;
 import org.pet.launchpet2.util.ConfigurationUtil;
+import org.pet.launchpet2.util.DialogUtil;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,7 +25,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -161,15 +160,13 @@ public class HiddenApplicationActivity extends Activity {
 		@Override
 		public void onClick(View v) {
 			if(hiddenApplicationItemList != null && hiddenApplicationItemList.size() > 0) {
-				AlertDialog.Builder builderSingle = new AlertDialog.Builder(HiddenApplicationActivity.this);
-				final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(HiddenApplicationActivity.this, android.R.layout.select_dialog_singlechoice);
-				for(HiddenApplicationItem item : hiddenApplicationItemList) {
+				String[] items = new String[hiddenApplicationItemList.size()];
+				for(int i = 0; i < hiddenApplicationItemList.size(); i++) {
+					HiddenApplicationItem item = hiddenApplicationItemList.get(i);
 					String name = item.getName();
-					arrayAdapter.add(name);
+					items[i] = name;
 				}
-				builderSingle.setNegativeButton(getString(R.string.button_close), null);
-				builderSingle.setAdapter(arrayAdapter, new OnSelectionClick());
-				builderSingle.show();
+				DialogUtil.createSelectDialogItem(HiddenApplicationActivity.this, items, new OnSelectionClick()).show();
 			}
 		}
 		
@@ -194,13 +191,9 @@ public class HiddenApplicationActivity extends Activity {
 		public boolean onItemLongClick(AdapterView<?> adapter, View view, int position, long id) {
 			List<HiddenApplicationItem> existingItemList = getExistingHiddenApps();
 			HiddenApplicationItem item = existingItemList.get(position);
-			AlertDialog.Builder builderSingle = new AlertDialog.Builder(HiddenApplicationActivity.this);
-			final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(HiddenApplicationActivity.this, android.R.layout.select_dialog_singlechoice);
-			arrayAdapter.add(getString(R.string.delete));
-			builderSingle.setNegativeButton(getString(R.string.button_close), null);
-			builderSingle.setAdapter(arrayAdapter, new OnItemLongClickDialogSelection(item));
-			builderSingle.show();
-			return false;
+			String[] items = {getString(R.string.delete)};
+			DialogUtil.createSelectDialogItem(HiddenApplicationActivity.this, items, new OnItemLongClickDialogSelection(item)).show();
+			return true;
 		}
 		
 	}
