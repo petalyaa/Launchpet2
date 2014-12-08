@@ -1,0 +1,43 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <ImageView
+        android:id="@+id/apps_drawer_setting_item_icon"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:contentDescription="@string/app_drawer_content_description"
+        android:src="@drawable/ic_account_child" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@+id/apps_drawer_setting_item_icon" >
+
+        <TextView
+            android:id="@+id/apps_drawer_setting_item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/setting_primary_text_color" />
+        
+        <TextView
+            android:id="@+id/apps_drawer_setting_item_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:alpha=".7"
+            android:layout_below="@+id/apps_drawer_setting_item_name"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/setting_secondary_text_color" />
+        
+    </RelativeLayout>
+
+</RelativeLayout>

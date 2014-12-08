@@ -31,6 +31,9 @@
     <string name="settings_item_backup_restore">Backup &amp; Restore</string>
     <string name="settings_item_advanced">Advanced</string>
     <string name="settings_item_hidden_application">Hidden Apps</string>
+    <string name="settings_item_group_application">Group Apps</string>
+    <string name="settings_item_hidden_application_desc">Show/hide application from the application drawer</string>
+    <string name="settings_item_group_application_desc">Add/Remove application from group in application drawer</string>
     <string name="button_ok">OK</string>
     <string name="button_close">Close</string>
     <string name="pref_header_color">Color</string>
@@ -70,10 +73,9 @@
     <!-- License section -->
     <string name="library_FloatingActionButton_licenseId">mit</string>
     <!-- Custom variables section -->
-    
+
     <string name="move_up">Move up</string>
-	<string name="move_down">Move down</string>
-    
+    <string name="move_down">Move down</string>
     <string name="title_activity_feed_source_setting">FeedSourceSettingActivity</string>
     <string name="pick_source">Pick Your Source</string>
     <string name="pick_source_favorite">Favorite</string>
@@ -102,5 +104,8 @@
     <string name="facebook_app_id">926046527413033</string>
     <string name="title_facebook_login">Facebook Login</string>
     <string name="title_activity_hidden_application">HiddenApplicationActivity</string>
+    <string name="error_item_already_on_top">Item is already on top</string>
+    <string name="error_item_already_on_bottom">Item is already on bottom</string>
+    <string name="title_activity_apps_drawer_setting">AppsDrawerSettingActivity</string>
 
 </resources>
