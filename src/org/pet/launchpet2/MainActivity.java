@@ -1286,10 +1286,12 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 						reloadFavorite();
 						break;
 					case 1 :
-						
+						// Move up
+						changeFavoriteOrder(launcherApp, 1);
 						break;
 					case 2 :
-						
+						// Move down
+						changeFavoriteOrder(launcherApp, -1);
 						break;
 					}
 				}
@@ -1297,6 +1299,33 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			return true;
 		}
 
+	}
+	
+	private void changeFavoriteOrder(LauncherApplication app, int ordering) {
+		List<LauncherApplication> existingFavorite = getFavoriteApplicationList();
+		Iterator<LauncherApplication> existingFavoriteIter = existingFavorite.iterator();
+		int currentOrder = 0;
+		int currentIndex = 0;
+		while(existingFavoriteIter.hasNext()) {
+			LauncherApplication tmpApp = existingFavoriteIter.next();
+			String packageName = tmpApp.getPackageName();
+			String thisPackageName = app.getPackageName();
+			if(packageName.equalsIgnoreCase(thisPackageName)) {
+				currentOrder = currentIndex;
+				existingFavoriteIter.remove();
+			}
+			currentIndex++;
+		}
+		int newOrder = currentOrder + ordering;
+		if(newOrder >= (existingFavorite.size() + 1)) {
+			Toast.makeText(getApplicationContext(), getString(R.string.error_item_already_on_top), Toast.LENGTH_SHORT).show();
+		} else if (newOrder < 0) {
+			Toast.makeText(getApplicationContext(), getString(R.string.error_item_already_on_bottom), Toast.LENGTH_SHORT).show();
+		} else {
+			existingFavorite.add(newOrder, app);
+			writeFavoriteApplicationList(existingFavorite);
+			reloadFavorite();
+		}
 	}
 
 	private class OnCardClickListener implements OnClickListener {
