@@ -70,6 +70,10 @@
             android:name=".HiddenApplicationActivity"
             android:label="@string/title_activity_hidden_application" >
         </activity>
+        <activity
+            android:name=".AppsDrawerSettingActivity"
+            android:label="@string/title_activity_apps_drawer_setting" >
+        </activity>
     </application>
 
 </manifest>
