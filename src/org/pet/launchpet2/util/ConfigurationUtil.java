@@ -18,6 +18,10 @@ public class ConfigurationUtil {
 	
 	public static final String SHARED_PREFERENCE_KEY_FAVORITE = "favorite_app_list";
 	
+	public static final int IMAGE_MIN_HEIGHT = 10;
+	
+	public static final int IMAGE_MIN_WIDTH = 10;
+	
 	public static final String DZONE_KEY = "dzone";
 	
 	public static final String DZONE_URL = "http://feeds.dzone.com/dzone/frontpage?format=xml";
