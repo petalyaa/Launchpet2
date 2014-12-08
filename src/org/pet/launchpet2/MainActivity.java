@@ -180,9 +180,9 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 	private Animation mAnimSecondaryProfileHide;
 
-	private Animation mAnimRefreshBtnHide;
+	//private Animation mAnimRefreshBtnHide;
 
-	private Animation mAnimRefreshBtnShow;
+	//private Animation mAnimRefreshBtnShow;
 
 	private FloatingActionsMenu mFloatingFavButton;
 
@@ -278,8 +278,8 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 		mAnimSecondaryProfileShow = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_left_to_right);
 		mAnimSecondaryProfileHide = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_right_to_left);
-		mAnimRefreshBtnShow = FadeAnimation.getFadeInAnimation(this);
-		mAnimRefreshBtnHide = FadeAnimation.getFadeOutAnimation(this);
+		//mAnimRefreshBtnShow = FadeAnimation.getFadeInAnimation(this);
+		//mAnimRefreshBtnHide = FadeAnimation.getFadeOutAnimation(this);
 
 		mSecondaryProfileImageHolder.setVisibility(View.INVISIBLE);
 		inflater = LayoutInflater.from(getApplicationContext());
@@ -349,8 +349,8 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 		mAnimSecondaryProfileHide.setAnimationListener(new HideViewAnimationListener(mSecondaryProfileImageHolder));
 		mAnimSecondaryProfileShow.setAnimationListener(new ShowViewAnimationListener(mSecondaryProfileImageHolder));
-		mAnimRefreshBtnHide.setAnimationListener(new HideViewAnimationListener(mRefreshButton));
-		mAnimRefreshBtnShow.setAnimationListener(new ShowViewAnimationListener(mRefreshButton));
+		//mAnimRefreshBtnHide.setAnimationListener(new HideViewAnimationListener(mRefreshButton));
+		//mAnimRefreshBtnShow.setAnimationListener(new ShowViewAnimationListener(mRefreshButton));
 
 		initUserPreference(false);
 
@@ -482,14 +482,14 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 	private void showNewsFeedLoading() {
 		mLoadingProgressbar.setVisibility(View.VISIBLE);
-		if(mRefreshButton.getVisibility() == View.VISIBLE)
-			mRefreshButton.startAnimation(mAnimRefreshBtnHide);
+//		if(mRefreshButton.getVisibility() == View.VISIBLE)
+//			mRefreshButton.startAnimation(mAnimRefreshBtnHide);
 	}
 
 	private void hideNewsFeedLoading() {
 		mLoadingProgressbar.setVisibility(View.INVISIBLE);
-		if(mRefreshButton.getVisibility() != View.VISIBLE)
-			mRefreshButton.startAnimation(mAnimRefreshBtnShow);
+//		if(mRefreshButton.getVisibility() != View.VISIBLE)
+//			mRefreshButton.startAnimation(mAnimRefreshBtnShow);
 	}
 
 	private String getExistingSourceFromSharedPreference() {
