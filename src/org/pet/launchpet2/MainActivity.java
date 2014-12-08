@@ -27,7 +27,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.pet.launchpet2.adapter.ApplicationListAdapter;
 import org.pet.launchpet2.adapter.SettingListAdapter;
-import org.pet.launchpet2.animation.FadeAnimation;
 import org.pet.launchpet2.layout.NowCardLayout;
 import org.pet.launchpet2.layout.ObservableScrollView;
 import org.pet.launchpet2.listener.BrowserLinkOpenListener;
@@ -1154,7 +1153,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			}
 			List<HomeNewsItem> homeNewsItemList = new ArrayList<HomeNewsItem>(feedDataList.size());
 			// Feed data
-			SimpleDateFormat rssDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.getDefault());
+			SimpleDateFormat rssDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss", Locale.getDefault());
 			for(FeedData rssFeedData : feedDataList) {
 				NewsType type = NewsType.TEXT;
 				HomeNewsItem item = new HomeNewsItem();
@@ -1223,42 +1222,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 				}
 			}
 			hideNewsFeedLoading();
-			
-//			FBUtil.getFacebookSession(mSimpleFacebook, new FBCallback() {
-//
-//				@Override
-//				public void onConnect() {
-//					Bundle bundle = new Bundle();
-//					mSimpleFacebook.get("me", "home", bundle, new OnActionListener<List<Post>>() {
-//
-//					    @Override
-//					    public void onComplete(List<Post> posts) {
-//					    	if(posts != null) {
-//								for(Post post : posts) {
-//									User user = post.getFrom();
-//									String type = post.getType();
-//									String msg = null;
-//									if(type.equals("video")) {
-//										msg = post.getObjectId();
-//									} else if (type.equals("link")) {
-//										msg = post.getLink();
-//									}
-//									Log.i("Launchpet2", "Post from = " + user.getName() + "; Type = " + type + "; msg = " + msg);
-//								}
-//							}
-//							Log.i("Launchpet2", "Number of posts = " + posts.size());
-//							nowCardLayout.removeAllViews();
-//							if(homeNewsItemList != null && homeNewsItemList.size() > 0) {
-//								for(HomeNewsItem item : homeNewsItemList) {
-//									addNewsToView(item);
-//								}
-//							}
-//							hideNewsFeedLoading();
-//					    }
-//
-//					});
-//				}
-//			});
 		}
 	}
 
