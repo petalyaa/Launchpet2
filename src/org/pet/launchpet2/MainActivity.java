@@ -47,6 +47,7 @@ import org.pet.launchpet2.populator.ImageCardPopulator;
 import org.pet.launchpet2.populator.Populator;
 import org.pet.launchpet2.populator.TextCardPopulator;
 import org.pet.launchpet2.services.CacheCleanupService;
+import org.pet.launchpet2.settings.item.AppDrawerMenuItem;
 import org.pet.launchpet2.settings.item.FeedSourceMenuItem;
 import org.pet.launchpet2.settings.item.HiddenApplicationMenuItem;
 import org.pet.launchpet2.settings.item.PersonalizeMenuItem;
@@ -453,7 +454,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		final List<LauncherSettingItem> launcherSettingItems = new ArrayList<LauncherSettingItem>();
 		launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_palette, getString(R.string.settings_item_personalize), new PersonalizeMenuItem(getApplicationContext())));
 		launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_input, getString(R.string.settings_item_feed_source), new FeedSourceMenuItem(getApplicationContext())));
-		launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_action_remove_red_eye, getString(R.string.settings_item_hidden_application), new HiddenApplicationMenuItem(getApplicationContext())));
+		launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_apps, getString(R.string.settings_item_app_drawer), new AppDrawerMenuItem(getApplicationContext())));
 //		launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_account_child, getString(R.string.settings_item_social_network), new SocialNetworkMenuItem(getApplicationContext())));
 		//launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_apps, getString(R.string.settings_item_app_drawer), new AppDrawerMenuItem()));
 		//launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_sync, getString(R.string.settings_item_sync_setting), new SyncSettingMenuItem()));
