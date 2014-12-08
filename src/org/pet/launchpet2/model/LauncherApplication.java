@@ -18,6 +18,8 @@ public class LauncherApplication implements Comparable<LauncherApplication> {
 	
 	private int iconResId;
 	
+	private boolean isInTheGroup;
+	
 	private boolean startGroup;
 
 	public Intent getLaunchActivity() {
@@ -79,6 +81,14 @@ public class LauncherApplication implements Comparable<LauncherApplication> {
 
 	public void setStartGroup(boolean startGroup) {
 		this.startGroup = startGroup;
+	}
+
+	public boolean isInTheGroup() {
+		return isInTheGroup;
+	}
+
+	public void setInTheGroup(boolean isInTheGroup) {
+		this.isInTheGroup = isInTheGroup;
 	}
 	
 }

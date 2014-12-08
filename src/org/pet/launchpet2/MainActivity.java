@@ -49,7 +49,6 @@ import org.pet.launchpet2.populator.TextCardPopulator;
 import org.pet.launchpet2.services.CacheCleanupService;
 import org.pet.launchpet2.settings.item.AppDrawerMenuItem;
 import org.pet.launchpet2.settings.item.FeedSourceMenuItem;
-import org.pet.launchpet2.settings.item.HiddenApplicationMenuItem;
 import org.pet.launchpet2.settings.item.PersonalizeMenuItem;
 import org.pet.launchpet2.thread.WeatherServiceThread;
 import org.pet.launchpet2.util.BitmapUtil;

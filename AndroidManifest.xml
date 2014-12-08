@@ -74,6 +74,10 @@
             android:name=".AppsDrawerSettingActivity"
             android:label="@string/title_activity_apps_drawer_setting" >
         </activity>
+        <activity
+            android:name=".GroupAppsSettingActivity"
+            android:label="@string/title_activity_group_apps_setting" >
+        </activity>
     </application>
 
 </manifest>

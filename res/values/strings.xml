@@ -34,6 +34,7 @@
     <string name="settings_item_group_application">Group Apps</string>
     <string name="settings_item_hidden_application_desc">Show/hide application from the application drawer</string>
     <string name="settings_item_group_application_desc">Add/Remove application from group in application drawer</string>
+    <string name="setting_input_group_name">Group name : </string>
     <string name="button_ok">OK</string>
     <string name="button_close">Close</string>
     <string name="pref_header_color">Color</string>
@@ -59,6 +60,8 @@
     <string name="pref_personalize_advanced_quick_access_hack_off_sum">Pressing floating favorite button will open favorite menu. Long press will open application drawer.</string>
     <string name="define_FloatingActionButton"></string>
     <string name="delete">Delete</string>
+    <string name="rename">Rename</string>
+    <string name="rename_to">Rename to : </string>
     <!-- Author section -->
     <string name="library_FloatingActionButton_author">Oleksandr Melnykov</string>
     <string name="library_FloatingActionButton_authorWebsite">https://github.com/makovkastar/FloatingActionButton</string>
@@ -107,5 +110,8 @@
     <string name="error_item_already_on_top">Item is already on top</string>
     <string name="error_item_already_on_bottom">Item is already on bottom</string>
     <string name="title_activity_apps_drawer_setting">AppsDrawerSettingActivity</string>
+    <string name="title_activity_group_apps_setting">GroupAppsSettingActivity</string>
+    
+    <string name="error_group_name_exist">Sorry, group name already exist!</string>
 
 </resources>

@@ -35,7 +35,7 @@ public class AppsDrawerSettingActivity extends Activity {
 		
 		items = new ArrayList<AppsDrawerSettingItem>();
 		items.add(new AppsDrawerSettingItem(R.drawable.ic_action_remove_red_eye, getString(R.string.settings_item_hidden_application), getString(R.string.settings_item_hidden_application_desc), HiddenApplicationActivity.class));
-		items.add(new AppsDrawerSettingItem(R.drawable.ic_action_group_work, getString(R.string.settings_item_group_application), getString(R.string.settings_item_group_application_desc), HiddenApplicationActivity.class));
+		items.add(new AppsDrawerSettingItem(R.drawable.ic_action_group_work, getString(R.string.settings_item_group_application), getString(R.string.settings_item_group_application_desc), GroupAppsSettingActivity.class));
 		mSettingListAdapter = new AppsDrawerSettingListAdapter(getApplicationContext(), items);
 		mSettingList.setAdapter(mSettingListAdapter);
 		mSettingList.setOnItemClickListener(new OnAppDrawerItemClickListener());

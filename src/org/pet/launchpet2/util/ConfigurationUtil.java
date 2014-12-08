@@ -94,6 +94,12 @@ public class ConfigurationUtil {
 	
 	public static final String SHARED_PREFERENCE_EXISTING_HIDDEN_APPS_KEY = "existing_hidden_apps";
 	
+	public static final String SHARED_PREFERENCE_APPS_GROUP_SETTINGS = "group_apps_settings";
+	
+	public static final String SHARED_PREFERENCE_APPS_GROUP_SETTINGS_LIST_KEY = "group_apps_list";
+
+	public static final int FOLDER_ICON_STACK_LIMIT = 4;
+	
 	static {
 		RSS_URL_TO_LOAD.add("http://feeds.dzone.com/dzone/frontpage?format=xml");
 		RSS_URL_TO_LOAD.add("http://feeds.feedburner.com/androidcentral?format=xml");

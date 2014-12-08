@@ -28,7 +28,6 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -39,7 +38,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -168,9 +166,9 @@ public class FeedSourceSettingActivity extends Activity {
 			}
 			selected[i] = isSelected;
 		}
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(getString(R.string.pick_your_source));
-		builder.setMultiChoiceItems(items, selected, new DialogInterface.OnMultiChoiceClickListener() {
+		
+		String title = getString(R.string.pick_your_source);
+		DialogUtil.createMultiSelectDialogItem(this, title, items, selected, new DialogInterface.OnMultiChoiceClickListener() {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
@@ -182,38 +180,31 @@ public class FeedSourceSettingActivity extends Activity {
 					selected[indexSelected] = false;
 				}
 			}
-		});
-		builder.setPositiveButton(getString(R.string.button_ok), new DialogInterface.OnClickListener() {
-             @Override
-             public void onClick(DialogInterface dialog, int id) {
-                Iterator<RSSFeedSource> sourceIterator = sourceList.iterator();
-                while(sourceIterator.hasNext()) {
-                	RSSFeedSource source = sourceIterator.next();
-                	if(source.isFavorite())
-                		sourceIterator.remove();
-                }
-                for(int i = 0; i < selected.length; i++) {
-                	RSSFeedSource source = favoriteFeedSource.get(i);
-                	if(source != null && selected[i]) {
-            			source.setFavorite(true);
-            			sourceList.add(source);
-            		}
-                }
-                try {
+		}, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+               Iterator<RSSFeedSource> sourceIterator = sourceList.iterator();
+               while(sourceIterator.hasNext()) {
+               	RSSFeedSource source = sourceIterator.next();
+               	if(source.isFavorite())
+               		sourceIterator.remove();
+               }
+               for(int i = 0; i < selected.length; i++) {
+               	RSSFeedSource source = favoriteFeedSource.get(i);
+               	if(source != null && selected[i]) {
+           			source.setFavorite(true);
+           			sourceList.add(source);
+           		}
+               }
+               try {
 					writeSourceToSharedPreference(sourceList);
 					List<RSSFeedSource> feedDataList = getExistingFeedSource();
 					populateMainListView(feedDataList);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
-             }
-         });
-         builder.setNegativeButton(getString(R.string.button_close), new DialogInterface.OnClickListener() {
-             @Override
-             public void onClick(DialogInterface dialog, int id) {
-             }
-         });
-         builder.show();
+            }
+        }).show();
 	}
 	
 	private List<RSSFeedSource> getExistingFeedSource() {
@@ -273,30 +264,13 @@ public class FeedSourceSettingActivity extends Activity {
 	}
 
 	private void onAddManualSourceClick() {
-		AlertDialog.Builder alert = new AlertDialog.Builder(this);
-
-		alert.setTitle(getString(R.string.enter_feed_url));
-		alert.setMessage(" ");
-
-		// Set an EditText view to get user input 
-		final EditText input = new EditText(this);
-		alert.setView(input);
-
-		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-			@SuppressLint("DefaultLocale")
-			public void onClick(DialogInterface dialog, int whichButton) {
-				String value = input.getText().toString();
-				new FetchManualUrlFeed().execute(value);
+		DialogUtil.createInputTextDialog(this, null, getString(R.string.enter_feed_url), new DialogUtil.DialogUtilCallback() {
+			
+			@Override
+			public void onTextInputClickListener(String textInput) {
+				new FetchManualUrlFeed().execute(textInput);
 			}
-		});
-
-		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-				// Canceled.
-			}
-		});
-
-		alert.show();
+		}).show();
 	}
 
 	private class OnAddSelectionSourceClick implements DialogInterface.OnClickListener {
