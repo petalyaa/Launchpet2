@@ -54,6 +54,7 @@ import org.pet.launchpet2.thread.WeatherServiceThread;
 import org.pet.launchpet2.util.BitmapUtil;
 import org.pet.launchpet2.util.CommonUtil;
 import org.pet.launchpet2.util.ConfigurationUtil;
+import org.pet.launchpet2.util.DialogUtil;
 import org.pet.launchpet2.util.FBUtil;
 import org.pet.launchpet2.util.StringUtil;
 import org.pet.launchpet2.util.XMLParser;
@@ -72,7 +73,6 @@ import com.sromku.simple.fb.SimpleFacebook;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -97,7 +97,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -109,7 +108,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -178,10 +176,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	private Animation mAnimSecondaryProfileShow;
 
 	private Animation mAnimSecondaryProfileHide;
-
-	//private Animation mAnimRefreshBtnHide;
-
-	//private Animation mAnimRefreshBtnShow;
 
 	private FloatingActionsMenu mFloatingFavButton;
 
@@ -441,7 +435,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	}
 
 	private void reloadWeather() {
-		Log.v("Launchpet2", "reloading weather...");
 		LocationManager mLocManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 		new WeatherServiceThread(getApplicationContext(), mWeatherDisplay, mWeatherIcon).execute(mLocManager);
 	}
@@ -751,7 +744,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 					headerHolderBackgroundColorStr = headerHolderBackgroundColorStr.replaceFirst("#", "#71");
 					headerOverlayBackgroundColorStr = headerOverlayBackgroundColorStr.replaceFirst("#", "#60");
 					headerHolderBackgroundColor = Color.parseColor(headerHolderBackgroundColorStr);
-					Log.v("Launchpet2", "Color : " + headerOverlayBackgroundColorStr);
 					headerImageOverlayColor = Color.parseColor(headerOverlayBackgroundColorStr);
 				}
 			}
@@ -898,13 +890,8 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 				public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 					position = adapter.getRealPosition(position);
 					final LauncherApplication app = launcherAppsList.get(position);
-					AlertDialog.Builder builderSingle = new AlertDialog.Builder(MainActivity.this);
-					final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.select_dialog_singlechoice);
-					arrayAdapter.add(getString(R.string.application_add_favorite));
-					arrayAdapter.add(getString(R.string.application_details));
-					arrayAdapter.add(getString(R.string.application_uninstall));
-					builderSingle.setNegativeButton(getString(R.string.button_close), null);
-					builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+					String[] items = {getString(R.string.application_add_favorite), getString(R.string.application_details), getString(R.string.application_uninstall)};
+					DialogUtil.createSelectDialogItem(MainActivity.this, items, new DialogInterface.OnClickListener() {
 
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
@@ -929,8 +916,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 								break;
 							}
 						}
-					});
-					builderSingle.show();
+					}).show();
 					return true;
 				}
 			});
@@ -1281,11 +1267,8 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 		@Override
 		public boolean onLongClick(View arg0) {
-			AlertDialog.Builder builderSingle = new AlertDialog.Builder(MainActivity.this);
-			final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.select_dialog_singlechoice);
-			arrayAdapter.add(getString(R.string.remove_from_favorite));
-			builderSingle.setNegativeButton(getString(R.string.button_close), null);
-			builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+			String[] items = {getString(R.string.remove_from_favorite), getString(R.string.move_up), getString(R.string.move_down)};
+			DialogUtil.createSelectDialogItem(MainActivity.this, items, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					switch(which) {
@@ -1302,10 +1285,15 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 						writeFavoriteApplicationList(existingFavorite);
 						reloadFavorite();
 						break;
+					case 1 :
+						
+						break;
+					case 2 :
+						
+						break;
 					}
 				}
-			});
-			builderSingle.show();
+			}).show();
 			return true;
 		}
 

@@ -19,6 +19,7 @@ import org.pet.launchpet2.adapter.SettingFeedListAdapter;
 import org.pet.launchpet2.listener.OnSettingBackButtonClickListener;
 import org.pet.launchpet2.model.RSSFeedSource;
 import org.pet.launchpet2.util.ConfigurationUtil;
+import org.pet.launchpet2.util.DialogUtil;
 import org.pet.launchpet2.util.StringUtil;
 import org.pet.launchpet2.util.XMLParser;
 import org.xmlpull.v1.XmlPullParser;
@@ -38,7 +39,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -123,13 +123,9 @@ public class FeedSourceSettingActivity extends Activity {
 
 			@Override
 			public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
-				AlertDialog.Builder builderSingle = new AlertDialog.Builder(FeedSourceSettingActivity.this);
-				final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(FeedSourceSettingActivity.this, android.R.layout.select_dialog_singlechoice);
-				arrayAdapter.add(getString(R.string.delete_feed_source));
-				builderSingle.setNegativeButton(getString(R.string.button_close), new OnCloseSelectionSourceClick());
-				builderSingle.setAdapter(arrayAdapter, new OnLongPressSelectionClick(feedDataList.get(position)));
-				builderSingle.show();
-				return false;
+				String[] items = {getString(R.string.delete_feed_source)};
+				DialogUtil.createSelectDialogItem(FeedSourceSettingActivity.this, items, new OnLongPressSelectionClick(feedDataList.get(position))).show();
+				return true;
 			}
 		});
 	}
@@ -144,14 +140,8 @@ public class FeedSourceSettingActivity extends Activity {
 
 		@Override
 		public void onClick(View v) {
-			AlertDialog.Builder builderSingle = new AlertDialog.Builder(FeedSourceSettingActivity.this);
-			builderSingle.setTitle(getString(R.string.pick_source));
-			final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(FeedSourceSettingActivity.this, android.R.layout.select_dialog_singlechoice);
-			arrayAdapter.add(getString(R.string.pick_source_favorite));
-			arrayAdapter.add(getString(R.string.pick_source_manual));
-			builderSingle.setNegativeButton(getString(R.string.button_close), new OnCloseSelectionSourceClick());
-			builderSingle.setAdapter(arrayAdapter, new OnAddSelectionSourceClick());
-			builderSingle.show();
+			String[] items = {getString(R.string.pick_source_favorite), getString(R.string.pick_source_manual)};
+			DialogUtil.createSelectDialogItem(FeedSourceSettingActivity.this, items, new OnAddSelectionSourceClick()).show();
 		}
 
 	}
@@ -185,7 +175,6 @@ public class FeedSourceSettingActivity extends Activity {
 			@Override
 			public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
 				if (isChecked) {
-					Log.v("Launchpet2", "Selected : " + indexSelected);
 					seletedItems.add(indexSelected);
 					selected[indexSelected] = true;
 				} else if (seletedItems.contains(indexSelected)) {
@@ -320,12 +309,6 @@ public class FeedSourceSettingActivity extends Activity {
 				onAddManualSourceClick();
 		}
 
-	}
-	
-	private class OnCloseSelectionSourceClick implements DialogInterface.OnClickListener {
-		@Override
-		public void onClick(DialogInterface dialog, int which) {
-		}
 	}
 	
 	private void onFeedDelete(RSSFeedSource feedSource) {

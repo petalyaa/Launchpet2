@@ -70,7 +70,10 @@
     <!-- License section -->
     <string name="library_FloatingActionButton_licenseId">mit</string>
     <!-- Custom variables section -->
-
+    
+    <string name="move_up">Move up</string>
+	<string name="move_down">Move down</string>
+    
     <string name="title_activity_feed_source_setting">FeedSourceSettingActivity</string>
     <string name="pick_source">Pick Your Source</string>
     <string name="pick_source_favorite">Favorite</string>
