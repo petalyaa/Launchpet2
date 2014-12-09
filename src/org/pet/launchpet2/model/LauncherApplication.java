@@ -6,6 +6,7 @@ import java.util.List;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 
 public class LauncherApplication implements Comparable<LauncherApplication>, Serializable {
@@ -121,5 +122,5 @@ public class LauncherApplication implements Comparable<LauncherApplication>, Ser
 	public void setGroupAppList(List<LauncherApplication> groupAppList) {
 		this.groupAppList = groupAppList;
 	}
-	
+
 }
