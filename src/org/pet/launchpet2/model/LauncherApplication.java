@@ -1,5 +1,6 @@
 package org.pet.launchpet2.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -7,8 +8,10 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.graphics.drawable.Drawable;
 
-public class LauncherApplication implements Comparable<LauncherApplication> {
+public class LauncherApplication implements Comparable<LauncherApplication>, Serializable {
 	
+	private static final long serialVersionUID = -6639715874151969917L;
+
 	public static enum Type {
 		APPLICATION, FOLDER;
 	}
