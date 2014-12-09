@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item android:id="@+id/group_layer_list_0">
+        <bitmap android:gravity="center" android:src="@drawable/ic_launcher" />
+    </item>
+    <item android:id="@+id/group_layer_list_1" android:right="5dp" android:top="5dp">
+        <bitmap android:gravity="center" android:src="@drawable/ic_launcher" />
+    </item>
+    <item android:id="@+id/group_layer_list_2" android:right="10dp" android:top="10dp">
+        <bitmap android:gravity="center" android:src="@drawable/ic_launcher" />
+    </item>
+    <item android:id="@+id/group_layer_list_3" android:right="15dp" android:top="15dp">
+        <bitmap android:gravity="center" android:src="@drawable/ic_launcher" />
+    </item>
+    <item android:id="@+id/group_layer_list_4" android:right="15dp" android:top="15dp">
+        <bitmap android:gravity="center" android:src="@drawable/ic_launcher" />
+    </item>
+
+</layer-list>

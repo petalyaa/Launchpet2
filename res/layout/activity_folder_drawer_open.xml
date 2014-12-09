@@ -1,0 +1,55 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="200dp"
+    android:layout_height="match_parent"
+    android:background="@color/content_background"
+    android:elevation="@dimen/generic_elevation_height"
+    tools:context="org.pet.launchpet2.FolderDrawerOpenActivity" >
+
+    <RelativeLayout
+        android:id="@+id/folder_drawer_header"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentTop="true"
+		android:padding="5dp"
+        android:elevation="@dimen/generic_elevation_height"
+        android:layout_centerHorizontal="true" >
+
+        <TextView
+            android:id="@+id/folder_drawer_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+			android:layout_centerVertical="true"
+			android:layout_toStartOf="@+id/folder_drawer_close_icon"
+            android:shadowColor="@android:color/darker_gray"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="1"
+            android:alpha=".8"
+            android:layout_marginStart="10dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/white" />
+
+        <ImageButton
+            android:id="@+id/folder_drawer_close_icon"
+            android:contentDescription="@string/app_drawer_content_description"
+            android:layout_width="wrap_content"
+            android:background="@android:color/transparent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_action_close" />
+        
+    </RelativeLayout>
+
+    <GridLayout
+        android:id="@+id/folder_grid_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/folder_drawer_header"
+        android:layout_centerHorizontal="true"
+        android:columnCount="3" >
+    </GridLayout>
+
+</RelativeLayout>
