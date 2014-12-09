@@ -112,8 +112,8 @@ public class ReadFeedActivity extends FragmentActivity implements FetchBitmapTas
 			String src = el.absUrl("src");
 			int height = getElementIntegerValue(el, "height");
 			int width = getElementIntegerValue(el, "width");
-			if(height <= ConfigurationUtil.IMAGE_MIN_HEIGHT || width <= ConfigurationUtil.IMAGE_MIN_WIDTH)
-				continue;
+//			if(height <= ConfigurationUtil.IMAGE_MIN_HEIGHT || width <= ConfigurationUtil.IMAGE_MIN_WIDTH)
+//				continue;
 			if(StringUtil.isNullEmptyString(firstImgUrl))
 				firstImgUrl = src;
 			imageSrcUrlList.add(src);
