@@ -30,10 +30,24 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore.Images;
+import android.util.LruCache;
 import android.view.Display;
 import android.view.View;
 
 public class BitmapUtil {
+	
+	private static final int MAX_MEMORY = (int) (Runtime.getRuntime().maxMemory() / 1024);
+
+    private static final int CACHE_SIZE = MAX_MEMORY / 8;
+	
+	private static final LruCache<String, Bitmap> MEMORY_CACHE = new LruCache<String, Bitmap>(CACHE_SIZE) {
+		
+        @Override
+        protected int sizeOf(String key, Bitmap bitmap) {
+            return bitmap.getByteCount() / 1024;
+        }
+        
+    };
 
 	static enum BitmapType {
 		FAVICON(ConfigurationUtil.SUBDIRECTORY_FAVICON), IMAGES(ConfigurationUtil.SUBDIRECTORY_IMAGES);
@@ -48,6 +62,16 @@ public class BitmapUtil {
 
 		private String s;
 	};
+	
+	public static final void addBitmapToMemoryCache(String key, Bitmap bitmap) {
+	    if (getBitmapFromMemCache(key) == null) {
+	    	MEMORY_CACHE.put(key, bitmap);
+	    }
+	}
+	
+	public static final Bitmap getBitmapFromMemCache(String key) {
+	    return MEMORY_CACHE.get(key);
+	}
 
 	public static final Bitmap getCurrentScreenShot(View view) {
 		Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Config.ARGB_8888);
@@ -97,6 +121,9 @@ public class BitmapUtil {
 	}
 
 	public static final Bitmap getBitmapFromPackage(Context context, String packageName) {
+		Bitmap bitmap = getBitmapFromMemCache(packageName);
+		if(bitmap != null)
+			return bitmap;
 		Drawable drawable = null;
 		PackageManager pm = context.getPackageManager();
 		Intent i = new Intent(Intent.ACTION_MAIN, null);
@@ -111,7 +138,9 @@ public class BitmapUtil {
 			}
 			app.setIcon(ri.activityInfo.loadIcon(pm));
 		}
-		return getBitmapFromDrawable(drawable);
+		bitmap = getBitmapFromDrawable(drawable);
+		addBitmapToMemoryCache(packageName, bitmap);
+		return bitmap;
 	}
 
 	public static final Bitmap getFavicon(String urlStr) {
