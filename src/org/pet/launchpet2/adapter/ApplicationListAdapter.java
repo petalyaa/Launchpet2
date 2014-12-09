@@ -139,7 +139,7 @@ public class ApplicationListAdapter extends BaseAdapter {
 //				}
 //				Log.v("Launchpet2", "Group app not null : " + app.getName());
 //				Bitmap icon = BitmapUtil.getBitmapFromView(folderView);
-//				holder.icon_view.setImageBitmap(icon);
+				holder.icon_view.setImageResource(R.drawable.ic_launcher);
 			}
 			holder.name_view.setText(app.getName());
 		}
