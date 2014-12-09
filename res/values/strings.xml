@@ -111,7 +111,7 @@
     <string name="error_item_already_on_bottom">Item is already on bottom</string>
     <string name="title_activity_apps_drawer_setting">AppsDrawerSettingActivity</string>
     <string name="title_activity_group_apps_setting">GroupAppsSettingActivity</string>
-    
     <string name="error_group_name_exist">Sorry, group name already exist!</string>
+    <string name="title_activity_folder_drawer_open">FolderDrawerOpenActivity</string>
 
 </resources>

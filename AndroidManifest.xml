@@ -78,6 +78,11 @@
             android:name=".GroupAppsSettingActivity"
             android:label="@string/title_activity_group_apps_setting" >
         </activity>
+        <activity
+            android:name=".FolderDrawerOpenActivity"
+            android:theme="@style/Theme.Transparent"
+            android:label="@string/title_activity_folder_drawer_open" >
+        </activity>
     </application>
 
 </manifest>

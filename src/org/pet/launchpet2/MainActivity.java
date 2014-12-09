@@ -35,6 +35,7 @@ import org.pet.launchpet2.listener.HideViewAnimationListener;
 import org.pet.launchpet2.listener.OnCardTouchListener;
 import org.pet.launchpet2.listener.ShowViewAnimationListener;
 import org.pet.launchpet2.model.FeedData;
+import org.pet.launchpet2.model.GroupApps;
 import org.pet.launchpet2.model.HiddenApplicationItem;
 import org.pet.launchpet2.model.HomeNewsItem;
 import org.pet.launchpet2.model.LauncherApplication;
@@ -97,6 +98,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -812,6 +814,42 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		}
 		return itemList;
 	}
+	
+	private List<GroupApps> getExistingGroupApps() {
+		List<GroupApps> groupAppsList = new ArrayList<GroupApps>();
+		SharedPreferences prefs = getSharedPreferences(ConfigurationUtil.SHARED_PREFERENCE_APPS_GROUP_SETTINGS, Context.MODE_PRIVATE);
+		String jsonStr = prefs.getString(ConfigurationUtil.SHARED_PREFERENCE_APPS_GROUP_SETTINGS_LIST_KEY, null);
+		Log.v("Launchpet2", "jsonStr : " + jsonStr);
+		if(!StringUtil.isNullEmptyString(jsonStr)) {
+			try {
+				JSONArray jsonArr = new JSONArray(jsonStr);
+				for(int i = 0; i < jsonArr.length(); i++) {
+					JSONObject jsonObj = jsonArr.getJSONObject(i);
+					String name = jsonObj.getString("name");
+					JSONArray appList = jsonObj.getJSONArray("appList");
+					List<LauncherApplication> launcherAppList = new ArrayList<LauncherApplication>(appList.length());
+					List<String> packageList = new ArrayList<String>();
+					for(int x = 0; x < appList.length(); x++) {
+						JSONObject appJsonObj = appList.getJSONObject(x);
+						LauncherApplication app = new LauncherApplication();
+						String packageName = appJsonObj.getString("package");
+						app.setName(appJsonObj.getString("name"));
+						app.setPackageName(packageName);
+						packageList.add(packageName);
+						launcherAppList.add(app);
+					}
+					GroupApps item = new GroupApps();
+					item.setName(name);
+					item.setPackageList(packageList);
+					item.setAppList(launcherAppList);
+					groupAppsList.add(item);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return groupAppsList;
+	}
 
 	private class FetchApplicationListTask extends AsyncTask<LauncherApplication, Void, List<LauncherApplication>> {
 
@@ -831,6 +869,24 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 				}
 			}
 			launcherAppsList.clear();
+			List<GroupApps> groupList = getExistingGroupApps();
+			List<String> packageInGroup = new ArrayList<String>();
+			if(groupList != null && groupList.size() > 0) {
+				for(GroupApps group : groupList) {
+					List<LauncherApplication> groupAppList = group.getAppList();
+					if(groupAppList != null && groupAppList.size() > 0) {
+						for(LauncherApplication item : groupAppList) {
+							packageInGroup.add(item.getPackageName());
+						}
+					}
+					LauncherApplication launcherGroup = new LauncherApplication();
+					launcherGroup.setType(LauncherApplication.Type.FOLDER);
+					launcherGroup.setName(group.getName());
+					launcherGroup.setGroupAppList(groupAppList);
+					launcherAppsList.add(launcherGroup);
+				}
+			}
+			
 			PackageManager pm = getPackageManager();
 			Intent i = new Intent(Intent.ACTION_MAIN, null);
 			i.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -839,13 +895,15 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			for(ResolveInfo ri:availableActivities){
 				LauncherApplication app = new LauncherApplication();
 				String packageName = ri.activityInfo.packageName;
-				if(packageNameList.contains(packageName))
+				if(packageNameList.contains(packageName) || packageInGroup.contains(packageName))
 					continue;
 				app.setPackageName(ri.activityInfo.packageName);
 				app.setName(ri.loadLabel(pm).toString());
+				app.setType(LauncherApplication.Type.APPLICATION);
 				app.setIcon(ri.activityInfo.loadIcon(pm));
 				launcherAppsList.add(app);
 			}
+			
 			Collections.sort(launcherAppsList);
 			return launcherAppsList;
 		}
@@ -879,8 +937,14 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 					position = adapter.getRealPosition(position);
 					LauncherApplication app = launcherAppsList.get(position);
-					Intent LaunchIntent = getPackageManager().getLaunchIntentForPackage(app.getPackageName());
-					startActivity(LaunchIntent);
+					if(app.getType() == LauncherApplication.Type.APPLICATION) {
+						Intent LaunchIntent = getPackageManager().getLaunchIntentForPackage(app.getPackageName());
+						startActivity(LaunchIntent);
+					} else {
+						Intent intentFolder = new Intent(getApplicationContext(), FolderDrawerOpenActivity.class);
+						intentFolder.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						startActivity(intentFolder);
+					}
 				}
 			});
 
@@ -890,33 +954,37 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 				public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 					position = adapter.getRealPosition(position);
 					final LauncherApplication app = launcherAppsList.get(position);
-					String[] items = {getString(R.string.application_add_favorite), getString(R.string.application_details), getString(R.string.application_uninstall)};
-					DialogUtil.createSelectDialogItem(MainActivity.this, items, new DialogInterface.OnClickListener() {
+					if(app.getType() == LauncherApplication.Type.APPLICATION) {
+						String[] items = {getString(R.string.application_add_favorite), getString(R.string.application_details), getString(R.string.application_uninstall)};
+						DialogUtil.createSelectDialogItem(MainActivity.this, items, new DialogInterface.OnClickListener() {
 
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							switch(which) {
-							case 0 :
-								addApplicationAsFavorite(app);
-								break;
-							case 1 : 
-								try {
-									Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								switch(which) {
+								case 0 :
+									addApplicationAsFavorite(app);
+									break;
+								case 1 : 
+									try {
+										Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+										intent.setData(Uri.parse("package:" + app.getPackageName()));
+										startActivity(intent);
+									} catch ( ActivityNotFoundException e ) {
+										Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS);
+										startActivity(intent);
+									}
+									break;
+								case 2 :
+									Intent intent = new Intent(Intent.ACTION_DELETE);
 									intent.setData(Uri.parse("package:" + app.getPackageName()));
 									startActivity(intent);
-								} catch ( ActivityNotFoundException e ) {
-									Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS);
-									startActivity(intent);
+									break;
 								}
-								break;
-							case 2 :
-								Intent intent = new Intent(Intent.ACTION_DELETE);
-								intent.setData(Uri.parse("package:" + app.getPackageName()));
-								startActivity(intent);
-								break;
 							}
-						}
-					}).show();
+						}).show();
+					} else {
+						
+					}
 					return true;
 				}
 			});

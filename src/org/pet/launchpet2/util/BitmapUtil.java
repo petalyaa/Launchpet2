@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.pet.launchpet2.model.LauncherApplication;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -21,14 +22,16 @@ import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Shader.TileMode;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore.Images;
+import android.view.Display;
+import android.view.View;
 
 public class BitmapUtil {
 
@@ -46,6 +49,21 @@ public class BitmapUtil {
 		private String s;
 	};
 
+	public static final Bitmap getCurrentScreenShot(View view) {
+		Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Config.ARGB_8888);
+		Canvas canvas = new Canvas(bitmap);
+		view.draw(canvas);
+		return bitmap;
+	}
+
+	public static final Bitmap getBitmapFromView(View v) {
+		Bitmap b = Bitmap.createBitmap(v.getLayoutParams().width, v.getLayoutParams().height, Bitmap.Config.ARGB_8888);                
+		Canvas c = new Canvas(b);
+		v.layout(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+		v.draw(c);
+		return b;
+	}
+
 	public static final Bitmap getBitmapFromResource(Context context, int resId) {
 		return BitmapFactory.decodeResource(context.getResources(), resId);
 	}
@@ -59,25 +77,25 @@ public class BitmapUtil {
 				} else {
 					Bitmap mutableBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
 					Canvas canvas = new Canvas(mutableBitmap);
-				    Paint paint = new Paint(Paint.FILTER_BITMAP_FLAG);
-				    canvas.drawBitmap(tmpBitmap, 0, 0, paint);
+					Paint paint = new Paint(Paint.FILTER_BITMAP_FLAG);
+					canvas.drawBitmap(tmpBitmap, 0, 0, paint);
 				}
 			}
 		}
 		return bitmap;
 	}
-	
+
 	public static final Bitmap getBitmapFromDrawable(Drawable drawable) {
-	    if (drawable instanceof BitmapDrawable) {
-	        return ((BitmapDrawable) drawable).getBitmap();
-	    }
-	    Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Config.ARGB_8888);
-	    Canvas canvas = new Canvas(bitmap); 
-	    drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-	    drawable.draw(canvas);
-	    return bitmap;
+		if (drawable instanceof BitmapDrawable) {
+			return ((BitmapDrawable) drawable).getBitmap();
+		}
+		Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Config.ARGB_8888);
+		Canvas canvas = new Canvas(bitmap); 
+		drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+		drawable.draw(canvas);
+		return bitmap;
 	}
-	
+
 	public static final Bitmap getBitmapFromPackage(Context context, String packageName) {
 		Drawable drawable = null;
 		PackageManager pm = context.getPackageManager();

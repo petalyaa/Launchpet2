@@ -5,9 +5,13 @@ import java.util.Locale;
 
 import org.pet.launchpet2.R;
 import org.pet.launchpet2.model.LauncherApplication;
+import org.pet.launchpet2.util.BitmapUtil;
+import org.pet.launchpet2.util.ConfigurationUtil;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.GradientDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -117,7 +121,26 @@ public class ApplicationListAdapter extends BaseAdapter {
 			holder = (ViewHolder) gridIconView.getTag();
 		}
 		if(app != null) {
-			holder.icon_view.setImageDrawable(app.getIcon());
+			List<LauncherApplication> groupAppList = app.getGroupAppList();
+			if(groupAppList == null) {
+				holder.icon_view.setImageDrawable(app.getIcon());
+			} else {
+//				View folderView = inflater.inflate(R.layout.apps_folder_view, parent, false);
+//				for(int i = 0; i < ConfigurationUtil.FOLDER_ICON_STACK_LIMIT; i++) {
+//					int nameResourceID = context.getResources().getIdentifier("folder_view_icon_" + i, "id", context.getApplicationInfo().packageName);
+//					ImageView thisImageView = (ImageView) folderView.findViewById(nameResourceID);
+//					if(i >= groupAppList.size()) {
+//						thisImageView.setVisibility(View.INVISIBLE);
+//					} else {
+//						Bitmap bmp = BitmapUtil.getBitmapFromPackage(context, groupAppList.get(i).getPackageName());
+//						thisImageView.setImageBitmap(bmp);
+//						thisImageView.setVisibility(View.VISIBLE);
+//					}
+//				}
+//				Log.v("Launchpet2", "Group app not null : " + app.getName());
+//				Bitmap icon = BitmapUtil.getBitmapFromView(folderView);
+//				holder.icon_view.setImageBitmap(icon);
+			}
 			holder.name_view.setText(app.getName());
 		}
 		if(app.isStartGroup()) {

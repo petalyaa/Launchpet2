@@ -1,10 +1,17 @@
 package org.pet.launchpet2.model;
 
+import java.util.List;
+
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.graphics.drawable.Drawable;
 
 public class LauncherApplication implements Comparable<LauncherApplication> {
+	
+	public static enum Type {
+		APPLICATION, FOLDER;
+	}
 
 	private Intent launchActivity;
 	
@@ -16,11 +23,15 @@ public class LauncherApplication implements Comparable<LauncherApplication> {
 	
 	private Drawable icon;
 	
+	private Type type;
+	
 	private int iconResId;
 	
 	private boolean isInTheGroup;
 	
 	private boolean startGroup;
+	
+	private List<LauncherApplication> groupAppList;
 
 	public Intent getLaunchActivity() {
 		return launchActivity;
@@ -62,6 +73,7 @@ public class LauncherApplication implements Comparable<LauncherApplication> {
 		this.icon = icon;
 	}
 
+	@SuppressLint("DefaultLocale")
 	@Override
 	public int compareTo(LauncherApplication another) {
 		return getName().toLowerCase().compareTo(another.getName().toLowerCase());
@@ -89,6 +101,22 @@ public class LauncherApplication implements Comparable<LauncherApplication> {
 
 	public void setInTheGroup(boolean isInTheGroup) {
 		this.isInTheGroup = isInTheGroup;
+	}
+
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+	}
+
+	public List<LauncherApplication> getGroupAppList() {
+		return groupAppList;
+	}
+
+	public void setGroupAppList(List<LauncherApplication> groupAppList) {
+		this.groupAppList = groupAppList;
 	}
 	
 }

@@ -3,6 +3,7 @@
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res/org.pet.launchpet2"
     android:layout_width="match_parent"
+    android:id="@+id/main_activity_layout"
     android:layout_height="match_parent"
     tools:context="org.pet.launchpet2.MainActivity" >
 
