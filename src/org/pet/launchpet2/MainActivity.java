@@ -650,7 +650,14 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 		@Override
 		public void onClosed() {
-			
+			if(ConfigurationUtil.isNeedReload(getApplicationContext())) {
+				initUserPreference(false);
+				ConfigurationUtil.unsetRequireReload(getApplicationContext());
+			}
+			if(ConfigurationUtil.isNeedFeedReload(getApplicationContext())) {
+				populateHomeCard();
+				ConfigurationUtil.unsetRequireFeedReload(getApplicationContext());
+			}
 		}
 
 	}
@@ -668,14 +675,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 		@Override
 		public void onClose() {
-			if(ConfigurationUtil.isNeedReload(getApplicationContext())) {
-				initUserPreference(false);
-				ConfigurationUtil.unsetRequireReload(getApplicationContext());
-			}
-			if(ConfigurationUtil.isNeedFeedReload(getApplicationContext())) {
-				populateHomeCard();
-				ConfigurationUtil.unsetRequireFeedReload(getApplicationContext());
-			}
+			
 		}
 
 	}
@@ -876,7 +876,8 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 					List<LauncherApplication> groupAppList = group.getAppList();
 					if(groupAppList != null && groupAppList.size() > 0) {
 						for(LauncherApplication item : groupAppList) {
-							packageInGroup.add(item.getPackageName());
+							String packageName = item.getPackageName();
+							packageInGroup.add(packageName);
 						}
 					}
 					LauncherApplication launcherGroup = new LauncherApplication();
@@ -897,10 +898,11 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 				String packageName = ri.activityInfo.packageName;
 				if(packageNameList.contains(packageName) || packageInGroup.contains(packageName))
 					continue;
-				app.setPackageName(ri.activityInfo.packageName);
+				app.setPackageName(packageName);
 				app.setName(ri.loadLabel(pm).toString());
 				app.setType(LauncherApplication.Type.APPLICATION);
-				app.setIcon(ri.activityInfo.loadIcon(pm));
+//				app.setIcon(ri.activityInfo.loadIcon(pm));
+//				app.setIconBitmap(BitmapUtil.getBitmapFromPackage(getApplicationContext(), packageName));
 				launcherAppsList.add(app);
 			}
 			
