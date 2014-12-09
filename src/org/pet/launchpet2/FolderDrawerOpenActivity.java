@@ -18,7 +18,6 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -93,10 +92,12 @@ public class FolderDrawerOpenActivity extends Activity {
 		}
 	}
 	
-	@Override
-	protected void onPause() {
-		super.onPause();
-		unregisterReceiver(receiver);
+	protected void onDestroy() {
+		super.onDestroy();
+		try {
+			unregisterReceiver(receiver);
+		} catch (Exception e) {
+		}
 	}
 
 	private void showLongPressPopup(final LauncherApplication app) {
