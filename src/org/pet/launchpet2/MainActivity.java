@@ -943,6 +943,8 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 					} else {
 						Intent intentFolder = new Intent(getApplicationContext(), FolderDrawerOpenActivity.class);
 						intentFolder.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						intentFolder.putExtra("group", app);
+						intentFolder.putExtra("toolbarColor", toolbarColor);
 						startActivity(intentFolder);
 					}
 				}
