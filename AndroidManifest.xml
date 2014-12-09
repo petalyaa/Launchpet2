@@ -53,6 +53,15 @@
             android:name=".services.CacheCleanupService"
             android:exported="false" />
 
+        <receiver android:name=".ApplicationReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_INSTALL" />
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".SocialSettingActivity"
             android:label="@string/title_activity_social_setting" >
@@ -80,8 +89,8 @@
         </activity>
         <activity
             android:name=".FolderDrawerOpenActivity"
-            android:theme="@style/Theme.Transparent"
-            android:label="@string/title_activity_folder_drawer_open" >
+            android:label="@string/title_activity_folder_drawer_open"
+            android:theme="@style/Theme.Transparent" >
         </activity>
     </application>
 
