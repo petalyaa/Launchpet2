@@ -21,7 +21,7 @@
         android:shadowDy="1"
         android:shadowRadius="1"
         android:contentDescription="@string/app_list_icon" />
-
+    
     <ImageView
         android:id="@+id/application_icon"
         android:layout_width="40dp"
@@ -31,6 +31,14 @@
         android:layout_marginStart="15dp"
         android:contentDescription="@string/app_list_icon"
         android:src="@drawable/ic_launcher" />
+    
+    <RelativeLayout 
+        android:id="@+id/application_folder_view"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_toEndOf="@+id/application_title_icon"
+        android:layout_marginStart="15dp"
+        android:visibility="invisible"></RelativeLayout>
 
     <TextView
         android:id="@+id/application_name"
