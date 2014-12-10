@@ -5,6 +5,7 @@ import org.pet.launchpet2.R;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.widget.ArrayAdapter;
@@ -35,6 +36,15 @@ public class DialogUtil {
 		builderSingle.setNegativeButton(context.getString(R.string.button_close), null);
 		builderSingle.setAdapter(arrayAdapter, onClickListener);
 		return builderSingle;
+	}
+	
+	public static final AlertDialog.Builder createConfirmDialog(Activity activity, String title, String message, final DialogInterface.OnClickListener onClickListener) {
+		AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+		alert.setTitle(title);
+		alert.setMessage(message);
+		alert.setPositiveButton(activity.getString(R.string.button_yes), onClickListener);
+		alert.setNegativeButton(activity.getString(R.string.button_no), null);
+		return alert;
 	}
 
 	public static final AlertDialog.Builder createInputTextDialog(Activity activity, String title, String message, final DialogUtil.DialogUtilCallback onClickListener) {
