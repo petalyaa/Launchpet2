@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res/org.pet.launchpet2"
-    android:layout_width="match_parent"
     android:id="@+id/main_activity_layout"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="org.pet.launchpet2.MainActivity" >
 
@@ -115,12 +115,11 @@
 
                     <ImageView
                         android:id="@+id/weather_display_icon"
-                        android:contentDescription="@string/app_drawer_content_description"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
+                        android:layout_below="@+id/weather_display_label"
                         android:layout_centerHorizontal="true"
-                        android:layout_below="@+id/weather_display_label" />
-                    
+                        android:contentDescription="@string/app_drawer_content_description" />
                 </RelativeLayout>
             </RelativeLayout>
 
