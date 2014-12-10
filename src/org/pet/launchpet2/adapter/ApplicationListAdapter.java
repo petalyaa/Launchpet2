@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class ApplicationListAdapter extends BaseAdapter {
@@ -111,37 +112,43 @@ public class ApplicationListAdapter extends BaseAdapter {
 			holder.name_view = (TextView) gridIconView.findViewById(R.id.application_name);
 			holder.icon_view = (ImageView) gridIconView.findViewById(R.id.application_icon);
 			holder.icon_title_view = (TextView) gridIconView.findViewById(R.id.application_title_icon);
+			holder.folder_view_layout = (RelativeLayout) gridIconView.findViewById(R.id.application_folder_view);
+			holder.folder_view = inflater.inflate(R.layout.apps_folder_view, parent, false);
 			if(app.isStartGroup()) {
 				GradientDrawable shapeDrawable = (GradientDrawable) holder.icon_title_view.getBackground();
 				shapeDrawable.setColor(titleColor);
 			}
+			
 			gridIconView.setTag(holder);
 		} else {
 			holder = (ViewHolder) gridIconView.getTag();
 		}
 		if(app != null) {
-			holder.icon_view.setImageResource(R.drawable.ic_launcher);
-			
-//			List<LauncherApplication> groupAppList = app.getGroupAppList();
-//			if(groupAppList != null && groupAppList.size() > 0) {
-//				View view = inflater.inflate(R.layout.apps_folder_view, parent, false);
-//				for(int i = 0; i < ConfigurationUtil.FOLDER_ICON_STACK_LIMIT; i++) {
-//					int nameResourceID = context.getResources().getIdentifier("folder_view_icon_" + i, "id", context.getApplicationInfo().packageName);
-//					ImageView thisImageView = (ImageView) view.findViewById(nameResourceID);
-//					try {
-//						LauncherApplication groupApp = groupAppList.get(i);
-//						String packageName = groupApp.getPackageName();
-//						Bitmap thisAppBmp = BitmapUtil.getBitmapFromPackage(context, packageName);
-//						thisImageView.setImageBitmap(thisAppBmp);
-//					} catch (Exception e) {
-//						thisImageView.setVisibility(View.INVISIBLE);
-//					}
-//				}
-//				Bitmap folderBitmap = BitmapUtil.getBitmapFromView(view, 50, 50);
-//			}
-			
 			if(app.getType() == LauncherApplication.Type.APPLICATION) {
+				holder.icon_view.setVisibility(View.VISIBLE);
+				holder.folder_view_layout.setVisibility(View.INVISIBLE);
 				holder.icon_view.setImageBitmap(BitmapUtil.getBitmapFromPackage(context, app.getPackageName()));
+			} else {
+				holder.icon_view.setVisibility(View.INVISIBLE);
+				holder.folder_view_layout.setVisibility(View.VISIBLE);
+				holder.folder_view_layout.removeAllViews();
+				View folderView = holder.folder_view;
+				List<LauncherApplication> groupAppList = app.getGroupAppList();
+				if(groupAppList != null && groupAppList.size() > 0) {
+					for(int i = 0; i < ConfigurationUtil.FOLDER_ICON_STACK_LIMIT; i++) {
+						int nameResourceID = context.getResources().getIdentifier("folder_view_icon_" + i, "id", context.getApplicationInfo().packageName);
+						ImageView thisImageView = (ImageView) folderView.findViewById(nameResourceID);
+						try {
+							LauncherApplication groupApp = groupAppList.get(i);
+							String packageName = groupApp.getPackageName();
+							Bitmap thisAppBmp = BitmapUtil.getBitmapFromPackage(context, packageName);
+							thisImageView.setImageBitmap(thisAppBmp);
+						} catch (Exception e) {
+							thisImageView.setVisibility(View.INVISIBLE);
+						}
+					}
+				}
+				holder.folder_view_layout.addView(holder.folder_view);
 			}
 			holder.name_view.setText(app.getName());
 		}
@@ -157,6 +164,8 @@ public class ApplicationListAdapter extends BaseAdapter {
 		private  ImageView icon_view;
 		private TextView name_view;
 		private TextView icon_title_view;
+		private RelativeLayout folder_view_layout;
+		private View folder_view;
 	}
 
 }
