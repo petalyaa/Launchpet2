@@ -22,6 +22,7 @@ import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Shader.TileMode;
@@ -33,6 +34,7 @@ import android.provider.MediaStore.Images;
 import android.util.LruCache;
 import android.view.Display;
 import android.view.View;
+import android.view.View.MeasureSpec;
 
 public class BitmapUtil {
 	
@@ -80,12 +82,30 @@ public class BitmapUtil {
 		return bitmap;
 	}
 
-	public static final Bitmap getBitmapFromView(View v) {
-		Bitmap b = Bitmap.createBitmap(v.getLayoutParams().width, v.getLayoutParams().height, Bitmap.Config.ARGB_8888);                
-		Canvas c = new Canvas(b);
-		v.layout(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
-		v.draw(c);
-		return b;
+	public static final Bitmap getBitmapFromView(View view, int height, int width) {
+//		int specWidth = MeasureSpec.makeMeasureSpec(parentWidth, MeasureSpec.AT_MOST);
+//		Bitmap b = Bitmap.createBitmap(v.getLayoutParams().width, v.getLayoutParams().height, Bitmap.Config.ARGB_8888);                
+//		Canvas c = new Canvas(b);
+//		v.layout(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+//		v.draw(c);
+//		return b;
+		view.measure(View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),
+	            View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY));
+	    view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+
+	    // Build the Drawing Cache
+	    view.buildDrawingCache();
+
+	    // Create Bitmap
+	    Bitmap drawingCache = view.getDrawingCache();
+	    if (drawingCache == null) {
+	        return null;
+	    }
+
+	    Bitmap bitmap = Bitmap.createBitmap(drawingCache);
+	    drawingCache.recycle();
+	    view.setDrawingCacheEnabled(false);
+	    return bitmap;
 	}
 
 	public static final Bitmap getBitmapFromResource(Context context, int resId) {
