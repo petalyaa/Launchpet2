@@ -37,6 +37,8 @@
     <string name="setting_input_group_name">Group name : </string>
     <string name="button_ok">OK</string>
     <string name="button_close">Close</string>
+    <string name="button_yes">Yes</string>
+    <string name="button_no">No</string>
     <string name="pref_header_color">Color</string>
     <string name="pref_header_general">General</string>
     <string name="pref_personalize_general_theme">Theme</string>
@@ -65,6 +67,8 @@
     <string name="delete">Delete</string>
     <string name="rename">Rename</string>
     <string name="rename_to">Rename to : </string>
+    <string name="confirm">Confirmation</string>
+    <string name="confirm_delete_group">Are you sure to delete this group?</string>
     <!-- Author section -->
     <string name="library_FloatingActionButton_author">Oleksandr Melnykov</string>
     <string name="library_FloatingActionButton_authorWebsite">https://github.com/makovkastar/FloatingActionButton</string>
