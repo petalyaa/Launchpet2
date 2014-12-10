@@ -107,13 +107,6 @@
             android:summaryOff="@string/pref_personalize_advanced_quick_access_hack_off_sum"
             android:title="@string/pref_personalize_advanced_quick_access_hack" />
         
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="personalize_advanced_quick_access_drawer"
-            android:summaryOn="@string/personalize_advanced_quick_access_drawer_on_sum"
-            android:summaryOff="@string/personalize_advanced_quick_access_drawer_off_sum"
-            android:title="@string/personalize_advanced_quick_access_drawer_title" />
-        
 	</PreferenceCategory>
 
 </PreferenceScreen>
