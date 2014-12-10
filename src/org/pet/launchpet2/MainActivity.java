@@ -305,7 +305,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		slidingMenu.setOnOpenListener(new OnSlidingOpenListener());
 		slidingMenu.setOnClosedListener(new OnSlidingClosedListener());
 		slidingMenu.setOnOpenedListener(new OnSlidingOpenedListener());
-
+		
 		mObservableScrollView.getViewTreeObserver().addOnGlobalLayoutListener(
 				new ViewTreeObserver.OnGlobalLayoutListener() {
 					@Override
@@ -699,7 +699,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		}
 		
 		// For quick access hack
-		boolean isQuickAccessHackEnable = prefs.getBoolean("personalize_advanced_quick_access_hack", false);
+		final boolean isQuickAccessHackEnable = prefs.getBoolean("personalize_advanced_quick_access_hack", false);
 		if(mFloatingFavButton != null) {
 			mFloatingFavButton.setQuickHackEnable(isQuickAccessHackEnable, new Callback() {
 				
@@ -819,7 +819,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		List<GroupApps> groupAppsList = new ArrayList<GroupApps>();
 		SharedPreferences prefs = getSharedPreferences(ConfigurationUtil.SHARED_PREFERENCE_APPS_GROUP_SETTINGS, Context.MODE_PRIVATE);
 		String jsonStr = prefs.getString(ConfigurationUtil.SHARED_PREFERENCE_APPS_GROUP_SETTINGS_LIST_KEY, null);
-		Log.v("Launchpet2", "jsonStr : " + jsonStr);
 		if(!StringUtil.isNullEmptyString(jsonStr)) {
 			try {
 				JSONArray jsonArr = new JSONArray(jsonStr);
@@ -849,6 +848,17 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			}
 		}
 		return groupAppsList;
+	}
+	
+	private void deleteGroup(final LauncherApplication app) {
+		DialogUtil.createConfirmDialog(MainActivity.this, getString(R.string.confirm), getString(R.string.confirm_delete_group), new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				String appName = app.getName();
+				
+			}
+		}).show();
 	}
 
 	private class FetchApplicationListTask extends AsyncTask<LauncherApplication, Void, List<LauncherApplication>> {
@@ -909,7 +919,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			Collections.sort(launcherAppsList);
 			return launcherAppsList;
 		}
-
+		
 		@Override
 		protected void onPostExecute(List<LauncherApplication> homeNewsItemList) {
 			Iterator<LauncherApplication> launcherAppIter = launcherAppsList.iterator();
@@ -987,7 +997,18 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 							}
 						}).show();
 					} else {
-						
+						String[] items = {getString(R.string.delete)};
+						DialogUtil.createSelectDialogItem(MainActivity.this, items, new DialogInterface.OnClickListener() {
+							
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								switch (which) {
+								case 0 :
+									deleteGroup(app);
+									break;
+								}
+							}
+						}).show();
 					}
 					return true;
 				}
