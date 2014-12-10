@@ -53,8 +53,6 @@ public class PersonalizeSettingActivity extends PreferenceActivity {
 	
 	private EditTextPreference mDisplayNamePref;
 	
-	private CheckBoxPreference mUseNativeDrawer;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -115,18 +113,12 @@ public class PersonalizeSettingActivity extends PreferenceActivity {
 			mThemePreference = (ListPreference) getPreferenceManager().findPreference("personalize_general_theme");
 			mDisplayNamePref = (EditTextPreference) getPreferenceManager().findPreference("personalize_general_display_name");
 			mQuickAccessHackCheckbox = (CheckBoxPreference) getPreferenceManager().findPreference("personalize_advanced_quick_access_hack");
-			mUseNativeDrawer = (CheckBoxPreference) getPreferenceManager().findPreference("personalize_advanced_quick_access_drawer");
 			
-			boolean isQuickAccessHackEnable = mQuickAccessHackCheckbox.isChecked();
 			boolean isDateDisplay = mDisplayDateCheckbox.isChecked();
 			if(!isDateDisplay)
 				mDateFormatPreference.setEnabled(false);
 			else
 				mDateFormatPreference.setEnabled(true);
-			if(!isQuickAccessHackEnable)
-				mUseNativeDrawer.setEnabled(false);
-			else
-				mUseNativeDrawer.setEnabled(true);
 			mDisplayDateCheckbox.setOnPreferenceChangeListener(new OnDisplayDateCheckboxChange());
 			mOverrideThemeColorCheckbox.setOnPreferenceChangeListener(new OnOverrideThemeColorChange());
 			mProfileImagePref.setOnPreferenceClickListener(new OnProfileImagePreferenceClick());
@@ -134,7 +126,6 @@ public class PersonalizeSettingActivity extends PreferenceActivity {
 			mThemePreference.setOnPreferenceChangeListener(new OnThemePreferenceChange());
 			mDisplayNamePref.setOnPreferenceChangeListener(new OnDisplayNamePrefChange());
 			mQuickAccessHackCheckbox.setOnPreferenceChangeListener(new OnQuickAccessPreferenceChange());
-			mUseNativeDrawer.setOnPreferenceChangeListener(new OnUseNativeDrawerChange());
 		}
 
 	}
@@ -209,12 +200,6 @@ public class PersonalizeSettingActivity extends PreferenceActivity {
 
 		@Override
 		public boolean onPreferenceChange(Preference arg0, Object newValue) {
-			boolean isChecked = Boolean.valueOf(newValue.toString());
-			if(isChecked) {
-				mUseNativeDrawer.setEnabled(true);
-			} else {
-				mUseNativeDrawer.setEnabled(false);
-			}
 			ConfigurationUtil.setRequireReload(getApplicationContext());
 			return true;
 		}
@@ -237,14 +222,4 @@ public class PersonalizeSettingActivity extends PreferenceActivity {
 
 	}
 	
-	private class OnUseNativeDrawerChange implements OnPreferenceChangeListener {
-
-		@Override
-		public boolean onPreferenceChange(Preference preference, Object newValue) {
-			ConfigurationUtil.setRequireReload(getApplicationContext());
-			return true;
-		}
-		
-	}
-
 }
