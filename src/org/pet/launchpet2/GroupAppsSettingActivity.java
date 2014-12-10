@@ -66,7 +66,6 @@ public class GroupAppsSettingActivity extends Activity {
 		List<GroupApps> groupAppsList = new ArrayList<GroupApps>();
 		SharedPreferences prefs = getSharedPreferences(ConfigurationUtil.SHARED_PREFERENCE_APPS_GROUP_SETTINGS, Context.MODE_PRIVATE);
 		String jsonStr = prefs.getString(ConfigurationUtil.SHARED_PREFERENCE_APPS_GROUP_SETTINGS_LIST_KEY, null);
-		Log.v("Launchpet2", "jsonStr : " + jsonStr);
 		if(!StringUtil.isNullEmptyString(jsonStr)) {
 			try {
 				JSONArray jsonArr = new JSONArray(jsonStr);

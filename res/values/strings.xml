@@ -58,6 +58,9 @@
     <string name="pref_personalize_advanced_quick_access_hack">Quick Access Hack</string>
     <string name="pref_personalize_advanced_quick_access_hack_on_sum">Pressing floating favorite button will open application drawer. Long press will open favorite menu.</string>
     <string name="pref_personalize_advanced_quick_access_hack_off_sum">Pressing floating favorite button will open favorite menu. Long press will open application drawer.</string>
+    <string name="personalize_advanced_quick_access_drawer_title">Use native app drawer</string>
+    <string name="personalize_advanced_quick_access_drawer_on_sum">Use native application drawer</string>
+    <string name="personalize_advanced_quick_access_drawer_off_sum">Use right fragment menu drawer</string>
     <string name="define_FloatingActionButton"></string>
     <string name="delete">Delete</string>
     <string name="rename">Rename</string>
