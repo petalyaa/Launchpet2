@@ -13,6 +13,9 @@
     
     <color name="primary_text_color">#212121</color>
     
+    <color name="apps_folder_background">#BE000000</color>
+    <color name="apps_folder_border">#E0E0E0</color>
+    
     <color name="list_divider">#CFD8DC</color>
     <color name="ripple_color">#C5CAE9</color>
     
