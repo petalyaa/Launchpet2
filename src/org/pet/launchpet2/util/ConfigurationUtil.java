@@ -108,6 +108,12 @@ public class ConfigurationUtil {
 
 	public static final int FOLDER_ICON_STACK_LIMIT = 4;
 	
+	public static final int NATIVE_DRAWER_ROW_COUNT = 5;
+	
+	public static final int NATIVE_DRAWER_COL_COUNT = 4;
+	
+	public static final int RESULT_RELOAD_FAVORITE = 100;
+	
 	static {
 		RSS_URL_TO_LOAD.add("http://feeds.dzone.com/dzone/frontpage?format=xml");
 		RSS_URL_TO_LOAD.add("http://feeds.feedburner.com/androidcentral?format=xml");

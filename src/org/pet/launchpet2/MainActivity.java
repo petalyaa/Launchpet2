@@ -1,7 +1,6 @@
 package org.pet.launchpet2;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -126,11 +125,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 	private static final SimpleDateFormat GENERIC_DATE_FORMAT = new SimpleDateFormat(HEADER_DATE_FORMAT, Locale.getDefault());
 
-	private static final int SELECT_PHOTO = 100;
-
 	private static final int TOOLBAR_ADJUSTER = 600;
-
-	private static final int ACCEPTABLE_PROFILE_IMAGE_SIZE = 200;
 
 	private static final int PROFILE_IMAGE_BORDER_SIZE = 2;
 
@@ -222,8 +217,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 	private Timer timer;
 
-	private SimpleFacebook mSimpleFacebook;
-
 	private static boolean isWeatherThreadStarted;
 
 	@SuppressLint({ "InflateParams", "ClickableViewAccessibility" })
@@ -245,7 +238,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		startService(mServiceIntent);
 
 		SimpleFacebook.setConfiguration(FBUtil.FB_CONFIGURATION);
-		mSimpleFacebook = SimpleFacebook.getInstance(this);
 
 		mObservableScrollView = (ObservableScrollView) findViewById(R.id.scroll_view);
 		mObservableScrollView.setCallbacks(this);
@@ -376,7 +368,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	@Override
 	protected void onResume() {
 		super.onResume();
-		mSimpleFacebook = SimpleFacebook.getInstance(this);
 	}
 	
 	protected void restartActivity() {
@@ -576,22 +567,17 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) { 
-		super.onActivityResult(requestCode, resultCode, imageReturnedIntent); 
-		mSimpleFacebook.onActivityResult(this, requestCode, resultCode, imageReturnedIntent); 
-		switch(requestCode) { 
-		case SELECT_PHOTO:
-			if(resultCode == RESULT_OK){  
-				Uri selectedImage = null;
-				Bitmap image = null;
-				try {
-					selectedImage = imageReturnedIntent.getData();
-					image = BitmapUtil.decodeUriAndResize(selectedImage, getContentResolver(), ACCEPTABLE_PROFILE_IMAGE_SIZE);
-					mPrimaryProfileImage.setImageBitmap(BitmapUtil.getCircularBitmapWithWhiteBorder(image, PROFILE_IMAGE_BORDER_SIZE, Color.WHITE));
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+		super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+		if (requestCode == 1) {
+	        if(resultCode == RESULT_OK){
+	            int result = imageReturnedIntent.getIntExtra("result", 0);
+	            if(result == ConfigurationUtil.RESULT_RELOAD_FAVORITE) {
+	            	reloadFavorite();
+	            }
+	        }
+	        if (resultCode == RESULT_CANCELED) {
+	        }
+	    }		
 	}
 
 	float currentY;
@@ -731,9 +717,9 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 				@Override
 				public void performCallback() {
 					if(isUseNativeDrawerEnable && isQuickAccessHackEnable) {
-						Intent i = new Intent(getApplicationContext(), AppDrawerActivity.class);
-						i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-						startActivity(i);
+						Intent i = new Intent(MainActivity.this, AppDrawerActivity.class);
+						i.putExtra("toolbarColor", toolbarColor);
+						startActivityForResult(i, 1);
 					} else {
 						slidingMenu.showSecondaryMenu(true);
 					}
