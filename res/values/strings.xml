@@ -120,5 +120,7 @@
     <string name="title_activity_group_apps_setting">GroupAppsSettingActivity</string>
     <string name="error_group_name_exist">Sorry, group name already exist!</string>
     <string name="title_activity_folder_drawer_open">FolderDrawerOpenActivity</string>
+    <string name="title_activity_launcher">LauncherActivity</string>
+    <string name="title_activity_app_drawer">AppDrawerActivity</string>
 
 </resources>
