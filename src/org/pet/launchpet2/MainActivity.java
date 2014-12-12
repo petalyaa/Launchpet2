@@ -51,6 +51,7 @@ import org.pet.launchpet2.settings.item.AppDrawerMenuItem;
 import org.pet.launchpet2.settings.item.FeedSourceMenuItem;
 import org.pet.launchpet2.settings.item.PersonalizeMenuItem;
 import org.pet.launchpet2.thread.WeatherServiceThread;
+import org.pet.launchpet2.util.ApplicationUtil;
 import org.pet.launchpet2.util.BitmapUtil;
 import org.pet.launchpet2.util.CommonUtil;
 import org.pet.launchpet2.util.ConfigurationUtil;
@@ -302,7 +303,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			@Override
 			public void onClick(View v) {
 				String packageToRun = ConfigurationUtil.GOOGLE_NOW_PACKAGE;
-				if(isPackageInstalled(packageToRun, getApplicationContext())) {
+				if(ApplicationUtil.isPackageExisted(getApplicationContext(), packageToRun)) {
 					Intent intent = getPackageManager().getLaunchIntentForPackage(packageToRun);
 					startActivity(intent);
 				} else {
@@ -382,16 +383,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		super.onPause();
 	}
 
-	private boolean isPackageInstalled(String packagename, Context context) {
-		PackageManager pm = context.getPackageManager();
-		try {
-			pm.getPackageInfo(packagename, PackageManager.GET_ACTIVITIES);
-			return true;
-		} catch (NameNotFoundException e) {
-			return false;
-		}
-	}
-
 	private void reloadDate() {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		boolean isDateDisplay = prefs.getBoolean("personalize_general_display_date", true);
@@ -466,11 +457,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_palette, getString(R.string.settings_item_personalize), new PersonalizeMenuItem(getApplicationContext())));
 		launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_input, getString(R.string.settings_item_feed_source), new FeedSourceMenuItem(getApplicationContext())));
 		launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_apps, getString(R.string.settings_item_app_drawer), new AppDrawerMenuItem(getApplicationContext())));
-//		launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_account_child, getString(R.string.settings_item_social_network), new SocialNetworkMenuItem(getApplicationContext())));
-		//launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_apps, getString(R.string.settings_item_app_drawer), new AppDrawerMenuItem()));
-		//launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_sync, getString(R.string.settings_item_sync_setting), new SyncSettingMenuItem()));
-		//launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_settings_backup_restore, getString(R.string.settings_item_backup_restore), new BackupRestoreMenuItem()));
-		//launcherSettingItems.add(new LauncherSettingItem(R.drawable.ic_adb, getString(R.string.settings_item_advanced), new AdvancedMenuItem()));
 		mSettingListView = (ListView) settingsView.findViewById(R.id.settings_list_view);
 		final SettingListAdapter adapter = new SettingListAdapter(getApplicationContext(), launcherSettingItems);
 		mSettingListView.setAdapter(adapter);
@@ -486,14 +472,10 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 	private void showNewsFeedLoading() {
 		mLoadingProgressbar.setVisibility(View.VISIBLE);
-//		if(mRefreshButton.getVisibility() == View.VISIBLE)
-//			mRefreshButton.startAnimation(mAnimRefreshBtnHide);
 	}
 
 	private void hideNewsFeedLoading() {
 		mLoadingProgressbar.setVisibility(View.INVISIBLE);
-//		if(mRefreshButton.getVisibility() != View.VISIBLE)
-//			mRefreshButton.startAnimation(mAnimRefreshBtnShow);
 	}
 
 	private String getExistingSourceFromSharedPreference() {
@@ -814,114 +796,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		mPrimaryProfileImage.setImageBitmap(finalProfileImage);
 		mSecondaryProfileImage.setImageBitmap(finalProfileImage);
 	}
-	
-	public List<HiddenApplicationItem> getExistingHiddenApps() {
-		SharedPreferences pref = getSharedPreferences(ConfigurationUtil.SHARED_PREFERENCE_HIDDEN_APPS_SETTINGS, Context.MODE_PRIVATE);
-		String hiddenAppJsonStr = pref.getString(ConfigurationUtil.SHARED_PREFERENCE_EXISTING_HIDDEN_APPS_KEY, "");
-		List<HiddenApplicationItem> itemList = new ArrayList<HiddenApplicationItem>();
-		try {
-			JSONArray hiddenAppJsonArr = new JSONArray(hiddenAppJsonStr);
-			if(hiddenAppJsonArr != null && hiddenAppJsonArr.length() > 0) {
-				for(int i = 0; i < hiddenAppJsonArr.length(); i++) {
-					JSONObject hiddenAppJsonObj = hiddenAppJsonArr.getJSONObject(i);
-					HiddenApplicationItem item = new HiddenApplicationItem();
-					item.setHidden(true);
-					item.setName(hiddenAppJsonObj.getString("name"));
-					item.setPackageName(hiddenAppJsonObj.getString("package"));
-					itemList.add(item);
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return itemList;
-	}
-	
-	private List<GroupApps> getExistingGroupApps() {
-		List<GroupApps> groupAppsList = new ArrayList<GroupApps>();
-		SharedPreferences prefs = getSharedPreferences(ConfigurationUtil.SHARED_PREFERENCE_APPS_GROUP_SETTINGS, Context.MODE_PRIVATE);
-		String jsonStr = prefs.getString(ConfigurationUtil.SHARED_PREFERENCE_APPS_GROUP_SETTINGS_LIST_KEY, null);
-		if(!StringUtil.isNullEmptyString(jsonStr)) {
-			try {
-				JSONArray jsonArr = new JSONArray(jsonStr);
-				for(int i = 0; i < jsonArr.length(); i++) {
-					JSONObject jsonObj = jsonArr.getJSONObject(i);
-					String name = jsonObj.getString("name");
-					JSONArray appList = jsonObj.getJSONArray("appList");
-					List<LauncherApplication> launcherAppList = new ArrayList<LauncherApplication>(appList.length());
-					List<String> packageList = new ArrayList<String>();
-					for(int x = 0; x < appList.length(); x++) {
-						JSONObject appJsonObj = appList.getJSONObject(x);
-						LauncherApplication app = new LauncherApplication();
-						String packageName = appJsonObj.getString("package");
-						app.setName(appJsonObj.getString("name"));
-						app.setPackageName(packageName);
-						packageList.add(packageName);
-						launcherAppList.add(app);
-					}
-					GroupApps item = new GroupApps();
-					item.setName(name);
-					item.setPackageList(packageList);
-					item.setAppList(launcherAppList);
-					groupAppsList.add(item);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return groupAppsList;
-	}
-	
-	private void deleteGroup(final LauncherApplication app) {
-		final List<GroupApps> thisItems = getExistingGroupApps();
-		DialogUtil.createConfirmDialog(MainActivity.this, getString(R.string.confirm), getString(R.string.confirm_delete_group), new DialogInterface.OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				String appName = app.getName();
-				Iterator<GroupApps> itemIter1 = thisItems.iterator();
-				while(itemIter1.hasNext()) {
-					GroupApps thisItem = itemIter1.next();
-					String name = thisItem.getName();
-					if(name.equals(appName))
-						itemIter1.remove();
-				}
-				writeGroupList(thisItems);
-			}
-		}).show();
-	}
-	
-	private void writeGroupList(List<GroupApps> groupAppsList) {
-		JSONArray jsonArray = new JSONArray();
-		if(groupAppsList != null && groupAppsList.size() > 0) {
-			for(GroupApps group : groupAppsList) {
-				JSONObject jsonObj = new JSONObject();
-				try {
-					jsonObj.put("name", group.getName());
-					JSONArray launcherAppJsonArr = new JSONArray();
-					List<LauncherApplication> launcherAppsList = group.getAppList();
-					if(launcherAppsList != null && launcherAppsList.size() > 0) {
-						for(LauncherApplication app : launcherAppsList) {
-							JSONObject appJsonObj = new JSONObject();
-							appJsonObj.put("name", app.getName());
-							appJsonObj.put("package", app.getPackageName());
-							launcherAppJsonArr.put(appJsonObj);
-						}
-					}
-					jsonObj.put("appList", launcherAppJsonArr);
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-				jsonArray.put(jsonObj);
-			}
-		}
-		String jsonStr = jsonArray.toString();
-		SharedPreferences prefs = getSharedPreferences(ConfigurationUtil.SHARED_PREFERENCE_APPS_GROUP_SETTINGS, Context.MODE_PRIVATE);
-		SharedPreferences.Editor editor = prefs.edit();
-		editor.putString(ConfigurationUtil.SHARED_PREFERENCE_APPS_GROUP_SETTINGS_LIST_KEY, jsonStr);
-		editor.commit();
-		initUserPreference(true);
-	}
 
 	private class FetchApplicationListTask extends AsyncTask<LauncherApplication, Void, List<LauncherApplication>> {
 
@@ -933,7 +807,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 		@Override
 		protected List<LauncherApplication> doInBackground(LauncherApplication... params) {
-			List<HiddenApplicationItem> itemList = getExistingHiddenApps();
+			List<HiddenApplicationItem> itemList = ApplicationUtil.getExistingHiddenApps(MainActivity.this);
 			List<String> packageNameList = new ArrayList<String>();
 			if(itemList != null && itemList.size() > 0) {
 				for(HiddenApplicationItem item : itemList) {
@@ -941,7 +815,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 				}
 			}
 			launcherAppsList.clear();
-			List<GroupApps> groupList = getExistingGroupApps();
+			List<GroupApps> groupList = ApplicationUtil.getExistingGroupApps(MainActivity.this);
 			List<String> packageInGroup = new ArrayList<String>();
 			if(groupList != null && groupList.size() > 0) {
 				for(GroupApps group : groupList) {
@@ -973,8 +847,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 				app.setPackageName(packageName);
 				app.setName(ri.loadLabel(pm).toString());
 				app.setType(LauncherApplication.Type.APPLICATION);
-//				app.setIcon(ri.activityInfo.loadIcon(pm));
-//				app.setIconBitmap(BitmapUtil.getBitmapFromPackage(getApplicationContext(), packageName));
 				launcherAppsList.add(app);
 			}
 			
@@ -1038,7 +910,13 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 							public void onClick(DialogInterface dialog, int which) {
 								switch(which) {
 								case 0 :
-									addApplicationAsFavorite(app);
+									ApplicationUtil.addApplicationAsFavorite(MainActivity.this, app, new Callback() {
+										
+										@Override
+										public void performCallback() {
+											reloadFavorite();
+										}
+									});
 									break;
 								case 1 : 
 									try {
@@ -1066,7 +944,13 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 							public void onClick(DialogInterface dialog, int which) {
 								switch (which) {
 								case 0 :
-									deleteGroup(app);
+									ApplicationUtil.deleteGroup(MainActivity.this, app, new Callback() {
+										
+										@Override
+										public void performCallback() {
+											initUserPreference(true);
+										}
+									});
 									break;
 								}
 							}
@@ -1134,74 +1018,74 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 	}
 
-	private List<LauncherApplication> getFavoriteApplicationList() {
-		List<LauncherApplication> appList = new ArrayList<LauncherApplication>();
-		SharedPreferences pref = getSharedPreferences(ConfigurationUtil.SHARED_PREFERENCE_KEY_APPLICATION_SETTING, MODE_PRIVATE);
-		String jsonStr = pref.getString(ConfigurationUtil.SHARED_PREFERENCE_KEY_FAVORITE, "");
-		if(!StringUtil.isNullEmptyString(jsonStr)) {
-			try {
-				JSONArray jsonArr = new JSONArray(jsonStr);
-				if(jsonArr != null && jsonArr.length() > 0) {
-					for(int i = 0; i < jsonArr.length(); i++) {
-						JSONObject jsonObj = jsonArr.getJSONObject(i);
-						LauncherApplication app = new LauncherApplication();
-						app.setName(jsonObj.getString("name"));
-						app.setPackageName(jsonObj.getString("packageName"));
-						app.setIconResId(jsonObj.getInt("iconResId"));
-						appList.add(app);
-					}
-				}
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}
-		return appList;
-	}
-
-	private void addApplicationAsFavorite(LauncherApplication app) {
-		List<LauncherApplication> existingFavAppList = getFavoriteApplicationList();
-		if(existingFavAppList != null && existingFavAppList.size() > 0) {
-			for(LauncherApplication existingApp : existingFavAppList) {
-				String existingPackageName = existingApp.getPackageName();
-				if(app.getPackageName().equals(existingPackageName)) {
-					Toast.makeText(getApplicationContext(), getString(R.string.error_already_in_favorite), Toast.LENGTH_SHORT).show();
-					return;
-				}
-			}
-		}
-		if(existingFavAppList == null)
-			existingFavAppList = new ArrayList<LauncherApplication>();
-		if(existingFavAppList.size() >= ConfigurationUtil.MAX_FAVORITE) {
-			Toast.makeText(getApplicationContext(), getString(R.string.error_max_fav_reach), Toast.LENGTH_SHORT).show();
-			return;
-		}
-		existingFavAppList.add(app);
-		writeFavoriteApplicationList(existingFavAppList);
-		reloadFavorite();
-	}
-
-	public void writeFavoriteApplicationList(List<LauncherApplication> favAppList) {
-		JSONArray jsonArray = new JSONArray();
-		for(LauncherApplication appList : favAppList) {
-			JSONObject jsonObj = new JSONObject();
-			try {
-				jsonObj.put("name", appList.getName());
-				jsonObj.put("packageName", appList.getPackageName());
-				jsonObj.put("iconResId", appList.getIconResId());
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			jsonArray.put(jsonObj);
-		}
-		String jsonStr = jsonArray.toString();
-		SharedPreferences pref = getSharedPreferences(ConfigurationUtil.SHARED_PREFERENCE_KEY_APPLICATION_SETTING, MODE_PRIVATE);
-		SharedPreferences.Editor editor = pref.edit();
-		editor.putString(ConfigurationUtil.SHARED_PREFERENCE_KEY_FAVORITE, jsonStr);
-		editor.commit();
-	}
+//	private List<LauncherApplication> getFavoriteApplicationList() {
+//		List<LauncherApplication> appList = new ArrayList<LauncherApplication>();
+//		SharedPreferences pref = getSharedPreferences(ConfigurationUtil.SHARED_PREFERENCE_KEY_APPLICATION_SETTING, MODE_PRIVATE);
+//		String jsonStr = pref.getString(ConfigurationUtil.SHARED_PREFERENCE_KEY_FAVORITE, "");
+//		if(!StringUtil.isNullEmptyString(jsonStr)) {
+//			try {
+//				JSONArray jsonArr = new JSONArray(jsonStr);
+//				if(jsonArr != null && jsonArr.length() > 0) {
+//					for(int i = 0; i < jsonArr.length(); i++) {
+//						JSONObject jsonObj = jsonArr.getJSONObject(i);
+//						LauncherApplication app = new LauncherApplication();
+//						app.setName(jsonObj.getString("name"));
+//						app.setPackageName(jsonObj.getString("packageName"));
+//						app.setIconResId(jsonObj.getInt("iconResId"));
+//						appList.add(app);
+//					}
+//				}
+//			} catch (JSONException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		return appList;
+//	}
+//
+//	private void addApplicationAsFavorite(LauncherApplication app) {
+//		List<LauncherApplication> existingFavAppList = getFavoriteApplicationList();
+//		if(existingFavAppList != null && existingFavAppList.size() > 0) {
+//			for(LauncherApplication existingApp : existingFavAppList) {
+//				String existingPackageName = existingApp.getPackageName();
+//				if(app.getPackageName().equals(existingPackageName)) {
+//					Toast.makeText(getApplicationContext(), getString(R.string.error_already_in_favorite), Toast.LENGTH_SHORT).show();
+//					return;
+//				}
+//			}
+//		}
+//		if(existingFavAppList == null)
+//			existingFavAppList = new ArrayList<LauncherApplication>();
+//		if(existingFavAppList.size() >= ConfigurationUtil.MAX_FAVORITE) {
+//			Toast.makeText(getApplicationContext(), getString(R.string.error_max_fav_reach), Toast.LENGTH_SHORT).show();
+//			return;
+//		}
+//		existingFavAppList.add(app);
+//		writeFavoriteApplicationList(existingFavAppList);
+//		reloadFavorite();
+//	}
+//
+//	public void writeFavoriteApplicationList(List<LauncherApplication> favAppList) {
+//		JSONArray jsonArray = new JSONArray();
+//		for(LauncherApplication appList : favAppList) {
+//			JSONObject jsonObj = new JSONObject();
+//			try {
+//				jsonObj.put("name", appList.getName());
+//				jsonObj.put("packageName", appList.getPackageName());
+//				jsonObj.put("iconResId", appList.getIconResId());
+//			} catch (JSONException e) {
+//				e.printStackTrace();
+//			}
+//			jsonArray.put(jsonObj);
+//		}
+//		String jsonStr = jsonArray.toString();
+//		SharedPreferences pref = getSharedPreferences(ConfigurationUtil.SHARED_PREFERENCE_KEY_APPLICATION_SETTING, MODE_PRIVATE);
+//		SharedPreferences.Editor editor = pref.edit();
+//		editor.putString(ConfigurationUtil.SHARED_PREFERENCE_KEY_FAVORITE, jsonStr);
+//		editor.commit();
+//	}
 
 	private void reloadFavorite() {
-		List<LauncherApplication> appList = getFavoriteApplicationList();
+		List<LauncherApplication> appList = ApplicationUtil.getFavoriteApplicationList(MainActivity.this);
 		if(appList != null && appList.size() > 0) {
 			int currentIndex = 0;
 			for(int i = ConfigurationUtil.MAX_FAVORITE - 1; i >= 0; i--) {
@@ -1428,7 +1312,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 				public void onClick(DialogInterface dialog, int which) {
 					switch(which) {
 					case 0 :
-						List<LauncherApplication> existingFavorite = getFavoriteApplicationList();
+						List<LauncherApplication> existingFavorite = ApplicationUtil.getFavoriteApplicationList(MainActivity.this);
 						Iterator<LauncherApplication> existingFavoriteIter = existingFavorite.iterator();
 						while(existingFavoriteIter.hasNext()) {
 							LauncherApplication app = existingFavoriteIter.next();
@@ -1437,7 +1321,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 							if(packageName.equalsIgnoreCase(thisPackageName))
 								existingFavoriteIter.remove();
 						}
-						writeFavoriteApplicationList(existingFavorite);
+						ApplicationUtil.writeFavoriteApplicationList(MainActivity.this, existingFavorite);
 						reloadFavorite();
 						break;
 					case 1 :
@@ -1457,7 +1341,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	}
 	
 	private void changeFavoriteOrder(LauncherApplication app, int ordering) {
-		List<LauncherApplication> existingFavorite = getFavoriteApplicationList();
+		List<LauncherApplication> existingFavorite = ApplicationUtil.getFavoriteApplicationList(MainActivity.this);
 		Iterator<LauncherApplication> existingFavoriteIter = existingFavorite.iterator();
 		int currentOrder = 0;
 		int currentIndex = 0;
@@ -1478,7 +1362,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			Toast.makeText(getApplicationContext(), getString(R.string.error_item_already_on_bottom), Toast.LENGTH_SHORT).show();
 		} else {
 			existingFavorite.add(newOrder, app);
-			writeFavoriteApplicationList(existingFavorite);
+			ApplicationUtil.writeFavoriteApplicationList(MainActivity.this, existingFavorite);
 			reloadFavorite();
 		}
 	}
