@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval" >
+
+    <solid android:color="#ffffff" />
+    
+    <size android:height="@dimen/activity_native_app_drawer_pager_indicator_size" android:width="@dimen/activity_native_app_drawer_pager_indicator_size" />
+
+</shape>
