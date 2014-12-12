@@ -5,7 +5,7 @@
         <item>Default</item>
         <item>Zoom Out</item>
         <item>Depth</item>
-        <item>Rotation</item>
+        <!-- <item>Rotation</item> -->
         <item>Flow</item>
         <item>Slide Over</item>
         <item>Flip</item>
@@ -15,7 +15,7 @@
         <item></item>
         <item>org.pet.launchpet2.animation.viewpagertransformer.ZoomOutViewPagerTransformer</item>
         <item>org.pet.launchpet2.animation.viewpagertransformer.DepthViewPagerTransformer</item>
-        <item>org.pet.launchpet2.animation.viewpagertransformer.RotationViewPagerTransformer</item>
+        <!-- <item>org.pet.launchpet2.animation.viewpagertransformer.RotationViewPagerTransformer</item> -->
         <item>org.pet.launchpet2.animation.viewpagertransformer.FlowViewPagerTransformer</item>
         <item>org.pet.launchpet2.animation.viewpagertransformer.SlideOverViewPagerTransformer</item>
         <item>org.pet.launchpet2.animation.viewpagertransformer.FlipViewPagerTransformer</item>
