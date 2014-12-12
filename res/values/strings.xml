@@ -85,6 +85,14 @@
     <!-- License section -->
     <string name="library_FloatingActionButton_licenseId">mit</string>
     <!-- Custom variables section -->
+    
+    <string name="day_mon">Monday</string>
+    <string name="day_tue">Tuesday</string>
+    <string name="day_wed">Wednesday</string>
+    <string name="day_thu">Thursday</string>
+    <string name="day_fri">Friday</string>
+    <string name="day_sat">Saturday</string>
+    <string name="day_sun">Sunday</string>
 	
 	<string name="drawer_animation">Drawer animation</string>
     <string name="move_up">Move up</string>

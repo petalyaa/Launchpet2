@@ -25,7 +25,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.pet.launchpet2.adapter.ApplicationListAdapter;
+import org.pet.launchpet2.adapter.MainPagerAdapter;
 import org.pet.launchpet2.adapter.SettingListAdapter;
+import org.pet.launchpet2.animation.viewpagertransformer.DepthViewPagerTransformer;
+import org.pet.launchpet2.animation.viewpagertransformer.FlowViewPagerTransformer;
+import org.pet.launchpet2.animation.viewpagertransformer.ZoomOutViewPagerTransformer;
 import org.pet.launchpet2.layout.NowCardLayout;
 import org.pet.launchpet2.layout.ObservableScrollView;
 import org.pet.launchpet2.listener.BrowserLinkOpenListener;
@@ -96,6 +100,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -139,10 +146,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	private ObservableScrollView mObservableScrollView;
 
 	private RelativeLayout topHeaderImage;
-
-	private TextView dateHeaderLabel;
-
-	private ImageView mPrimaryProfileImage;
 
 	private ListView mAppListView;
 
@@ -210,15 +213,15 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 	private RelativeLayout mHeaderOverlay;
 
-	private TextView mNameDisplayLabel;
-
-	private TextView mWeatherDisplay;
-
-	private ImageView mWeatherIcon;
-
 	private Timer timer;
 
 	private static boolean isWeatherThreadStarted;
+
+	private ViewPager mMainPager;
+
+	private MainPagerAdapter mMainPagerAdapter;
+	
+	private LinearLayout mMainPagerIndicator;
 
 	@SuppressLint({ "InflateParams", "ClickableViewAccessibility" })
 	@Override
@@ -246,8 +249,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		mStickyView = (RelativeLayout) findViewById(R.id.top_toolbar);
 		mPlaceholderView = findViewById(R.id.placeholder);
 		topHeaderImage = (RelativeLayout) findViewById(R.id.top_header_image);
-		dateHeaderLabel = (TextView) findViewById(R.id.date_header_label);
-		mPrimaryProfileImage = (ImageView) findViewById(R.id.profile_image);
+
 		mMainContent = (LinearLayout) findViewById(R.id.main_content);
 		mRefreshButton = (ImageView) findViewById(R.id.top_toolbar_refresh_button);
 		mGoogleSearchBtn = (ImageView) findViewById(R.id.top_toolbar_google_search_button);
@@ -257,9 +259,21 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		mFloatingFavButton = (FloatingActionsMenu) findViewById(R.id.floating_favorite_button);
 		mHeaderHolder = (RelativeLayout) findViewById(R.id.top_header_image_holder);
 		mHeaderOverlay = (RelativeLayout) findViewById(R.id.top_header_image_overlay);
-		mNameDisplayLabel = (TextView) findViewById(R.id.name_display_label);
-		mWeatherDisplay = (TextView) findViewById(R.id.weather_display_label);
-		mWeatherIcon = (ImageView) findViewById(R.id.weather_display_icon);
+		mMainPager = (ViewPager) findViewById(R.id.main_view_pager);
+		mMainPagerIndicator = (LinearLayout) findViewById(R.id.main_view_pager_indicator);
+		mMainPagerAdapter = new MainPagerAdapter(getApplicationContext(), getSupportFragmentManager(), new Callback() {
+			
+			@Override
+			public void performCallback() {
+				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+				reloadDate();
+				reloadDisplayName(prefs);
+			}
+		});
+		mMainPager.setAdapter(mMainPagerAdapter);
+		updateDrawerPagingIndicator(0);
+		mMainPager.setOnPageChangeListener(new OnAppDrawerPageChangeListener());
+		mMainPager.setPageTransformer(true, new FlowViewPagerTransformer());
 
 		mLoadingProgressbar.setVisibility(View.INVISIBLE);
 
@@ -281,7 +295,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		mMainContent.addView(homeView);
 		mAppListView = (ListView) applicationView.findViewById(R.id.application_list_view);
 		populateSlidingMenu();
-		
+
 		mObservableScrollView.getViewTreeObserver().addOnGlobalLayoutListener(
 				new ViewTreeObserver.OnGlobalLayoutListener() {
 					@Override
@@ -323,26 +337,33 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 		initUserPreference(false);
 
-		timer = new Timer();
-		if(!isWeatherThreadStarted) {
-			timer.scheduleAtFixedRate(new TimerTask() {
-
-				@Override
-				public void run() {
-					reloadWeather();
-					isWeatherThreadStarted = true;
-				}
-			}, 1000, ConfigurationUtil.WEATHER_UPDATE_FREQUENCY);
-		}
 	}
 	
+	private void updateDrawerPagingIndicator(int page) {
+		int count = mMainPagerAdapter.getCount();
+		mMainPagerIndicator.removeAllViews();
+		for(int i = 0; i < count; i++) {
+			ImageView indicatorIcon = new ImageView(getApplicationContext());
+			if(page == i)
+				indicatorIcon.setBackground(getDrawable(R.drawable.drawer_circle_selected));
+			else
+				indicatorIcon.setBackground(getDrawable(R.drawable.drawer_circle_idle));
+			int circleSize = (int) getResources().getDimension(R.dimen.activity_native_app_drawer_pager_indicator_size);
+			LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(circleSize, circleSize);
+			layoutParams.setMarginStart(10);
+			layoutParams.setMarginEnd(10);
+			indicatorIcon.setLayoutParams(layoutParams);
+			mMainPagerIndicator.addView(indicatorIcon);
+		}
+	}
+
 	private void populateSlidingMenu() {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		boolean isQuickHackEnable = prefs.getBoolean("personalize_advanced_quick_access_hack", false);
 		boolean isUseNativeDrawer = prefs.getBoolean("personalize_advanced_quick_access_native_drawer", false);
-		
+
 		slidingMenu = new SlidingMenu(this);
-		
+
 		if(isQuickHackEnable && isUseNativeDrawer) {
 			slidingMenu.setMode(SlidingMenu.LEFT);
 			slidingMenu.setShadowDrawable(R.drawable.slide_drawer_shadow_left);
@@ -354,8 +375,8 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			slidingMenu.setMenu(settingsView);
 			slidingMenu.setSecondaryMenu(applicationView);
 		}
-		
-		slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+
+		slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
 		slidingMenu.setShadowWidth(20);
 		slidingMenu.setBehindOffsetRes(R.dimen.behind_menu_offset);
 		slidingMenu.setFadeDegree(1f);
@@ -370,7 +391,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	protected void onResume() {
 		super.onResume();
 	}
-	
+
 	protected void restartActivity() {
 		Toast.makeText(getApplicationContext(), getString(R.string.application_restarting), Toast.LENGTH_SHORT).show();
 		Intent intent = getIntent();
@@ -383,40 +404,14 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		super.onPause();
 	}
 
-	private void reloadDate() {
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		boolean isDateDisplay = prefs.getBoolean("personalize_general_display_date", true);
-		if(isDateDisplay) {
-			String dateStr = null;
-			String dateFormat = prefs.getString("personalize_general_date_format", HEADER_DATE_FORMAT);
-			try {
-				Date date = new Date();
-				SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.getDefault());
-				dateStr = sdf.format(date);
-			} catch (Exception e) {
-				Date date = new Date();
-				dateStr = GENERIC_DATE_FORMAT.format(date);
-			}
-			if(dateStr != null) {
-				dateHeaderLabel.setText(dateStr);
-				dateHeaderLabel.setVisibility(View.VISIBLE);
-			} else {
-				dateHeaderLabel.setVisibility(View.INVISIBLE);
-			}
-		} else {
-			dateHeaderLabel.setVisibility(View.INVISIBLE);
-		}
-	}
-
 	private void initUserPreference(boolean isReloadApplicationOnly) {
 		if(!isReloadApplicationOnly) {
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-			reloadAllBitmap();
+			reloadBitmap();
 			reloadOtherData(prefs);
 			reloadColors(prefs);
-			reloadDate();
-			prepareWeatherSection();
 			populateHomeCard();
+			reloadDate();
 			populateSettings();
 			reloadFavorite();
 		}
@@ -433,15 +428,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		}
 	}
 
-	private void prepareWeatherSection() {
-		reloadWeather();
-	}
-
-	private void reloadWeather() {
-		LocationManager mLocManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-		new WeatherServiceThread(getApplicationContext(), mWeatherDisplay, mWeatherIcon).execute(mLocManager);
-	}
-
 	@Override
 	public void onBackPressed() {
 		if(mFloatingFavButton != null && mFloatingFavButton.isExpanded())
@@ -450,6 +436,26 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			slidingMenu.toggle();
 		if(mObservableScrollView != null)
 			mObservableScrollView.smoothScrollTo(0, 0);
+	}
+
+	private void reloadDate() {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		boolean isDateDisplay = prefs.getBoolean("personalize_general_display_date", true);
+		if(isDateDisplay) {
+			String dateStr = null;
+			String dateFormat = prefs.getString("personalize_general_date_format", HEADER_DATE_FORMAT);
+			try { 
+				Date date = new Date();
+				SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.getDefault());
+				dateStr = sdf.format(date);
+			} catch (Exception e) {
+				Date date = new Date();
+				dateStr = GENERIC_DATE_FORMAT.format(date);
+			}
+			mMainPagerAdapter.updateClock(dateStr);
+		} else {
+			mMainPagerAdapter.updateClock(null);
+		}
 	}
 
 	private void populateSettings() {
@@ -551,15 +557,15 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) { 
 		super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
 		if (requestCode == 1) {
-	        if(resultCode == RESULT_OK){
-	            int result = imageReturnedIntent.getIntExtra("result", 0);
-	            if(result == ConfigurationUtil.RESULT_RELOAD_FAVORITE) {
-	            	reloadFavorite();
-	            }
-	        }
-	        if (resultCode == RESULT_CANCELED) {
-	        }
-	    }		
+			if(resultCode == RESULT_OK){
+				int result = imageReturnedIntent.getIntExtra("result", 0);
+				if(result == ConfigurationUtil.RESULT_RELOAD_FAVORITE) {
+					reloadFavorite();
+				}
+			}
+			if (resultCode == RESULT_CANCELED) {
+			}
+		}		
 	}
 
 	float currentY;
@@ -667,7 +673,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 		@Override
 		public void onClose() {
-			
+
 		}
 
 	}
@@ -679,23 +685,22 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		}
 
 	}
+	
+	private void reloadDisplayName(SharedPreferences prefs) {
+		String displayNameStr = prefs.getString("personalize_general_display_name", null);
+		mMainPagerAdapter.updateDisplayName(displayNameStr);
+	}
 
 	private void reloadOtherData(SharedPreferences prefs) {
 		// For display name
-		String displayNameStr = prefs.getString("personalize_general_display_name", null);
-		if(StringUtil.isNullEmptyString(displayNameStr)) {
-			mNameDisplayLabel.setVisibility(View.INVISIBLE);
-		} else {
-			mNameDisplayLabel.setVisibility(View.VISIBLE);
-			mNameDisplayLabel.setText(displayNameStr);
-		}
-		
+		reloadDisplayName(prefs);
+
 		// For quick access hack
 		final boolean isQuickAccessHackEnable = prefs.getBoolean("personalize_advanced_quick_access_hack", false);
 		final boolean isUseNativeDrawerEnable = prefs.getBoolean("personalize_advanced_quick_access_native_drawer", false);
 		if(mFloatingFavButton != null) {
 			mFloatingFavButton.setQuickHackEnable(isQuickAccessHackEnable, new Callback() {
-				
+
 				@Override
 				public void performCallback() {
 					if(isUseNativeDrawerEnable && isQuickAccessHackEnable) {
@@ -710,7 +715,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 			});
 		}
 	}
-	
+
 
 	private void reloadColors(SharedPreferences prefs) {
 		boolean isNeedOverride = prefs.getBoolean("personalize_color_override_default", false);
@@ -739,10 +744,10 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 					toolbarColor = Color.parseColor(mTestArray[8]);
 					backgroundColor = Color.parseColor(mTestArray[4]);
 					dateTextColor = Color.parseColor(mTestArray[0]);
-					
+
 					String navbarColorStr = mTestArray[9];
 					navbarColorStr = navbarColorStr.replaceFirst("#", "#71");
-					
+
 					navbarColor = Color.parseColor(navbarColorStr);
 					cardTitleBackgroundColor = Color.parseColor(mTestArray[7]);
 					appTitleCircleColor = Color.parseColor(mTestArray[3]);
@@ -755,14 +760,12 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 				}
 			}
 		}
-		
+
 		getWindow().setNavigationBarColor(navbarColor);
 		getWindow().setStatusBarColor(statusbarColor);
 		mStickyView.setBackgroundColor(toolbarColor);
-		dateHeaderLabel.setTextColor(dateTextColor);
 		mMainContent.setBackgroundColor(backgroundColor);
 		mObservableScrollView.setBackgroundColor(backgroundColor);
-		dateHeaderLabel.setTextColor(dateTextColor);
 		mSettingToolbar.setBackgroundColor(toolbarColor);
 		mApplicationToolbar.setBackgroundColor(toolbarColor);
 		if(headerHolderBackgroundColor != 0)
@@ -775,7 +778,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		return context.getResources().getIdentifier(name, "array", context.getPackageName());
 	}
 
-	private void reloadAllBitmap() {
+	private void reloadBitmap() {
 		Bitmap icon = null;
 		Bitmap bannerImage = null;
 		String root = Environment.getExternalStorageDirectory().toString();
@@ -795,7 +798,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		if(icon == null)
 			icon = BitmapFactory.decodeResource(getResources(), R.drawable.launcher);
 		Bitmap finalProfileImage = BitmapUtil.getCircularBitmapWithWhiteBorder(icon, PROFILE_IMAGE_BORDER_SIZE, Color.WHITE);
-		mPrimaryProfileImage.setImageBitmap(finalProfileImage);
 		mSecondaryProfileImage.setImageBitmap(finalProfileImage);
 	}
 
@@ -835,7 +837,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 					launcherAppsList.add(launcherGroup);
 				}
 			}
-			
+
 			PackageManager pm = getPackageManager();
 			Intent i = new Intent(Intent.ACTION_MAIN, null);
 			i.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -851,11 +853,11 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 				app.setType(LauncherApplication.Type.APPLICATION);
 				launcherAppsList.add(app);
 			}
-			
+
 			Collections.sort(launcherAppsList);
 			return launcherAppsList;
 		}
-		
+
 		@Override
 		protected void onPostExecute(List<LauncherApplication> homeNewsItemList) {
 			Iterator<LauncherApplication> launcherAppIter = launcherAppsList.iterator();
@@ -913,7 +915,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 								switch(which) {
 								case 0 :
 									ApplicationUtil.addApplicationAsFavorite(MainActivity.this, app, new Callback() {
-										
+
 										@Override
 										public void performCallback() {
 											reloadFavorite();
@@ -941,13 +943,13 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 					} else {
 						String[] items = {getString(R.string.delete)};
 						DialogUtil.createSelectDialogItem(MainActivity.this, items, new DialogInterface.OnClickListener() {
-							
+
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
 								switch (which) {
 								case 0 :
 									ApplicationUtil.deleteGroup(MainActivity.this, app, new Callback() {
-										
+
 										@Override
 										public void performCallback() {
 											initUserPreference(true);
@@ -1020,71 +1022,71 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 	}
 
-//	private List<LauncherApplication> getFavoriteApplicationList() {
-//		List<LauncherApplication> appList = new ArrayList<LauncherApplication>();
-//		SharedPreferences pref = getSharedPreferences(ConfigurationUtil.SHARED_PREFERENCE_KEY_APPLICATION_SETTING, MODE_PRIVATE);
-//		String jsonStr = pref.getString(ConfigurationUtil.SHARED_PREFERENCE_KEY_FAVORITE, "");
-//		if(!StringUtil.isNullEmptyString(jsonStr)) {
-//			try {
-//				JSONArray jsonArr = new JSONArray(jsonStr);
-//				if(jsonArr != null && jsonArr.length() > 0) {
-//					for(int i = 0; i < jsonArr.length(); i++) {
-//						JSONObject jsonObj = jsonArr.getJSONObject(i);
-//						LauncherApplication app = new LauncherApplication();
-//						app.setName(jsonObj.getString("name"));
-//						app.setPackageName(jsonObj.getString("packageName"));
-//						app.setIconResId(jsonObj.getInt("iconResId"));
-//						appList.add(app);
-//					}
-//				}
-//			} catch (JSONException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//		return appList;
-//	}
-//
-//	private void addApplicationAsFavorite(LauncherApplication app) {
-//		List<LauncherApplication> existingFavAppList = getFavoriteApplicationList();
-//		if(existingFavAppList != null && existingFavAppList.size() > 0) {
-//			for(LauncherApplication existingApp : existingFavAppList) {
-//				String existingPackageName = existingApp.getPackageName();
-//				if(app.getPackageName().equals(existingPackageName)) {
-//					Toast.makeText(getApplicationContext(), getString(R.string.error_already_in_favorite), Toast.LENGTH_SHORT).show();
-//					return;
-//				}
-//			}
-//		}
-//		if(existingFavAppList == null)
-//			existingFavAppList = new ArrayList<LauncherApplication>();
-//		if(existingFavAppList.size() >= ConfigurationUtil.MAX_FAVORITE) {
-//			Toast.makeText(getApplicationContext(), getString(R.string.error_max_fav_reach), Toast.LENGTH_SHORT).show();
-//			return;
-//		}
-//		existingFavAppList.add(app);
-//		writeFavoriteApplicationList(existingFavAppList);
-//		reloadFavorite();
-//	}
-//
-//	public void writeFavoriteApplicationList(List<LauncherApplication> favAppList) {
-//		JSONArray jsonArray = new JSONArray();
-//		for(LauncherApplication appList : favAppList) {
-//			JSONObject jsonObj = new JSONObject();
-//			try {
-//				jsonObj.put("name", appList.getName());
-//				jsonObj.put("packageName", appList.getPackageName());
-//				jsonObj.put("iconResId", appList.getIconResId());
-//			} catch (JSONException e) {
-//				e.printStackTrace();
-//			}
-//			jsonArray.put(jsonObj);
-//		}
-//		String jsonStr = jsonArray.toString();
-//		SharedPreferences pref = getSharedPreferences(ConfigurationUtil.SHARED_PREFERENCE_KEY_APPLICATION_SETTING, MODE_PRIVATE);
-//		SharedPreferences.Editor editor = pref.edit();
-//		editor.putString(ConfigurationUtil.SHARED_PREFERENCE_KEY_FAVORITE, jsonStr);
-//		editor.commit();
-//	}
+	//	private List<LauncherApplication> getFavoriteApplicationList() {
+	//		List<LauncherApplication> appList = new ArrayList<LauncherApplication>();
+	//		SharedPreferences pref = getSharedPreferences(ConfigurationUtil.SHARED_PREFERENCE_KEY_APPLICATION_SETTING, MODE_PRIVATE);
+	//		String jsonStr = pref.getString(ConfigurationUtil.SHARED_PREFERENCE_KEY_FAVORITE, "");
+	//		if(!StringUtil.isNullEmptyString(jsonStr)) {
+	//			try {
+	//				JSONArray jsonArr = new JSONArray(jsonStr);
+	//				if(jsonArr != null && jsonArr.length() > 0) {
+	//					for(int i = 0; i < jsonArr.length(); i++) {
+	//						JSONObject jsonObj = jsonArr.getJSONObject(i);
+	//						LauncherApplication app = new LauncherApplication();
+	//						app.setName(jsonObj.getString("name"));
+	//						app.setPackageName(jsonObj.getString("packageName"));
+	//						app.setIconResId(jsonObj.getInt("iconResId"));
+	//						appList.add(app);
+	//					}
+	//				}
+	//			} catch (JSONException e) {
+	//				e.printStackTrace();
+	//			}
+	//		}
+	//		return appList;
+	//	}
+	//
+	//	private void addApplicationAsFavorite(LauncherApplication app) {
+	//		List<LauncherApplication> existingFavAppList = getFavoriteApplicationList();
+	//		if(existingFavAppList != null && existingFavAppList.size() > 0) {
+	//			for(LauncherApplication existingApp : existingFavAppList) {
+	//				String existingPackageName = existingApp.getPackageName();
+	//				if(app.getPackageName().equals(existingPackageName)) {
+	//					Toast.makeText(getApplicationContext(), getString(R.string.error_already_in_favorite), Toast.LENGTH_SHORT).show();
+	//					return;
+	//				}
+	//			}
+	//		}
+	//		if(existingFavAppList == null)
+	//			existingFavAppList = new ArrayList<LauncherApplication>();
+	//		if(existingFavAppList.size() >= ConfigurationUtil.MAX_FAVORITE) {
+	//			Toast.makeText(getApplicationContext(), getString(R.string.error_max_fav_reach), Toast.LENGTH_SHORT).show();
+	//			return;
+	//		}
+	//		existingFavAppList.add(app);
+	//		writeFavoriteApplicationList(existingFavAppList);
+	//		reloadFavorite();
+	//	}
+	//
+	//	public void writeFavoriteApplicationList(List<LauncherApplication> favAppList) {
+	//		JSONArray jsonArray = new JSONArray();
+	//		for(LauncherApplication appList : favAppList) {
+	//			JSONObject jsonObj = new JSONObject();
+	//			try {
+	//				jsonObj.put("name", appList.getName());
+	//				jsonObj.put("packageName", appList.getPackageName());
+	//				jsonObj.put("iconResId", appList.getIconResId());
+	//			} catch (JSONException e) {
+	//				e.printStackTrace();
+	//			}
+	//			jsonArray.put(jsonObj);
+	//		}
+	//		String jsonStr = jsonArray.toString();
+	//		SharedPreferences pref = getSharedPreferences(ConfigurationUtil.SHARED_PREFERENCE_KEY_APPLICATION_SETTING, MODE_PRIVATE);
+	//		SharedPreferences.Editor editor = pref.edit();
+	//		editor.putString(ConfigurationUtil.SHARED_PREFERENCE_KEY_FAVORITE, jsonStr);
+	//		editor.commit();
+	//	}
 
 	private void reloadFavorite() {
 		List<LauncherApplication> appList = ApplicationUtil.getFavoriteApplicationList(MainActivity.this);
@@ -1337,7 +1339,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		}
 
 	}
-	
+
 	private void changeFavoriteOrder(LauncherApplication app, int ordering) {
 		List<LauncherApplication> existingFavorite = ApplicationUtil.getFavoriteApplicationList(MainActivity.this);
 		Iterator<LauncherApplication> existingFavoriteIter = existingFavorite.iterator();
@@ -1393,6 +1395,15 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 	}
 
+	private class OnToolbarClickListener implements OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+
+		}
+
+	}
+
 	private class ClockBroadcastReceiver extends BroadcastReceiver {
 
 		@Override
@@ -1401,14 +1412,24 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		}
 
 	}
-
-	private class OnToolbarClickListener implements OnClickListener {
+	
+	private class OnAppDrawerPageChangeListener implements OnPageChangeListener {
 
 		@Override
-		public void onClick(View v) {
-
+		public void onPageScrollStateChanged(int arg0) {
+			
 		}
 
+		@Override
+		public void onPageScrolled(int arg0, float arg1, int arg2) {
+			
+		}
+
+		@Override
+		public void onPageSelected(int page) {
+			updateDrawerPagingIndicator(page);
+		}
+		
 	}
 
 }

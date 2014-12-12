@@ -25,6 +25,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Shader.TileMode;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -32,6 +36,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore.Images;
 import android.util.LruCache;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
 import android.view.View.MeasureSpec;
@@ -282,6 +287,37 @@ public class BitmapUtil {
 		BitmapFactory.Options o2 = new BitmapFactory.Options();
 		o2.inSampleSize = scale;
 		return BitmapFactory.decodeStream(contentResolver.openInputStream(selectedImage), null, o2);
+	}
+	
+	public static final Bitmap getRoundedCornerBitmap(Bitmap bitmap, int color, int border, int corner, Context context) {
+	    Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(),
+	            Bitmap.Config.ARGB_8888);
+	    Canvas canvas = new Canvas(output);
+
+	    final int borderSizePx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, (float) border, context.getResources().getDisplayMetrics());
+	    final int cornerSizePx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, (float) corner, context.getResources().getDisplayMetrics());
+	    final Paint paint = new Paint();
+	    final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+	    final RectF rectF = new RectF(rect);
+
+	    // prepare canvas for transfer
+	    paint.setAntiAlias(true);
+	    paint.setColor(0xFFFFFFFF);
+	    paint.setStyle(Paint.Style.FILL);
+	    canvas.drawARGB(0, 0, 0, 0);
+	    canvas.drawRoundRect(rectF, cornerSizePx, cornerSizePx, paint);
+
+	    // draw bitmap
+	    paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+	    canvas.drawBitmap(bitmap, rect, rect, paint);
+
+	    // draw border
+	    paint.setColor(color);
+	    paint.setStyle(Paint.Style.STROKE);
+	    paint.setStrokeWidth((float) borderSizePx);
+	    canvas.drawRoundRect(rectF, cornerSizePx, cornerSizePx, paint);
+
+	    return output;
 	}
 
 	public static final Bitmap getCircularBitmapWithWhiteBorder(Bitmap bitmap, int borderWidth, int borderColor) {
