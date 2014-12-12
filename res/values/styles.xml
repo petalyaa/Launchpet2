@@ -1,4 +1,4 @@
-<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:fab="http://schemas.android.com/apk/res-auto" xmlns:app="http://schemas.android.com/apk/res/org.pet.launchpet2">
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:card_view="http://schemas.android.com/apk/res-auto" xmlns:fab="http://schemas.android.com/apk/res-auto" xmlns:app="http://schemas.android.com/apk/res/org.pet.launchpet2">
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
@@ -17,6 +17,13 @@
         <item name="android:colorPrimaryDark">@color/status_bar_color</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="@attr/cardStyleRef">@style/nowCardStyle</item>
+    </style>
+
+    <style name="home_card">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginBottom">@dimen/home_card_margin_bottom</item>
     </style>
 
     <style name="Theme.Transparent" parent="@android:style/Theme.Material.NoActionBar">
@@ -42,6 +49,7 @@
         <item name="android:textColor">#707070</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:elevation">2dp</item>
     </style>
 
     <style name="Theme.SmoothProgressBarDefaults" parent="android:Theme">

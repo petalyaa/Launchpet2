@@ -98,7 +98,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -738,7 +737,11 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 					toolbarColor = Color.parseColor(mTestArray[8]);
 					backgroundColor = Color.parseColor(mTestArray[4]);
 					dateTextColor = Color.parseColor(mTestArray[0]);
-					navbarColor = Color.parseColor(mTestArray[9]);
+					
+					String navbarColorStr = mTestArray[9];
+					navbarColorStr = navbarColorStr.replaceFirst("#", "#71");
+					
+					navbarColor = Color.parseColor(navbarColorStr);
 					cardTitleBackgroundColor = Color.parseColor(mTestArray[7]);
 					appTitleCircleColor = Color.parseColor(mTestArray[3]);
 					String headerHolderBackgroundColorStr = mTestArray[8];
@@ -750,6 +753,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 				}
 			}
 		}
+		
 		getWindow().setNavigationBarColor(navbarColor);
 		getWindow().setStatusBarColor(statusbarColor);
 		mStickyView.setBackgroundColor(toolbarColor);
@@ -1159,8 +1163,8 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 						String appName = app.getName();
 						txt.setText(appName);
 						linearLayout.setVisibility(View.VISIBLE);
-						linearLayout.setOnClickListener(new OnFloatingMenuItemClick(app));
-						linearLayout.setOnLongClickListener(new OnFloatingMenuItemLongClick(app));
+						//linearLayout.setOnClickListener(new OnFloatingMenuItemClick(app));
+						//linearLayout.setOnLongClickListener(new OnFloatingMenuItemLongClick(app));
 						fab.setOnClickListener(new OnFloatingMenuItemClick(app));
 						fab.setOnLongClickListener(new OnFloatingMenuItemLongClick(app));
 					} catch (NameNotFoundException e) {

@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 public class NowCardLayout extends LinearLayout implements OnGlobalLayoutListener {
 
 	public NowCardLayout(Context context, AttributeSet attrs) {
-		super(context, attrs);
+		super(context, attrs, R.style.nowCardStyle);
 		initLayoutObserver();
 
 	}
@@ -27,11 +27,10 @@ public class NowCardLayout extends LinearLayout implements OnGlobalLayoutListene
 		getViewTreeObserver().addOnGlobalLayoutListener(this);
  }
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void onGlobalLayout() {
-		getViewTreeObserver().removeGlobalOnLayoutListener(this);
-		final int heightPx =getContext().getResources().getDisplayMetrics().heightPixels;
+		getViewTreeObserver().removeOnGlobalLayoutListener(this);
+		final int heightPx = getContext().getResources().getDisplayMetrics().heightPixels;
 		boolean inversed = false;
 		final int childCount = getChildCount();
 

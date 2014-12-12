@@ -44,5 +44,8 @@
 
     <dimen name="sub_action_button_size">36dp</dimen>
     <dimen name="sub_action_button_content_margin">6dp</dimen>
+    
+    <dimen name="home_card_radius">5dp</dimen>
+    <dimen name="home_card_margin_bottom">15dp</dimen>
 
 </resources>
