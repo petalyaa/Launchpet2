@@ -4,16 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.pet.launchpet2.adapter.AppsGridAdapter;
+import org.pet.launchpet2.animation.ZoomOutViewPagerTransformer;
 import org.pet.launchpet2.listener.Callback;
 import org.pet.launchpet2.listener.OnAppsClickListener;
 import org.pet.launchpet2.listener.OnAppsLongClickListener;
 import org.pet.launchpet2.model.LauncherApplication;
 import org.pet.launchpet2.util.ApplicationUtil;
+import org.pet.launchpet2.util.CommonUtil;
 import org.pet.launchpet2.util.ConfigurationUtil;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -29,6 +35,7 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class AppDrawerActivity extends FragmentActivity {
 
@@ -40,6 +47,8 @@ public class AppDrawerActivity extends FragmentActivity {
 	
 	private int toolbarColor = Color.BLACK;
 
+	private BroadcastReceiver mHomeKeyReceiver;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -47,22 +56,42 @@ public class AppDrawerActivity extends FragmentActivity {
 		
 		Bundle bundle = getIntent().getExtras();
 		toolbarColor = bundle.getInt("toolbarColor");
+		
+		mHomeKeyReceiver = new HomeKeyBroadcastReceiver();
+		IntentFilter filter = new IntentFilter(Intent.CATEGORY_HOME);
+		registerReceiver(mHomeKeyReceiver, filter);
 
 		mAppsViewPager = (ViewPager) findViewById(R.id.apps_view_pager);
 		mIndicatorHolder = (LinearLayout) findViewById(R.id.apps_view_pager_indicator);
 		
-		List<LauncherApplication> launcherAppsList = ApplicationUtil.getLauncherApplication(AppDrawerActivity.this);
-		if(launcherAppsList != null && launcherAppsList.size() > 0) {
-			mAppsViewPager.setPageMargin(100);
-			mAppsPagerAdapter = new AppsDrawerPagerAdapter(getSupportFragmentManager(), launcherAppsList);
-			mAppsViewPager.setAdapter(mAppsPagerAdapter);
-			updateDrawerPagingIndicator(0);
-			mAppsViewPager.setOnPageChangeListener(new OnAppDrawerPageChangeListener());
-		} else {
-			finish();
-		}
+//		List<LauncherApplication> launcherAppsList = CommonUtil.deserializeLauncherApps();
+//		if(launcherAppsList != null && launcherAppsList.size() > 0) {
+//			populateDrawerPage(launcherAppsList);
+//		}
+		new FetchApplication().execute("");
 	}
 	
+	private void populateDrawerPage(List<LauncherApplication> launcherAppsList) {
+		mAppsViewPager.setPageMargin(100);
+		mAppsPagerAdapter = new AppsDrawerPagerAdapter(getSupportFragmentManager(), launcherAppsList);
+		mAppsViewPager.setAdapter(mAppsPagerAdapter);
+		updateDrawerPagingIndicator(0);
+		mAppsViewPager.setOnPageChangeListener(new OnAppDrawerPageChangeListener());
+		mAppsViewPager.setPageTransformer(true, new ZoomOutViewPagerTransformer());
+	}
+	
+	private void closeDrawer() {
+		finish();
+		AppDrawerActivity.this.overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
+	}
+	
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		finish();
+		AppDrawerActivity.this.overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
+	}
+
 	private void updateDrawerPagingIndicator(int page) {
 		int count = mAppsPagerAdapter.getCount();
 		mIndicatorHolder.removeAllViews();
@@ -113,6 +142,26 @@ public class AppDrawerActivity extends FragmentActivity {
 		Intent i = getIntent();
 		finish();
 		startActivity(i);
+	}
+	
+	private class FetchApplication extends AsyncTask<String, Void, List<LauncherApplication>> {
+
+		@Override
+		protected List<LauncherApplication> doInBackground(String... params) {
+			return ApplicationUtil.getLauncherApplication(AppDrawerActivity.this);
+		}
+
+		@Override
+		protected void onPostExecute(List<LauncherApplication> result) {
+			if(result != null && result.size() > 0) {
+				populateDrawerPage(result);
+				//CommonUtil.serializeApplicationobjectList(result);
+			} else {
+				closeDrawer();
+			}
+			
+		}
+		
 	}
 
 	private class AppsDrawerPagerAdapter extends FragmentStatePagerAdapter {
@@ -197,6 +246,16 @@ public class AppDrawerActivity extends FragmentActivity {
 			updateDrawerPagingIndicator(page);
 		}
 		
+	}
+	
+	private class HomeKeyBroadcastReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context arg0, Intent intent) {
+			String action = intent.getAction();
+			Log.v("Launchpet2", "Action : " + action);
+		}
+ 		
 	}
 
 }

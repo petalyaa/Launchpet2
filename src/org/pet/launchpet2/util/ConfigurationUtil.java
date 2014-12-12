@@ -44,6 +44,8 @@ public class ConfigurationUtil {
 	
 	public static final String FILENAME_NEWS_CACHE = "news";
 	
+	public static final String FILENAME_APPS_CACHE = "apps";
+	
 	public static final String SUBDIRECTORY_CACHE = "cache";
 	
 	public static final String SUBDIRECTORY_MEDIA = "media";
@@ -53,6 +55,8 @@ public class ConfigurationUtil {
 	public static final String SUBDIRECTORY_FAVICON = "favicon";
 	
 	public static final String SUBDIRECTORY_NEWS = "news";
+	
+	public static final String SUBDIRECTORY_APPS = "apps";
 	
 	public static final int DIMENSION_X_PROFILE_IMAGE = 200;
 	

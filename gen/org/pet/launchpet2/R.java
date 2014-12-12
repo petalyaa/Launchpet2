@@ -1462,6 +1462,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
     public static final class integer {
         public static final int anim_slide_duration=0x7f0b0003;
         public static final int config_slide_time=0x7f0b0002;
+        public static final int drawer_zoom_duration=0x7f0b0004;
         public static final int spb_default_interpolator=0x7f0b0001;
         public static final int spb_default_sections_count=0x7f0b0000;
     }
@@ -2092,17 +2093,26 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int CardView=0x7f080000;
         public static final int CardView_Dark=0x7f080002;
         public static final int CardView_Light=0x7f080001;
-        public static final int SmoothProgressBar=0x7f08000d;
-        public static final int Theme_SmoothProgressBarDefaults=0x7f08000c;
-        public static final int Theme_Transparent=0x7f080009;
-        public static final int button_text=0x7f08000a;
+        public static final int SmoothProgressBar=0x7f08000e;
+        /**  <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item> 
+         */
+        public static final int Theme_DrawerView=0x7f08000a;
+        /**  <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item> 
+         */
+        public static final int Theme_FolderView=0x7f080009;
+        public static final int Theme_SmoothProgressBarDefaults=0x7f08000d;
+        public static final int button_text=0x7f08000b;
         public static final int com_facebook_loginview_default_style=0x7f080003;
         public static final int com_facebook_loginview_silver_style=0x7f080004;
-        public static final int floating_menu_button_item=0x7f080010;
-        public static final int floating_menu_layout_item=0x7f08000e;
-        public static final int floating_menu_text_item=0x7f08000f;
+        public static final int floating_menu_button_item=0x7f080011;
+        public static final int floating_menu_layout_item=0x7f08000f;
+        public static final int floating_menu_text_item=0x7f080010;
         public static final int home_card=0x7f080008;
-        public static final int nowCardStyle=0x7f08000b;
+        public static final int nowCardStyle=0x7f08000c;
         public static final int tooltip_bubble_text=0x7f080005;
     }
     public static final class xml {

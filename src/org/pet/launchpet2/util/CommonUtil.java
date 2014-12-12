@@ -10,10 +10,10 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.pet.launchpet2.model.HomeNewsItem;
+import org.pet.launchpet2.model.LauncherApplication;
 
 import android.os.Environment;
 
@@ -52,6 +52,22 @@ public class CommonUtil {
 		}
 		return "";
 	}
+	
+	public static final File getLauncherItemFile() {
+		String root = Environment.getExternalStorageDirectory().toString();
+		File myDir = new File(root + "/" + ConfigurationUtil.APPLICATION_SD_DIRECTORY);
+		if(!myDir.exists())
+			myDir.mkdir();
+		myDir = new File(myDir, ConfigurationUtil.SUBDIRECTORY_CACHE);
+		if(!myDir.exists())
+			myDir.mkdir();
+		myDir = new File(myDir, ConfigurationUtil.SUBDIRECTORY_APPS);
+		if(!myDir.exists())
+			myDir.mkdir();
+		String fileName = getMD5(ConfigurationUtil.FILENAME_APPS_CACHE);
+		myDir = new File(myDir, fileName);
+		return myDir;
+	}
 
 	public static final File getCacheNewsItemFile() {
 		String root = Environment.getExternalStorageDirectory().toString();
@@ -71,13 +87,30 @@ public class CommonUtil {
 
 	@SuppressWarnings("unchecked")
 	public static final List<HomeNewsItem> deserializeHomeNewsObject() {
-		List<HomeNewsItem> list= null;
+		return (List<HomeNewsItem>) deserializeList(getCacheNewsItemFile());
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static final List<LauncherApplication> deserializeLauncherApps() {
+		return (List<LauncherApplication>) deserializeList(getLauncherItemFile());
+	}
+	
+	public static final void serializeApplicationobjectList(List<LauncherApplication> appList) {
+		serializeList(appList, getLauncherItemFile());
+	}
+
+	public static final void serializeHomeNewsObjectList(List<HomeNewsItem> homeNewsItemList) {
+		serializeList(homeNewsItemList, getCacheNewsItemFile());
+	}
+	
+	public static final List<?> deserializeList(File file) {
+		List<?> list= null;
 		FileInputStream fis = null;
 		ObjectInputStream ois = null;
 		try {
-			fis = new FileInputStream(getCacheNewsItemFile());
+			fis = new FileInputStream(file);
 			ois = new ObjectInputStream(fis);
-			list = (ArrayList<HomeNewsItem>) ois.readObject();
+			list = (List<?>) ois.readObject();
 		} catch(IOException e){
 			e.printStackTrace();
 		} catch(ClassNotFoundException e){
@@ -98,14 +131,14 @@ public class CommonUtil {
 		}
 		return list;
 	}
-
-	public static final void serializeHomeNewsObjectList(List<HomeNewsItem> homeNewsItemList) {
+	
+	public static final void serializeList(List<?> list, File file) {
 		FileOutputStream fos = null;
 		ObjectOutputStream oos = null;
 		try{
-			fos= new FileOutputStream(getCacheNewsItemFile());
+			fos= new FileOutputStream(file);
 			oos= new ObjectOutputStream(fos);
-			oos.writeObject(homeNewsItemList);
+			oos.writeObject(list);
 		}catch(IOException ioe){
 			ioe.printStackTrace();
 		} finally {
