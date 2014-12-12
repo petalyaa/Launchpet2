@@ -1272,9 +1272,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		if(card != null) {
 			card.setOnClickListener(new OnCardClickListener(item));
 			card.setOnTouchListener(new OnCardTouchListener(card));
-			View spacerView = inflater.inflate(R.layout.spacer, null);
 			nowCardLayout.addView(card);
-			nowCardLayout.addView(spacerView);
 		}
 	}
 
