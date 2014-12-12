@@ -57,6 +57,8 @@ public class PersonalizeSettingActivity extends PreferenceActivity {
 	
 	private CheckBoxPreference mUseNativeDrawer;
 	
+	private ListPreference mDrawerAnimation;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -118,6 +120,7 @@ public class PersonalizeSettingActivity extends PreferenceActivity {
 			mDisplayNamePref = (EditTextPreference) getPreferenceManager().findPreference("personalize_general_display_name");
 			mQuickAccessHackCheckbox = (CheckBoxPreference) getPreferenceManager().findPreference("personalize_advanced_quick_access_hack");
 			mUseNativeDrawer = (CheckBoxPreference) getPreferenceManager().findPreference("personalize_advanced_quick_access_native_drawer");
+			mDrawerAnimation = (ListPreference) getPreferenceManager().findPreference("personalize_advanced_quick_access_native_drawer_animation");
 			
 			boolean isDateDisplay = mDisplayDateCheckbox.isChecked();
 			boolean isQuickAccessEnabled = mQuickAccessHackCheckbox.isChecked();
@@ -125,10 +128,7 @@ public class PersonalizeSettingActivity extends PreferenceActivity {
 				mDateFormatPreference.setEnabled(false);
 			else
 				mDateFormatPreference.setEnabled(true);
-			if(isQuickAccessEnabled)
-				mUseNativeDrawer.setEnabled(true);
-			else
-				mUseNativeDrawer.setEnabled(false);
+			toggleQuickAccess(isQuickAccessEnabled);
 			mDisplayDateCheckbox.setOnPreferenceChangeListener(new OnDisplayDateCheckboxChange());
 			mOverrideThemeColorCheckbox.setOnPreferenceChangeListener(new OnOverrideThemeColorChange());
 			mProfileImagePref.setOnPreferenceClickListener(new OnProfileImagePreferenceClick());
@@ -139,6 +139,15 @@ public class PersonalizeSettingActivity extends PreferenceActivity {
 			mUseNativeDrawer.setOnPreferenceChangeListener(new OnUseNativeDrawerPreferenceChange());
 		}
 
+	}
+	
+	private void toggleQuickAccess(boolean isEnable) {
+		mUseNativeDrawer.setEnabled(isEnable);
+		toggleNativeDrawer(mUseNativeDrawer.isChecked() && isEnable);
+	}
+	
+	private void toggleNativeDrawer(boolean isEnable) {
+		mDrawerAnimation.setEnabled(isEnable);
 	}
 	
 	private class OnDisplayNamePrefChange implements OnPreferenceChangeListener {
@@ -211,19 +220,17 @@ public class PersonalizeSettingActivity extends PreferenceActivity {
 
 		@Override
 		public boolean onPreferenceChange(Preference arg0, Object newValue) {
+			final boolean isChecked = Boolean.valueOf(newValue.toString());
 			if(ConfigurationUtil.isRequireRestart(getApplicationContext())) {
+				toggleQuickAccess(isChecked);
 				return true;
 			} else {
-				final boolean isChecked = Boolean.valueOf(newValue.toString());
 				DialogUtil.createConfirmDialog(PersonalizeSettingActivity.this, getApplicationContext().getString(R.string.confirm), getApplicationContext().getString(R.string.confirm_preference_restart), new DialogInterface.OnClickListener() {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						mQuickAccessHackCheckbox.setChecked(isChecked);
-						if(isChecked)
-							mUseNativeDrawer.setEnabled(true);
-						else
-							mUseNativeDrawer.setEnabled(false);
+						toggleQuickAccess(isChecked);
 						ConfigurationUtil.setRequireRestart(getApplicationContext());
 					}
 				}).show();
@@ -253,15 +260,17 @@ public class PersonalizeSettingActivity extends PreferenceActivity {
 
 		@Override
 		public boolean onPreferenceChange(Preference preference, Object newValue) {
+			final boolean isChecked = Boolean.valueOf(newValue.toString());
 			if(ConfigurationUtil.isRequireRestart(getApplicationContext())) {
+				toggleNativeDrawer(isChecked);
 				return true;
 			} else {
-				final boolean isChecked = Boolean.valueOf(newValue.toString());
 				DialogUtil.createConfirmDialog(PersonalizeSettingActivity.this, getApplicationContext().getString(R.string.confirm), getApplicationContext().getString(R.string.confirm_preference_restart), new DialogInterface.OnClickListener() {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						mUseNativeDrawer.setChecked(isChecked);
+						toggleNativeDrawer(isChecked);
 						ConfigurationUtil.setRequireRestart(getApplicationContext());
 					}
 				}).show();

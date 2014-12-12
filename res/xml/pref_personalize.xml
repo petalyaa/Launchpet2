@@ -114,6 +114,15 @@
             android:summaryOff="@string/personalize_advanced_quick_access_drawer_off_sum"
             android:title="@string/personalize_advanced_quick_access_drawer_title" />
         
+        <ListPreference
+            android:defaultValue="-1"
+            android:entries="@array/pref_drawer_animation"
+            android:entryValues="@array/pref_drawer_animation_value"
+            android:key="personalize_advanced_quick_access_native_drawer_animation"
+            android:negativeButtonText="@string/button_close"
+            android:positiveButtonText="@string/button_ok"
+            android:title="@string/drawer_animation" />
+        
 	</PreferenceCategory>
 
 </PreferenceScreen>
