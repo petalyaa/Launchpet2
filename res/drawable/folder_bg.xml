@@ -1,0 +1,6 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle" >
+    <solid android:color="@color/apps_folder_background"></solid>
+    <stroke android:width="@dimen/apps_folder_border_width" android:color="@color/apps_folder_border" ></stroke>
+	<padding android:left="@dimen/apps_folder_padding" android:top="@dimen/apps_folder_padding" android:right="@dimen/apps_folder_padding" android:bottom="@dimen/apps_folder_padding" />
+    <corners android:radius="@dimen/apps_folder_corner_radius" />
+</shape>
