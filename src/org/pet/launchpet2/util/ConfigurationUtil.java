@@ -86,9 +86,17 @@ public class ConfigurationUtil {
 	
 	public static final String SHARED_PREFERENCE_GENERAL_SETTINGS = "general_settings";
 	
+	public static final String SHARED_PREFERENCE_ADVANCED_SETTINGS = "advanced_settings";
+	
 	public static final String SHARED_PREFERENCE_FEED_SETTINGS = "feed_settings";
 	
+	public static final String SHARED_PREFERENCE_FEED_SOURCE = "feed_source";
+	
+	public static final String SHARED_PREFERENCE_FEED_UPDATE = "feed_update";
+	
 	public static final String SHARED_PREFERENCE_KEY_REQUIRE_RELOAD = "require_reload";
+	
+	public static final String SHARED_PREFERENCE_KEY_REQUIRE_RESTART = "require_restart";
 	
 	public static final String SHARED_PREFERENCE_HIDDEN_APPS_SETTINGS = "hidden_apps_settings";
 	
@@ -106,9 +114,28 @@ public class ConfigurationUtil {
 		RSS_URL_TO_LOAD.add("http://feeds.feedburner.com/xda-developers/ShsH?format=xml");
 	}
 	
-	public static final boolean isNeedReload(Context context) {
+	public static final boolean isRequireReload(Context context) {
 		SharedPreferences pref = context.getSharedPreferences(SHARED_PREFERENCE_GENERAL_SETTINGS, Context.MODE_PRIVATE);
 		return pref.getBoolean(SHARED_PREFERENCE_KEY_REQUIRE_RELOAD, false);
+	}
+	
+	public static final boolean isRequireRestart(Context context) {
+		SharedPreferences pref = context.getSharedPreferences(SHARED_PREFERENCE_ADVANCED_SETTINGS, Context.MODE_PRIVATE);
+		return pref.getBoolean(SHARED_PREFERENCE_KEY_REQUIRE_RESTART, false);
+	}
+	
+	public static final void setRequireRestart(Context context) {
+		SharedPreferences pref = context.getSharedPreferences(SHARED_PREFERENCE_ADVANCED_SETTINGS, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = pref.edit();
+		editor.putBoolean(SHARED_PREFERENCE_KEY_REQUIRE_RESTART, true);
+		editor.commit();
+	}
+	
+	public static final void unsetRequireRestart(Context context) {
+		SharedPreferences pref = context.getSharedPreferences(SHARED_PREFERENCE_ADVANCED_SETTINGS, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = pref.edit();
+		editor.putBoolean(SHARED_PREFERENCE_KEY_REQUIRE_RESTART, false);
+		editor.commit();
 	}
 	
 	public static final void setRequireReload(Context context) {
@@ -125,7 +152,7 @@ public class ConfigurationUtil {
 		editor.commit();
 	}
 	
-	public static final boolean isNeedFeedReload(Context context) {
+	public static final boolean isRequireFeedReload(Context context) {
 		SharedPreferences pref = context.getSharedPreferences(SHARED_PREFERENCE_FEED_SETTINGS, Context.MODE_PRIVATE);
 		return pref.getBoolean(SHARED_PREFERENCE_KEY_REQUIRE_RELOAD, false);
 	}

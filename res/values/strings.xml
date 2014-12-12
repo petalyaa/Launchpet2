@@ -63,12 +63,14 @@
     <string name="personalize_advanced_quick_access_drawer_title">Use native app drawer</string>
     <string name="personalize_advanced_quick_access_drawer_on_sum">Use native application drawer</string>
     <string name="personalize_advanced_quick_access_drawer_off_sum">Use right fragment menu drawer</string>
+    <string name="application_restarting">Launchpet2 restarting…</string>
     <string name="define_FloatingActionButton"></string>
     <string name="delete">Delete</string>
     <string name="rename">Rename</string>
     <string name="rename_to">Rename to : </string>
     <string name="confirm">Confirmation</string>
     <string name="confirm_delete_group">Are you sure to delete this group?</string>
+    <string name="confirm_preference_restart">Launchpet2 will be restart upon changing this preference. Do you want to proceed?</string>
     <!-- Author section -->
     <string name="library_FloatingActionButton_author">Oleksandr Melnykov</string>
     <string name="library_FloatingActionButton_authorWebsite">https://github.com/makovkastar/FloatingActionButton</string>

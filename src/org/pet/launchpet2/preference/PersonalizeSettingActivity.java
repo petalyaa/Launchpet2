@@ -4,9 +4,11 @@ import java.io.File;
 
 import org.pet.launchpet2.R;
 import org.pet.launchpet2.util.ConfigurationUtil;
+import org.pet.launchpet2.util.DialogUtil;
 
 import com.android.camera.CropImageIntentBuilder;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -52,6 +54,8 @@ public class PersonalizeSettingActivity extends PreferenceActivity {
 	private Preference mBannerImagePref;
 	
 	private EditTextPreference mDisplayNamePref;
+	
+	private CheckBoxPreference mUseNativeDrawer;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -113,12 +117,18 @@ public class PersonalizeSettingActivity extends PreferenceActivity {
 			mThemePreference = (ListPreference) getPreferenceManager().findPreference("personalize_general_theme");
 			mDisplayNamePref = (EditTextPreference) getPreferenceManager().findPreference("personalize_general_display_name");
 			mQuickAccessHackCheckbox = (CheckBoxPreference) getPreferenceManager().findPreference("personalize_advanced_quick_access_hack");
+			mUseNativeDrawer = (CheckBoxPreference) getPreferenceManager().findPreference("personalize_advanced_quick_access_native_drawer");
 			
 			boolean isDateDisplay = mDisplayDateCheckbox.isChecked();
+			boolean isQuickAccessEnabled = mQuickAccessHackCheckbox.isChecked();
 			if(!isDateDisplay)
 				mDateFormatPreference.setEnabled(false);
 			else
 				mDateFormatPreference.setEnabled(true);
+			if(isQuickAccessEnabled)
+				mUseNativeDrawer.setEnabled(true);
+			else
+				mUseNativeDrawer.setEnabled(false);
 			mDisplayDateCheckbox.setOnPreferenceChangeListener(new OnDisplayDateCheckboxChange());
 			mOverrideThemeColorCheckbox.setOnPreferenceChangeListener(new OnOverrideThemeColorChange());
 			mProfileImagePref.setOnPreferenceClickListener(new OnProfileImagePreferenceClick());
@@ -126,6 +136,7 @@ public class PersonalizeSettingActivity extends PreferenceActivity {
 			mThemePreference.setOnPreferenceChangeListener(new OnThemePreferenceChange());
 			mDisplayNamePref.setOnPreferenceChangeListener(new OnDisplayNamePrefChange());
 			mQuickAccessHackCheckbox.setOnPreferenceChangeListener(new OnQuickAccessPreferenceChange());
+			mUseNativeDrawer.setOnPreferenceChangeListener(new OnUseNativeDrawerPreferenceChange());
 		}
 
 	}
@@ -200,8 +211,24 @@ public class PersonalizeSettingActivity extends PreferenceActivity {
 
 		@Override
 		public boolean onPreferenceChange(Preference arg0, Object newValue) {
-			ConfigurationUtil.setRequireReload(getApplicationContext());
-			return true;
+			if(ConfigurationUtil.isRequireRestart(getApplicationContext())) {
+				return true;
+			} else {
+				final boolean isChecked = Boolean.valueOf(newValue.toString());
+				DialogUtil.createConfirmDialog(PersonalizeSettingActivity.this, getApplicationContext().getString(R.string.confirm), getApplicationContext().getString(R.string.confirm_preference_restart), new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						mQuickAccessHackCheckbox.setChecked(isChecked);
+						if(isChecked)
+							mUseNativeDrawer.setEnabled(true);
+						else
+							mUseNativeDrawer.setEnabled(false);
+						ConfigurationUtil.setRequireRestart(getApplicationContext());
+					}
+				}).show();
+				return false;
+			}
 		}
 		
 	}
@@ -220,6 +247,28 @@ public class PersonalizeSettingActivity extends PreferenceActivity {
 			return true;
 		}
 
+	}
+	
+	private class OnUseNativeDrawerPreferenceChange implements OnPreferenceChangeListener {
+
+		@Override
+		public boolean onPreferenceChange(Preference preference, Object newValue) {
+			if(ConfigurationUtil.isRequireRestart(getApplicationContext())) {
+				return true;
+			} else {
+				final boolean isChecked = Boolean.valueOf(newValue.toString());
+				DialogUtil.createConfirmDialog(PersonalizeSettingActivity.this, getApplicationContext().getString(R.string.confirm), getApplicationContext().getString(R.string.confirm_preference_restart), new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						mUseNativeDrawer.setChecked(isChecked);
+						ConfigurationUtil.setRequireRestart(getApplicationContext());
+					}
+				}).show();
+				return false;
+			}
+		}
+		
 	}
 	
 }

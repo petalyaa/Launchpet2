@@ -344,18 +344,29 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	}
 	
 	private void populateSlidingMenu() {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		boolean isQuickHackEnable = prefs.getBoolean("personalize_advanced_quick_access_hack", false);
+		boolean isUseNativeDrawer = prefs.getBoolean("personalize_advanced_quick_access_native_drawer", false);
+		
 		slidingMenu = new SlidingMenu(this);
 		
-		slidingMenu.setMode(SlidingMenu.LEFT_RIGHT);
-		slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+		if(isQuickHackEnable && isUseNativeDrawer) {
+			slidingMenu.setMode(SlidingMenu.LEFT);
+			slidingMenu.setShadowDrawable(R.drawable.slide_drawer_shadow_left);
+			slidingMenu.setMenu(settingsView);
+		} else {
+			slidingMenu.setMode(SlidingMenu.LEFT_RIGHT);
+			slidingMenu.setShadowDrawable(R.drawable.slide_drawer_shadow_left);
+			slidingMenu.setSecondaryShadowDrawable(R.drawable.slide_drawer_shadow_right);
+			slidingMenu.setMenu(settingsView);
+			slidingMenu.setSecondaryMenu(applicationView);
+		}
+		
+		slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
 		slidingMenu.setShadowWidth(20);
-		slidingMenu.setShadowDrawable(R.drawable.slide_drawer_shadow_left);
-		slidingMenu.setSecondaryShadowDrawable(R.drawable.slide_drawer_shadow_right);
 		slidingMenu.setBehindOffsetRes(R.dimen.behind_menu_offset);
-		slidingMenu.setFadeDegree(0.35f);
+		slidingMenu.setFadeDegree(1f);
 		slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-		slidingMenu.setMenu(settingsView);
-		slidingMenu.setSecondaryMenu(applicationView);
 		slidingMenu.setOnCloseListener(new OnSlidingCloseListener());
 		slidingMenu.setOnOpenListener(new OnSlidingOpenListener());
 		slidingMenu.setOnClosedListener(new OnSlidingClosedListener());
@@ -369,7 +380,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	}
 	
 	protected void restartActivity() {
-		Toast.makeText(getApplicationContext(), getString(R.string.application_restarting), Toast.LENGTH_SHORT).show();;
+		Toast.makeText(getApplicationContext(), getString(R.string.application_restarting), Toast.LENGTH_SHORT).show();
 		Intent intent = getIntent();
 		finish();
 		startActivity(intent);
@@ -713,12 +724,19 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		
 		// For quick access hack
 		final boolean isQuickAccessHackEnable = prefs.getBoolean("personalize_advanced_quick_access_hack", false);
+		final boolean isUseNativeDrawerEnable = prefs.getBoolean("personalize_advanced_quick_access_native_drawer", false);
 		if(mFloatingFavButton != null) {
 			mFloatingFavButton.setQuickHackEnable(isQuickAccessHackEnable, new Callback() {
 				
 				@Override
 				public void performCallback() {
-					slidingMenu.showSecondaryMenu(true);
+					if(isUseNativeDrawerEnable && isQuickAccessHackEnable) {
+						Intent i = new Intent(getApplicationContext(), AppDrawerActivity.class);
+						i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						startActivity(i);
+					} else {
+						slidingMenu.showSecondaryMenu(true);
+					}
 				}
 			});
 		}

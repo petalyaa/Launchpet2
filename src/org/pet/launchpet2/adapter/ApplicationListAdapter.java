@@ -151,12 +151,12 @@ public class ApplicationListAdapter extends BaseAdapter {
 				holder.folder_view_layout.addView(holder.folder_view);
 			}
 			holder.name_view.setText(app.getName());
+			if(app.isStartGroup()) {
+				holder.icon_title_view.setText(app.getName().substring(0, 1).toUpperCase(Locale.getDefault()));
+				holder.icon_title_view.setVisibility(View.VISIBLE);
+			} else
+				holder.icon_title_view.setVisibility(View.INVISIBLE);
 		}
-		if(app.isStartGroup()) {
-			holder.icon_title_view.setText(app.getName().substring(0, 1).toUpperCase(Locale.getDefault()));
-			holder.icon_title_view.setVisibility(View.VISIBLE);
-		} else
-			holder.icon_title_view.setVisibility(View.INVISIBLE);
 		return gridIconView;
 	}
 	
