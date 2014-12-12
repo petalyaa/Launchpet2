@@ -10,7 +10,6 @@ import org.pet.launchpet2.listener.OnAppsClickListener;
 import org.pet.launchpet2.listener.OnAppsLongClickListener;
 import org.pet.launchpet2.model.LauncherApplication;
 import org.pet.launchpet2.util.ApplicationUtil;
-import org.pet.launchpet2.util.CommonUtil;
 import org.pet.launchpet2.util.ConfigurationUtil;
 
 import android.annotation.SuppressLint;
@@ -35,7 +34,6 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 public class AppDrawerActivity extends FragmentActivity {
 

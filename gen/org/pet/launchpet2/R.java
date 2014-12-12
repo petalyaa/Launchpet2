@@ -2094,15 +2094,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int CardView_Dark=0x7f080002;
         public static final int CardView_Light=0x7f080001;
         public static final int SmoothProgressBar=0x7f08000e;
-        /**  <item name="android:backgroundDimEnabled">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowIsTranslucent">true</item> 
-         */
         public static final int Theme_DrawerView=0x7f08000a;
-        /**  <item name="android:backgroundDimEnabled">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowIsTranslucent">true</item> 
-         */
         public static final int Theme_FolderView=0x7f080009;
         public static final int Theme_SmoothProgressBarDefaults=0x7f08000d;
         public static final int button_text=0x7f08000b;
