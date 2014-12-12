@@ -272,8 +272,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 		mAnimSecondaryProfileShow = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_left_to_right);
 		mAnimSecondaryProfileHide = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_right_to_left);
-		//mAnimRefreshBtnShow = FadeAnimation.getFadeInAnimation(this);
-		//mAnimRefreshBtnHide = FadeAnimation.getFadeOutAnimation(this);
 
 		mSecondaryProfileImageHolder.setVisibility(View.INVISIBLE);
 		inflater = LayoutInflater.from(getApplicationContext());
@@ -289,21 +287,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		mMainContent.removeAllViews();
 		mMainContent.addView(homeView);
 		mAppListView = (ListView) applicationView.findViewById(R.id.application_list_view);
-		slidingMenu = new SlidingMenu(this);
-		slidingMenu.setMode(SlidingMenu.LEFT_RIGHT);
-		slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-		slidingMenu.setShadowWidth(20);
-		slidingMenu.setShadowDrawable(R.drawable.slide_drawer_shadow_left);
-		slidingMenu.setSecondaryShadowDrawable(R.drawable.slide_drawer_shadow_right);
-		slidingMenu.setBehindOffsetRes(R.dimen.behind_menu_offset);
-		slidingMenu.setFadeDegree(0.35f);
-		slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-		slidingMenu.setMenu(settingsView);
-		slidingMenu.setSecondaryMenu(applicationView);
-		slidingMenu.setOnCloseListener(new OnSlidingCloseListener());
-		slidingMenu.setOnOpenListener(new OnSlidingOpenListener());
-		slidingMenu.setOnClosedListener(new OnSlidingClosedListener());
-		slidingMenu.setOnOpenedListener(new OnSlidingOpenedListener());
+		populateSlidingMenu();
 		
 		mObservableScrollView.getViewTreeObserver().addOnGlobalLayoutListener(
 				new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -343,8 +327,6 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 		mAnimSecondaryProfileHide.setAnimationListener(new HideViewAnimationListener(mSecondaryProfileImageHolder));
 		mAnimSecondaryProfileShow.setAnimationListener(new ShowViewAnimationListener(mSecondaryProfileImageHolder));
-		//mAnimRefreshBtnHide.setAnimationListener(new HideViewAnimationListener(mRefreshButton));
-		//mAnimRefreshBtnShow.setAnimationListener(new ShowViewAnimationListener(mRefreshButton));
 
 		initUserPreference(false);
 
@@ -359,6 +341,25 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 				}
 			}, 1000, ConfigurationUtil.WEATHER_UPDATE_FREQUENCY);
 		}
+	}
+	
+	private void populateSlidingMenu() {
+		slidingMenu = new SlidingMenu(this);
+		
+		slidingMenu.setMode(SlidingMenu.LEFT_RIGHT);
+		slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+		slidingMenu.setShadowWidth(20);
+		slidingMenu.setShadowDrawable(R.drawable.slide_drawer_shadow_left);
+		slidingMenu.setSecondaryShadowDrawable(R.drawable.slide_drawer_shadow_right);
+		slidingMenu.setBehindOffsetRes(R.dimen.behind_menu_offset);
+		slidingMenu.setFadeDegree(0.35f);
+		slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+		slidingMenu.setMenu(settingsView);
+		slidingMenu.setSecondaryMenu(applicationView);
+		slidingMenu.setOnCloseListener(new OnSlidingCloseListener());
+		slidingMenu.setOnOpenListener(new OnSlidingOpenListener());
+		slidingMenu.setOnClosedListener(new OnSlidingClosedListener());
+		slidingMenu.setOnOpenedListener(new OnSlidingOpenedListener());
 	}
 
 	@Override
@@ -495,18 +496,18 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 	private String getExistingSourceFromSharedPreference() {
 		String sourceJson = null;
-		SharedPreferences pref = this.getSharedPreferences("feed_settings", Context.MODE_PRIVATE);
-		sourceJson = pref.getString("feed_source", "");
+		SharedPreferences pref = this.getSharedPreferences(ConfigurationUtil.SHARED_PREFERENCE_FEED_SETTINGS, Context.MODE_PRIVATE);
+		sourceJson = pref.getString(ConfigurationUtil.SHARED_PREFERENCE_FEED_SOURCE, "");
 		SharedPreferences.Editor editor = pref.edit();
-		editor.putString("feed_source", sourceJson);
-		editor.putBoolean("feed_update", false);
+		editor.putString(ConfigurationUtil.SHARED_PREFERENCE_FEED_SOURCE, sourceJson);
+		editor.putBoolean(ConfigurationUtil.SHARED_PREFERENCE_FEED_UPDATE, false);
 		editor.commit();
 		return sourceJson;
 	}
 
 	private boolean isRequireFeedUpdate() {
-		SharedPreferences pref = this.getSharedPreferences("feed_settings", Context.MODE_PRIVATE);
-		return pref.getBoolean("feed_update", true);
+		SharedPreferences pref = this.getSharedPreferences(ConfigurationUtil.SHARED_PREFERENCE_FEED_SETTINGS, Context.MODE_PRIVATE);
+		return pref.getBoolean(ConfigurationUtil.SHARED_PREFERENCE_FEED_UPDATE, true);
 	}
 
 	private List<RSSFeedSource> getExistingFeedSource() {
@@ -658,6 +659,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		@Override
 		public void onClosed() {
 			if(ConfigurationUtil.isRequireRestart(getApplicationContext())) {
+				ConfigurationUtil.unsetRequireRestart(getApplicationContext());
 				restartActivity();
 				return; // When restarting, no need to proceed, because it will be executed when onCreate is call
 			}
