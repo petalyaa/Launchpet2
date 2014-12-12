@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
+    android:paddingTop="@dimen/apps_drawer_list_spacing"
+    android:paddingBottom="@dimen/apps_drawer_list_spacing"
     android:descendantFocusability="blocksDescendants"
     android:background="@drawable/list_item_selector"
     android:layout_height="match_parent" >
     
     <TextView
         android:id="@+id/application_title_icon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/apps_icon_title_size"
+        android:layout_height="@dimen/apps_icon_title_size"
         android:background="@drawable/application_title_background"
         android:gravity="center"
         android:layout_alignParentStart="true"
@@ -24,8 +24,8 @@
     
     <ImageView
         android:id="@+id/application_icon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/apps_icon_size"
+        android:layout_height="@dimen/apps_icon_size"
         android:layout_toEndOf="@+id/application_title_icon"
         android:layout_centerVertical="true"
         android:layout_marginStart="15dp"
@@ -34,8 +34,8 @@
     
     <RelativeLayout 
         android:id="@+id/application_folder_view"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/apps_icon_size"
+        android:layout_height="@dimen/apps_icon_size"
         android:layout_toEndOf="@+id/application_title_icon"
         android:layout_marginStart="15dp"
         android:visibility="invisible"></RelativeLayout>
