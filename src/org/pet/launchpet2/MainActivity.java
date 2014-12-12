@@ -366,6 +366,13 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 		super.onResume();
 		mSimpleFacebook = SimpleFacebook.getInstance(this);
 	}
+	
+	protected void restartActivity() {
+		Toast.makeText(getApplicationContext(), getString(R.string.application_restarting), Toast.LENGTH_SHORT).show();;
+		Intent intent = getIntent();
+		finish();
+		startActivity(intent);
+	}
 
 	@Override
 	protected void onPause() {
@@ -426,6 +433,7 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 	@Override
 	protected void onDestroy() {
+		super.onDestroy();
 		if(isWeatherThreadStarted && timer != null) {
 			timer.cancel();
 		}
@@ -649,11 +657,15 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 
 		@Override
 		public void onClosed() {
-			if(ConfigurationUtil.isNeedReload(getApplicationContext())) {
+			if(ConfigurationUtil.isRequireRestart(getApplicationContext())) {
+				restartActivity();
+				return; // When restarting, no need to proceed, because it will be executed when onCreate is call
+			}
+			if(ConfigurationUtil.isRequireReload(getApplicationContext())) {
 				initUserPreference(false);
 				ConfigurationUtil.unsetRequireReload(getApplicationContext());
 			}
-			if(ConfigurationUtil.isNeedFeedReload(getApplicationContext())) {
+			if(ConfigurationUtil.isRequireFeedReload(getApplicationContext())) {
 				populateHomeCard();
 				ConfigurationUtil.unsetRequireFeedReload(getApplicationContext());
 			}
