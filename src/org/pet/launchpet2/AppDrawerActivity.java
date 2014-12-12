@@ -2,6 +2,7 @@ package org.pet.launchpet2;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -11,7 +12,6 @@ import org.pet.launchpet2.model.GroupApps;
 import org.pet.launchpet2.model.HiddenApplicationItem;
 import org.pet.launchpet2.model.LauncherApplication;
 import org.pet.launchpet2.thread.FetchLocalImageAsync;
-import org.pet.launchpet2.util.BitmapUtil;
 import org.pet.launchpet2.util.ConfigurationUtil;
 import org.pet.launchpet2.util.DialogUtil;
 import org.pet.launchpet2.util.StringUtil;
@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -286,14 +285,60 @@ public class AppDrawerActivity extends FragmentActivity {
 	}
 
 	private void deleteGroup(final LauncherApplication app) {
+		final List<GroupApps> thisItems = getExistingGroupApps();
 		DialogUtil.createConfirmDialog(AppDrawerActivity.this, getString(R.string.confirm), getString(R.string.confirm_delete_group), new DialogInterface.OnClickListener() {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				String appName = app.getName();
-				
+				Iterator<GroupApps> itemIter1 = thisItems.iterator();
+				while(itemIter1.hasNext()) {
+					GroupApps thisItem = itemIter1.next();
+					String name = thisItem.getName();
+					if(name.equals(appName))
+						itemIter1.remove();
+				}
+				writeGroupList(thisItems);
 			}
 		}).show();
+	}
+	
+	private void writeGroupList(List<GroupApps> groupAppsList) {
+		JSONArray jsonArray = new JSONArray();
+		if(groupAppsList != null && groupAppsList.size() > 0) {
+			for(GroupApps group : groupAppsList) {
+				JSONObject jsonObj = new JSONObject();
+				try {
+					jsonObj.put("name", group.getName());
+					JSONArray launcherAppJsonArr = new JSONArray();
+					List<LauncherApplication> launcherAppsList = group.getAppList();
+					if(launcherAppsList != null && launcherAppsList.size() > 0) {
+						for(LauncherApplication app : launcherAppsList) {
+							JSONObject appJsonObj = new JSONObject();
+							appJsonObj.put("name", app.getName());
+							appJsonObj.put("package", app.getPackageName());
+							launcherAppJsonArr.put(appJsonObj);
+						}
+					}
+					jsonObj.put("appList", launcherAppJsonArr);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				jsonArray.put(jsonObj);
+			}
+		}
+		String jsonStr = jsonArray.toString();
+		SharedPreferences prefs = getSharedPreferences(ConfigurationUtil.SHARED_PREFERENCE_APPS_GROUP_SETTINGS, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(ConfigurationUtil.SHARED_PREFERENCE_APPS_GROUP_SETTINGS_LIST_KEY, jsonStr);
+		editor.commit();
+		reloadDrawer();
+	}
+	
+	private void reloadDrawer() {
+		Intent i = getIntent();
+		finish();
+		startActivity(i);
 	}
 
 	private class AppsDrawerPagerAdapter extends FragmentStatePagerAdapter {

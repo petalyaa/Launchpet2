@@ -998,8 +998,6 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int apps_folder_padding=0x7f07002f;
         public static final int apps_icon_folder_subicon_size=0x7f07002b;
         public static final int apps_icon_size=0x7f07002a;
-        /**  This value must be apps_icon_size divide by 2 
-         */
         public static final int apps_icon_title_size=0x7f07002c;
         public static final int bar_length=0x7f070038;
         public static final int bar_pointer_halo_radius=0x7f07003a;

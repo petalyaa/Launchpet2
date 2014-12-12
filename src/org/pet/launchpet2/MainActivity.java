@@ -873,14 +873,54 @@ public class MainActivity extends FragmentActivity implements ObservableScrollVi
 	}
 	
 	private void deleteGroup(final LauncherApplication app) {
+		final List<GroupApps> thisItems = getExistingGroupApps();
 		DialogUtil.createConfirmDialog(MainActivity.this, getString(R.string.confirm), getString(R.string.confirm_delete_group), new DialogInterface.OnClickListener() {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				String appName = app.getName();
-				
+				Iterator<GroupApps> itemIter1 = thisItems.iterator();
+				while(itemIter1.hasNext()) {
+					GroupApps thisItem = itemIter1.next();
+					String name = thisItem.getName();
+					if(name.equals(appName))
+						itemIter1.remove();
+				}
+				writeGroupList(thisItems);
 			}
 		}).show();
+	}
+	
+	private void writeGroupList(List<GroupApps> groupAppsList) {
+		JSONArray jsonArray = new JSONArray();
+		if(groupAppsList != null && groupAppsList.size() > 0) {
+			for(GroupApps group : groupAppsList) {
+				JSONObject jsonObj = new JSONObject();
+				try {
+					jsonObj.put("name", group.getName());
+					JSONArray launcherAppJsonArr = new JSONArray();
+					List<LauncherApplication> launcherAppsList = group.getAppList();
+					if(launcherAppsList != null && launcherAppsList.size() > 0) {
+						for(LauncherApplication app : launcherAppsList) {
+							JSONObject appJsonObj = new JSONObject();
+							appJsonObj.put("name", app.getName());
+							appJsonObj.put("package", app.getPackageName());
+							launcherAppJsonArr.put(appJsonObj);
+						}
+					}
+					jsonObj.put("appList", launcherAppJsonArr);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				jsonArray.put(jsonObj);
+			}
+		}
+		String jsonStr = jsonArray.toString();
+		SharedPreferences prefs = getSharedPreferences(ConfigurationUtil.SHARED_PREFERENCE_APPS_GROUP_SETTINGS, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(ConfigurationUtil.SHARED_PREFERENCE_APPS_GROUP_SETTINGS_LIST_KEY, jsonStr);
+		editor.commit();
+		initUserPreference(true);
 	}
 
 	private class FetchApplicationListTask extends AsyncTask<LauncherApplication, Void, List<LauncherApplication>> {
