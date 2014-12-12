@@ -143,6 +143,10 @@ public class FolderDrawerOpenActivity extends Activity {
 			Intent launchIntent = getPackageManager().getLaunchIntentForPackage(app.getPackageName());
 			launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(launchIntent);
+			Intent i = new Intent();
+			i.putExtra("result", 1);
+			setResult(RESULT_OK, i);
+			finish();
 		}
 		
 	}

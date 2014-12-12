@@ -335,6 +335,21 @@ public class AppDrawerActivity extends FragmentActivity {
 		reloadDrawer();
 	}
 	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+		super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+		if (requestCode == 1) {
+	        if(resultCode == RESULT_OK){
+	            int result = imageReturnedIntent.getIntExtra("result", 0);
+	            if(result == 1) {
+	            	finish();
+	            }
+	        }
+	        if (resultCode == RESULT_CANCELED) {
+	        }
+	    }
+	}
+
 	private void reloadDrawer() {
 		Intent i = getIntent();
 		finish();
@@ -414,12 +429,13 @@ public class AppDrawerActivity extends FragmentActivity {
 			if(app.getType() == LauncherApplication.Type.APPLICATION) {
 				Intent LaunchIntent = getPackageManager().getLaunchIntentForPackage(app.getPackageName());
 				startActivity(LaunchIntent);
+				finish();
 			} else {
 				Intent intentFolder = new Intent(getApplicationContext(), FolderDrawerOpenActivity.class);
-				intentFolder.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				//intentFolder.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				intentFolder.putExtra("group", app);
 				intentFolder.putExtra("toolbarColor", toolbarColor);
-				startActivity(intentFolder);
+				startActivityForResult(intentFolder, 1);
 			}
 		}
 		
