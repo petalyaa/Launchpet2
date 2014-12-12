@@ -4,22 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.pet.launchpet2.adapter.AppsGridAdapter;
-import org.pet.launchpet2.animation.ZoomOutViewPagerTransformer;
 import org.pet.launchpet2.listener.Callback;
 import org.pet.launchpet2.listener.OnAppsClickListener;
 import org.pet.launchpet2.listener.OnAppsLongClickListener;
 import org.pet.launchpet2.model.LauncherApplication;
 import org.pet.launchpet2.util.ApplicationUtil;
 import org.pet.launchpet2.util.ConfigurationUtil;
+import org.pet.launchpet2.util.StringUtil;
 
 import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -27,6 +26,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.support.v4.view.ViewPager.PageTransformer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,9 +44,9 @@ public class AppDrawerActivity extends FragmentActivity {
 	private LinearLayout mIndicatorHolder;
 	
 	private int toolbarColor = Color.BLACK;
-
-	private BroadcastReceiver mHomeKeyReceiver;
 	
+	private String mDrawerAnimationClassStr;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -54,18 +54,15 @@ public class AppDrawerActivity extends FragmentActivity {
 		
 		Bundle bundle = getIntent().getExtras();
 		toolbarColor = bundle.getInt("toolbarColor");
-		
-		mHomeKeyReceiver = new HomeKeyBroadcastReceiver();
-		IntentFilter filter = new IntentFilter(Intent.CATEGORY_HOME);
-		registerReceiver(mHomeKeyReceiver, filter);
 
 		mAppsViewPager = (ViewPager) findViewById(R.id.apps_view_pager);
 		mIndicatorHolder = (LinearLayout) findViewById(R.id.apps_view_pager_indicator);
 		
-//		List<LauncherApplication> launcherAppsList = CommonUtil.deserializeLauncherApps();
-//		if(launcherAppsList != null && launcherAppsList.size() > 0) {
-//			populateDrawerPage(launcherAppsList);
-//		}
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		mDrawerAnimationClassStr = prefs.getString("personalize_advanced_quick_access_native_drawer_animation", null);
+		
+		Log.v("Launchpet2", "Animation to use : " + mDrawerAnimationClassStr);
+		
 		new FetchApplication().execute("");
 	}
 	
@@ -75,7 +72,18 @@ public class AppDrawerActivity extends FragmentActivity {
 		mAppsViewPager.setAdapter(mAppsPagerAdapter);
 		updateDrawerPagingIndicator(0);
 		mAppsViewPager.setOnPageChangeListener(new OnAppDrawerPageChangeListener());
-		mAppsViewPager.setPageTransformer(true, new ZoomOutViewPagerTransformer());
+		if(!StringUtil.isNullEmptyString(mDrawerAnimationClassStr)) {
+			try {
+				Class<?> clazz = Class.forName(mDrawerAnimationClassStr);
+				mAppsViewPager.setPageTransformer(true, (PageTransformer) clazz.newInstance());
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	private void closeDrawer() {
@@ -184,7 +192,6 @@ public class AppDrawerActivity extends FragmentActivity {
 				} catch (Exception e) {
 				}
 			}
-			Log.v("Launchpet2", "position " + position + " has " + appList.size() + " applications");
 			return new AppsSlidePageFragment(appList);
 		}
 
@@ -244,16 +251,6 @@ public class AppDrawerActivity extends FragmentActivity {
 			updateDrawerPagingIndicator(page);
 		}
 		
-	}
-	
-	private class HomeKeyBroadcastReceiver extends BroadcastReceiver {
-
-		@Override
-		public void onReceive(Context arg0, Intent intent) {
-			String action = intent.getAction();
-			Log.v("Launchpet2", "Action : " + action);
-		}
- 		
 	}
 
 }

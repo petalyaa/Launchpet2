@@ -23,53 +23,55 @@ public final class R {
         public static final int zoom_out=0x7f04000b;
     }
     public static final class array {
-        public static final int gplus_colors=0x7f0a0002;
+        public static final int gplus_colors=0x7f0a0004;
+        public static final int pref_drawer_animation=0x7f0a0000;
+        public static final int pref_drawer_animation_value=0x7f0a0001;
         /**  Options in dialog that appears after selecting Picture size setting option 
          */
-        public static final int pref_gallery_size_choices=0x7f0a0016;
+        public static final int pref_gallery_size_choices=0x7f0a0018;
         /**  Option values in dialog that appears after selecting Picture size setting option 
          */
-        public static final int pref_gallery_size_values=0x7f0a0017;
+        public static final int pref_gallery_size_values=0x7f0a0019;
         /**  Options in dialog that appears after selecting Slideshow interval setting option 
          */
-        public static final int pref_gallery_slideshow_interval_choices=0x7f0a001a;
+        public static final int pref_gallery_slideshow_interval_choices=0x7f0a001c;
         /**  Option values in dialog that appears after selecting Slideshow interval setting option 
          */
-        public static final int pref_gallery_slideshow_interval_values=0x7f0a001b;
+        public static final int pref_gallery_slideshow_interval_values=0x7f0a001d;
         /**  Options in dialog that appears after selecting Slideshow transition
      setting option 
          */
-        public static final int pref_gallery_slideshow_transition_choices=0x7f0a001c;
+        public static final int pref_gallery_slideshow_transition_choices=0x7f0a001e;
         /**  Option values in dialog that appears after selecting Slideshow transition setting option 
          */
-        public static final int pref_gallery_slideshow_transition_values=0x7f0a001d;
+        public static final int pref_gallery_slideshow_transition_values=0x7f0a001f;
         /**  Options in dialog that appears after selecting Picture sort setting option 
          */
-        public static final int pref_gallery_sort_choices=0x7f0a0018;
+        public static final int pref_gallery_sort_choices=0x7f0a001a;
         /**  Option values in dialog that appears after selecting Picture sort setting option 
          */
-        public static final int pref_gallery_sort_values=0x7f0a0019;
-        public static final int pref_theme_list_title=0x7f0a0000;
-        public static final int pref_theme_list_value=0x7f0a0001;
-        public static final int theme_amber=0x7f0a0010;
-        public static final int theme_blue=0x7f0a0008;
-        public static final int theme_blue_grey=0x7f0a0015;
-        public static final int theme_brown=0x7f0a0013;
-        public static final int theme_cyan=0x7f0a000a;
-        public static final int theme_deep_orange=0x7f0a0012;
-        public static final int theme_deep_purple=0x7f0a0007;
-        public static final int theme_green=0x7f0a000c;
-        public static final int theme_grey=0x7f0a0014;
-        public static final int theme_indigo=0x7f0a0006;
-        public static final int theme_light_blue=0x7f0a0009;
-        public static final int theme_light_green=0x7f0a000d;
-        public static final int theme_lime=0x7f0a000e;
-        public static final int theme_orange=0x7f0a0011;
-        public static final int theme_pink=0x7f0a0004;
-        public static final int theme_purple=0x7f0a0005;
-        public static final int theme_red=0x7f0a0003;
-        public static final int theme_teal=0x7f0a000b;
-        public static final int theme_yellow=0x7f0a000f;
+        public static final int pref_gallery_sort_values=0x7f0a001b;
+        public static final int pref_theme_list_title=0x7f0a0002;
+        public static final int pref_theme_list_value=0x7f0a0003;
+        public static final int theme_amber=0x7f0a0012;
+        public static final int theme_blue=0x7f0a000a;
+        public static final int theme_blue_grey=0x7f0a0017;
+        public static final int theme_brown=0x7f0a0015;
+        public static final int theme_cyan=0x7f0a000c;
+        public static final int theme_deep_orange=0x7f0a0014;
+        public static final int theme_deep_purple=0x7f0a0009;
+        public static final int theme_green=0x7f0a000e;
+        public static final int theme_grey=0x7f0a0016;
+        public static final int theme_indigo=0x7f0a0008;
+        public static final int theme_light_blue=0x7f0a000b;
+        public static final int theme_light_green=0x7f0a000f;
+        public static final int theme_lime=0x7f0a0010;
+        public static final int theme_orange=0x7f0a0013;
+        public static final int theme_pink=0x7f0a0006;
+        public static final int theme_purple=0x7f0a0007;
+        public static final int theme_red=0x7f0a0005;
+        public static final int theme_teal=0x7f0a000d;
+        public static final int theme_yellow=0x7f0a0011;
     }
     public static final class attr {
         /** <p>Must be one of the following constant values.</p>
@@ -1552,10 +1554,10 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int app_list_icon=0x7f0900a5;
         public static final int app_name=0x7f090096;
         public static final int app_search=0x7f0900a8;
-        public static final int application_add_favorite=0x7f0900f1;
-        public static final int application_details=0x7f0900f2;
+        public static final int application_add_favorite=0x7f0900f2;
+        public static final int application_details=0x7f0900f3;
         public static final int application_restarting=0x7f0900d4;
-        public static final int application_uninstall=0x7f0900f3;
+        public static final int application_uninstall=0x7f0900f4;
         public static final int button_close=0x7f0900b9;
         public static final int button_no=0x7f0900bb;
         public static final int button_ok=0x7f0900b8;
@@ -1668,7 +1670,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int default_value_pref_gallery_sort=0x7f090056;
         public static final int define_FloatingActionButton=0x7f0900d5;
         public static final int delete=0x7f0900d6;
-        public static final int delete_feed_source=0x7f0900ed;
+        public static final int delete_feed_source=0x7f0900ee;
         /**  The messsage shown on progress dialog when deleting images 
          */
         public static final int delete_images_message=0x7f090095;
@@ -1741,17 +1743,20 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         /**  Title of Details dialog  
          */
         public static final int details_panel_title=0x7f090068;
-        public static final int enter_feed_url=0x7f0900eb;
-        public static final int error_already_in_favorite=0x7f0900f4;
-        public static final int error_feed_already_exist=0x7f0900ef;
-        public static final int error_group_name_exist=0x7f090107;
-        public static final int error_invalid_rss_feed_url=0x7f0900ee;
-        public static final int error_item_already_on_bottom=0x7f090104;
-        public static final int error_item_already_on_top=0x7f090103;
-        public static final int error_max_fav_reach=0x7f0900f5;
-        public static final int error_no_favorite_application_define=0x7f0900f6;
-        public static final int facebook_app_id=0x7f090100;
-        public static final int feed_added_success=0x7f0900f0;
+        /**  Custom variables section 
+         */
+        public static final int drawer_animation=0x7f0900e5;
+        public static final int enter_feed_url=0x7f0900ec;
+        public static final int error_already_in_favorite=0x7f0900f5;
+        public static final int error_feed_already_exist=0x7f0900f0;
+        public static final int error_group_name_exist=0x7f090108;
+        public static final int error_invalid_rss_feed_url=0x7f0900ef;
+        public static final int error_item_already_on_bottom=0x7f090105;
+        public static final int error_item_already_on_top=0x7f090104;
+        public static final int error_max_fav_reach=0x7f0900f6;
+        public static final int error_no_favorite_application_define=0x7f0900f7;
+        public static final int facebook_app_id=0x7f090101;
+        public static final int feed_added_success=0x7f0900f1;
         /**  Title for the file information dialog 
          */
         public static final int file_info_title=0x7f090090;
@@ -1800,10 +1805,8 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         /**  shown in the video player view while the video is being loaded, before it starts playing 
          */
         public static final int loading_video=0x7f09008a;
-        public static final int move_down=0x7f0900e6;
-        /**  Custom variables section 
-         */
-        public static final int move_up=0x7f0900e5;
+        public static final int move_down=0x7f0900e7;
+        public static final int move_up=0x7f0900e6;
         /**  Activity label. This might show up in the activity-picker 
          */
         public static final int movieviewlabel=0x7f090089;
@@ -1849,13 +1852,13 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         /**  Activity title when in the image gallery to select a picture 
          */
         public static final int pick_photos_gallery_title=0x7f090082;
-        public static final int pick_source=0x7f0900e8;
-        public static final int pick_source_favorite=0x7f0900e9;
-        public static final int pick_source_manual=0x7f0900ea;
+        public static final int pick_source=0x7f0900e9;
+        public static final int pick_source_favorite=0x7f0900ea;
+        public static final int pick_source_manual=0x7f0900eb;
         /**  Activity title when in the image gallery to select a video 
          */
         public static final int pick_videos_gallery_title=0x7f090084;
-        public static final int pick_your_source=0x7f0900ec;
+        public static final int pick_your_source=0x7f0900ed;
         /**  Settings screen, section heading  
          */
         public static final int pref_gallery_category=0x7f09004d;
@@ -1945,7 +1948,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int preparing_sd=0x7f09002c;
         public static final int profile_image=0x7f0900a2;
         public static final int read_more=0x7f0900aa;
-        public static final int remove_from_favorite=0x7f0900f7;
+        public static final int remove_from_favorite=0x7f0900f8;
         public static final int rename=0x7f0900d7;
         public static final int rename_to=0x7f0900d8;
         /**  Movie View Start Playing dialog title 
@@ -2012,8 +2015,8 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         /**  menu pick to start a slide show 
          */
         public static final int slide_show=0x7f090036;
-        public static final int social_setting_facebook=0x7f0900fe;
-        public static final int social_setting_twitter=0x7f0900ff;
+        public static final int social_setting_facebook=0x7f0900ff;
+        public static final int social_setting_twitter=0x7f090100;
         public static final int spb_default_speed=0x7f09001d;
         public static final int tab_label_apps=0x7f09009e;
         public static final int tab_label_fav=0x7f09009d;
@@ -2021,23 +2024,23 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int tab_tag_apps=0x7f09009b;
         public static final int tab_tag_fav=0x7f09009a;
         public static final int tab_tag_home=0x7f090099;
-        public static final int title_activity_app_drawer=0x7f09010a;
+        public static final int title_activity_app_drawer=0x7f09010b;
         public static final int title_activity_applications=0x7f0900a1;
-        public static final int title_activity_apps_drawer_setting=0x7f090105;
+        public static final int title_activity_apps_drawer_setting=0x7f090106;
         public static final int title_activity_favorite=0x7f0900a0;
-        public static final int title_activity_feed_image_view_slides=0x7f0900f9;
-        public static final int title_activity_feed_source_setting=0x7f0900e7;
-        public static final int title_activity_folder_drawer_open=0x7f090108;
-        public static final int title_activity_group_apps_setting=0x7f090106;
-        public static final int title_activity_hidden_application=0x7f090102;
+        public static final int title_activity_feed_image_view_slides=0x7f0900fa;
+        public static final int title_activity_feed_source_setting=0x7f0900e8;
+        public static final int title_activity_folder_drawer_open=0x7f090109;
+        public static final int title_activity_group_apps_setting=0x7f090107;
+        public static final int title_activity_hidden_application=0x7f090103;
         public static final int title_activity_home=0x7f09009f;
-        public static final int title_activity_launcher=0x7f090109;
-        public static final int title_activity_read_feed=0x7f0900f8;
-        public static final int title_activity_social_setting=0x7f0900fd;
-        public static final int title_facebook_login=0x7f090101;
-        public static final int title_section1=0x7f0900fa;
-        public static final int title_section2=0x7f0900fb;
-        public static final int title_section3=0x7f0900fc;
+        public static final int title_activity_launcher=0x7f09010a;
+        public static final int title_activity_read_feed=0x7f0900f9;
+        public static final int title_activity_social_setting=0x7f0900fe;
+        public static final int title_facebook_login=0x7f090102;
+        public static final int title_section1=0x7f0900fb;
+        public static final int title_section2=0x7f0900fc;
+        public static final int title_section3=0x7f0900fd;
         /**  Text of context menu when a video is selected 
          */
         public static final int video_context_menu_header=0x7f09007f;

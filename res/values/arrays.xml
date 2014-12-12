@@ -1,6 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
+    <string-array name="pref_drawer_animation">
+        <item>Default</item>
+        <item>Zoom Out</item>
+        <item>Depth</item>
+        <item>Rotation</item>
+        <item>Flow</item>
+        <item>Slide Over</item>
+        <item>Flip</item>
+    </string-array>
+    
+    <string-array name="pref_drawer_animation_value">
+        <item></item>
+        <item>org.pet.launchpet2.animation.viewpagertransformer.ZoomOutViewPagerTransformer</item>
+        <item>org.pet.launchpet2.animation.viewpagertransformer.DepthViewPagerTransformer</item>
+        <item>org.pet.launchpet2.animation.viewpagertransformer.RotationViewPagerTransformer</item>
+        <item>org.pet.launchpet2.animation.viewpagertransformer.FlowViewPagerTransformer</item>
+        <item>org.pet.launchpet2.animation.viewpagertransformer.SlideOverViewPagerTransformer</item>
+        <item>org.pet.launchpet2.animation.viewpagertransformer.FlipViewPagerTransformer</item>
+    </string-array>
+    
     <string-array name="pref_theme_list_title">
         <item>Red</item>
         <item>Pink</item>
