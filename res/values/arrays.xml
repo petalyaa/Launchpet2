@@ -11,14 +11,23 @@
         <item>Flip</item>
     </string-array>
     
+    <string-array name="day_short_array">
+        <item>@string/day_short_sun</item>
+        <item>@string/day_short_mon</item>
+        <item>@string/day_short_tue</item>
+        <item>@string/day_short_wed</item>
+        <item>@string/day_short_thu</item>
+        <item>@string/day_short_fri</item>
+        <item>@string/day_short_sat</item>
+    </string-array>
+    
     <string-array name="pref_drawer_animation_value">
         <item></item>
-        <item>org.pet.launchpet2.animation.viewpagertransformer.ZoomOutViewPagerTransformer</item>
-        <item>org.pet.launchpet2.animation.viewpagertransformer.DepthViewPagerTransformer</item>
-        <!-- <item>org.pet.launchpet2.animation.viewpagertransformer.RotationViewPagerTransformer</item> -->
-        <item>org.pet.launchpet2.animation.viewpagertransformer.FlowViewPagerTransformer</item>
-        <item>org.pet.launchpet2.animation.viewpagertransformer.SlideOverViewPagerTransformer</item>
-        <item>org.pet.launchpet2.animation.viewpagertransformer.FlipViewPagerTransformer</item>
+        <item>org.pet.launchpet2.library.pagetransformer.ZoomOutViewPagerTransformer</item>
+        <item>org.pet.launchpet2.library.pagetransformer.DepthViewPagerTransformer</item>
+        <item>org.pet.launchpet2.library.pagetransformer.FlowViewPagerTransformer</item>
+        <item>org.pet.launchpet2.library.pagetransformer.SlideOverViewPagerTransformer</item>
+        <item>org.pet.launchpet2.library.pagetransformer.FlipViewPagerTransformer</item>
     </string-array>
     
     <string-array name="pref_theme_list_title">
