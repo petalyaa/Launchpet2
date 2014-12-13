@@ -8,6 +8,7 @@ import org.pet.launchpet2.thread.FetchImageAsync;
 import org.pet.launchpet2.util.StringUtil;
 
 import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,7 +48,8 @@ public class ImageCardPopulator extends Populator {
 		if(!StringUtil.isNullEmptyString(link))
 			new FetchFaviconAsync(imageView).execute(link);
 		if(!StringUtil.isNullEmptyString(imageUrl))
-			new FetchImageAsync(imageNewsView, false).execute(imageUrl);
+//			new FetchImageAsync(imageNewsView, false).execute(imageUrl);
+			new FetchImageAsync(imageNewsView, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, imageUrl);
 		return card;
 	}
 	

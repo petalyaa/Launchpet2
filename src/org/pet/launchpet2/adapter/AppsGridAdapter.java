@@ -3,11 +3,13 @@ package org.pet.launchpet2.adapter;
 import java.util.List;
 
 import org.pet.launchpet2.R;
+import org.pet.launchpet2.listener.Callback;
 import org.pet.launchpet2.model.LauncherApplication;
 import org.pet.launchpet2.thread.FetchLocalImageAsync;
 import org.pet.launchpet2.util.ConfigurationUtil;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,9 +63,17 @@ public class AppsGridAdapter extends BaseAdapter {
 		LauncherApplication app = (LauncherApplication) getItem(position);
 		holder.native_drawer_icon_view_label.setText(app.getName());
 		if(app.getType() == LauncherApplication.Type.APPLICATION) {
-			holder.native_drawer_icon_view_icon.setVisibility(View.VISIBLE);
+			holder.native_drawer_icon_view_icon.setVisibility(View.INVISIBLE);
 			holder.native_drawer_icon_folder.setVisibility(View.INVISIBLE);
-			new FetchLocalImageAsync(context, holder.native_drawer_icon_view_icon).execute(app.getPackageName());
+//			new FetchLocalImageAsync(context, holder.native_drawer_icon_view_icon).execute(app.getPackageName());
+			new FetchLocalImageAsync(context, holder.native_drawer_icon_view_icon, new FetchLocalImageAsync.FetchCallback() {
+				
+				@Override
+				public void onComplete(ImageView imageView) {
+					imageView.setVisibility(View.VISIBLE);
+				}
+				
+			}).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, app.getPackageName());
 		} else {
 			holder.native_drawer_icon_view_icon.setVisibility(View.INVISIBLE);
 			holder.native_drawer_icon_folder.setVisibility(View.VISIBLE);
@@ -76,7 +86,8 @@ public class AppsGridAdapter extends BaseAdapter {
 					try {
 						LauncherApplication groupApp = groupAppList.get(i);
 						String packageName = groupApp.getPackageName();
-						new FetchLocalImageAsync(context, thisImageView).execute(packageName);
+//						new FetchLocalImageAsync(context, thisImageView).execute(packageName);
+						new FetchLocalImageAsync(context, thisImageView).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, packageName);
 					} catch (Exception e) {
 						thisImageView.setVisibility(View.INVISIBLE);
 					}
