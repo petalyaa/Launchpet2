@@ -453,7 +453,10 @@ public class CustomViewAbove extends ViewGroup {
 
 		final int contentWidth = getChildMeasureSpec(widthMeasureSpec, 0, width);
 		final int contentHeight = getChildMeasureSpec(heightMeasureSpec, 0, height);
+		try {
 		mContent.measure(contentWidth, contentHeight);
+		} catch (Exception e) {
+		}
 	}
 
 	@Override
