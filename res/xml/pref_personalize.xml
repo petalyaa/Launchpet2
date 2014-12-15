@@ -46,6 +46,17 @@
             android:singleLine="true"
             android:title="@string/pref_personalize_general_date_format" />
         
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="personalize_general_use_system_wallpaper"
+            android:summaryOn="@string/personalize_general_use_system_wallpaper_on_sum"
+            android:summaryOff="@string/personalize_general_use_system_wallpaper_off_sum"
+            android:title="@string/personalize_general_use_system_wallpaper" />
+        
+        <Preference
+        	android:key="personalize_general_wallpaper_image_selection"
+        	android:title="@string/personalize_general_select_wallpaper" />
+        
     </PreferenceCategory>
     
     <PreferenceCategory
