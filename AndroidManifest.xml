@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.pet.launchpet2"
-    android:versionCode="13"
-    android:versionName="1.10.1" >
+    android:versionCode="14"
+    android:versionName="1.11" >
 
     <uses-sdk
         android:minSdkVersion="21"
@@ -36,19 +36,24 @@
         </activity>
         <activity
             android:name=".preference.PersonalizeSettingActivity"
+            android:screenOrientation="portrait" 
             android:label="@string/settings_label" >
         </activity>
-        <activity android:name="com.android.camera.CropImage" />
+        <activity android:name="com.android.camera.CropImage"
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".FeedSourceSettingActivity"
+            android:screenOrientation="portrait" 
             android:label="@string/title_activity_feed_source_setting" >
         </activity>
         <activity
             android:name=".ReadFeedActivity"
+            android:screenOrientation="portrait" 
             android:label="@string/title_activity_read_feed" >
         </activity>
         <activity
             android:name=".FeedImageViewSlides"
+            android:screenOrientation="portrait" 
             android:label="@string/title_activity_feed_image_view_slides" >
         </activity>
 
@@ -67,23 +72,28 @@
         </receiver>
         <activity
             android:name=".HiddenApplicationActivity"
+            android:screenOrientation="portrait" 
             android:label="@string/title_activity_hidden_application" >
         </activity>
         <activity
             android:name=".AppsDrawerSettingActivity"
+            android:screenOrientation="portrait" 
             android:label="@string/title_activity_apps_drawer_setting" >
         </activity>
         <activity
             android:name=".GroupAppsSettingActivity"
+            android:screenOrientation="portrait" 
             android:label="@string/title_activity_group_apps_setting" >
         </activity>
         <activity
             android:name=".FolderDrawerOpenActivity"
+            android:screenOrientation="portrait" 
             android:label="@string/title_activity_folder_drawer_open"
             android:theme="@style/Theme.FolderView" >
         </activity>
         <activity
             android:name=".AppDrawerActivity"
+            android:screenOrientation="portrait" 
             android:theme="@style/Theme.DrawerView"
             android:label="@string/title_activity_app_drawer" >
         </activity>
