@@ -42,6 +42,8 @@ public class ConfigurationUtil {
 	
 	public static final String FILENAME_BANNER_IMAGE = "banner.jpeg";
 	
+	public static final String FILENAME_WALLPAPER_IMAGE = "wallpaper.png";
+	
 	public static final String FILENAME_NEWS_CACHE = "news";
 	
 	public static final String FILENAME_APPS_CACHE = "apps";
@@ -52,6 +54,8 @@ public class ConfigurationUtil {
 	
 	public static final String SUBDIRECTORY_IMAGES = "images";
 	
+	public static final String SUBDIRECTORY_APP_ICONS = "app_icons";
+	
 	public static final String SUBDIRECTORY_FAVICON = "favicon";
 	
 	public static final String SUBDIRECTORY_NEWS = "news";
@@ -61,7 +65,7 @@ public class ConfigurationUtil {
 	public static final int DIMENSION_X_PROFILE_IMAGE = 200;
 	
 	public static final int DIMENSION_Y_PROFILE_IMAGE = 200;
-	
+
 	public static final int DIMENSION_X_BANNER_IMAGE = 1280;
 	
 	public static final int DIMENSION_Y_BANNER_IMAGE = 800;
@@ -86,7 +90,9 @@ public class ConfigurationUtil {
 	
 	public static final String PLAY_STORE_WEB_URI_STR = "http://play.google.com/store/apps/details?id=";
 	
-	public static final long WEATHER_UPDATE_FREQUENCY = 1000 * 60 * 60;
+//	public static final long WEATHER_UPDATE_FREQUENCY = 1000 * 60 * 60;
+	
+	public static final long WEATHER_UPDATE_FREQUENCY = 1000 * 5;
 	
 	public static final String SHARED_PREFERENCE_GENERAL_SETTINGS = "general_settings";
 	
