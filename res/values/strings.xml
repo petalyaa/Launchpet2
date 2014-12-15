@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="colon">:</string>
     <string name="app_name">Launchpet2</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -63,6 +64,10 @@
     <string name="personalize_advanced_quick_access_drawer_title">Use native app drawer</string>
     <string name="personalize_advanced_quick_access_drawer_on_sum">Use native application drawer</string>
     <string name="personalize_advanced_quick_access_drawer_off_sum">Use right fragment menu drawer</string>
+    <string name="personalize_general_use_system_wallpaper">Use system wallpaper</string>
+    <string name="personalize_general_use_system_wallpaper_on_sum">Use currently selected wallpaper in the system. (Banner image will be hide)</string>
+    <string name="personalize_general_use_system_wallpaper_off_sum">Use theme background color with banner image on top</string>
+    <string name="personalize_general_select_wallpaper">Select wallpaper</string>
     <string name="application_restarting">Launchpet2 restarting…</string>
     <string name="define_FloatingActionButton"></string>
     <string name="delete">Delete</string>
@@ -85,6 +90,14 @@
     <!-- License section -->
     <string name="library_FloatingActionButton_licenseId">mit</string>
     <!-- Custom variables section -->
+    
+    <string name="day_short_mon">MON</string>
+    <string name="day_short_tue">TUE</string>
+    <string name="day_short_wed">WED</string>
+    <string name="day_short_thu">THU</string>
+    <string name="day_short_fri">FRI</string>
+    <string name="day_short_sat">SAT</string>
+    <string name="day_short_sun">SUN</string>
     
     <string name="day_mon">Monday</string>
     <string name="day_tue">Tuesday</string>
@@ -133,5 +146,10 @@
     <string name="title_activity_folder_drawer_open">FolderDrawerOpenActivity</string>
     <string name="title_activity_launcher">LauncherActivity</string>
     <string name="title_activity_app_drawer">AppDrawerActivity</string>
+    
+    <string name="no_weather_data">No data</string>
+    <string name="default_location_label">Getting location…</string>
+    <string name="temp_min">MIN</string>
+    <string name="temp_max">MAX</string>
 
 </resources>
